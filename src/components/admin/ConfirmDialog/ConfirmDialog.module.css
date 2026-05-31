@@ -1,0 +1,76 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 110;
+}
+
+.dialog {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 380px;
+  padding: 28px 24px 22px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.3);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: #dc2626;
+  margin-bottom: 16px;
+}
+
+.message {
+  font-size: 15px;
+  color: #1a1a1a;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 22px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cancel,
+.confirm {
+  flex: 1;
+  height: 44px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: background 150ms ease;
+}
+
+.cancel {
+  background: #f1f5f9;
+  color: #4b5563;
+}
+
+.cancel:hover {
+  background: #e2e8f0;
+}
+
+.confirm {
+  background: #ef4444;
+  color: #fff;
+}
+
+.confirm:hover {
+  background: #dc2626;
+}
