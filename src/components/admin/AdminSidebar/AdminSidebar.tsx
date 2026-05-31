@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import styles from './AdminSidebar.module.css';
 
 // Admin is a standalone Ukrainian-only owner tool — strings are hardcoded by
@@ -118,6 +118,13 @@ function LogoutIcon() {
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch('/api/admin/logout', { method: 'POST' });
+    router.push('/admin/login');
+    router.refresh();
+  };
 
   return (
     <aside className={styles.sidebar}>
@@ -146,10 +153,10 @@ export default function AdminSidebar() {
       </nav>
 
       <div className={styles.footer}>
-        <Link href="/" className={styles.logout}>
+        <button type="button" className={styles.logout} onClick={handleLogout}>
           <LogoutIcon />
           Вийти
-        </Link>
+        </button>
         <span className={styles.store}>{STORE_NAME}</span>
       </div>
     </aside>

@@ -3,6 +3,8 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
   "env": {
-    "REGION_BUNDLE": "UA"
+    "REGION_BUNDLE": "UA",
+    "ADMIN_EMAIL": "admin@electromarket.ua",
+    "ADMIN_PASSWORD": "admin123"
   }
 }
