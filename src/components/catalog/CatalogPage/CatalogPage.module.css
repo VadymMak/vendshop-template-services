@@ -121,6 +121,12 @@
   gap: 18px;
 }
 
+.gridLoading {
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
 /* ── Pagination ───────────────────────────────────── */
 .pag {
   display: flex;

@@ -201,6 +201,41 @@ async function main() {
       isNew: true,
       metadata: { sku: 'FSAG125XB', stockQty: 6 },
     },
+    // ── ADDITIONAL 27 PRODUCTS (for pagination demo: 36 total = 3 pages of 12) ──
+    // Drills +3
+    { slug: 'bosch-gsb-18v-55', nameKey: 'boschDrill18v', brand: 'BOSCH', categorySlug: 'drills', price: 4590, oldPrice: 5490, rating: 4.5, reviewCount: 88, inStock: true, isHit: true, metadata: { sku: 'GSB18V55', stockQty: 14 } },
+    { slug: 'metabo-bs-18-ltx', nameKey: 'metaboDrill', brand: 'METABO', categorySlug: 'drills', price: 3290, rating: 4, reviewCount: 33, inStock: true, metadata: { sku: 'BS18LTX', stockQty: 9 } },
+    { slug: 'makita-dhp485', nameKey: 'makitaDrillBrush', brand: 'MAKITA', categorySlug: 'drills', price: 5999, oldPrice: 7499, rating: 5, reviewCount: 62, inStock: true, isNew: true, metadata: { sku: 'DHP485', stockQty: 11 } },
+    // Grinders +2
+    { slug: 'makita-ga9050', nameKey: 'makitaGrinder9', brand: 'MAKITA', categorySlug: 'grinders', price: 3490, rating: 4.5, reviewCount: 74, inStock: true, isHit: true, metadata: { sku: 'GA9050', stockQty: 8 } },
+    { slug: 'bosch-gws-22-230', nameKey: 'boschGrinder230', brand: 'BOSCH', categorySlug: 'grinders', price: 8490, oldPrice: 10990, rating: 4.5, reviewCount: 45, inStock: true, metadata: { sku: 'GWS22230', stockQty: 5 } },
+    // Perforators +2
+    { slug: 'dewalt-d25133', nameKey: 'dewaltPerforator', brand: 'DEWALT', categorySlug: 'perforators', price: 4999, rating: 4, reviewCount: 51, inStock: true, metadata: { sku: 'D25133K', stockQty: 13 } },
+    { slug: 'milwaukee-m18-ch', nameKey: 'milwaukeePerforator', brand: 'MILWAUKEE', categorySlug: 'perforators', price: 11990, oldPrice: 14990, rating: 5, reviewCount: 37, inStock: true, isHit: true, metadata: { sku: 'M18CH', stockQty: 4 } },
+    // Jigsaws +3
+    { slug: 'bosch-gst-18v-57', nameKey: 'boschJigsaw18v', brand: 'BOSCH', categorySlug: 'jigsaws', price: 5490, rating: 4.5, reviewCount: 29, inStock: true, metadata: { sku: 'GST18V57', stockQty: 10 } },
+    { slug: 'dewalt-dcs331', nameKey: 'dewaltJigsaw', brand: 'DEWALT', categorySlug: 'jigsaws', price: 6290, oldPrice: 7990, rating: 4, reviewCount: 22, inStock: true, metadata: { sku: 'DCS331N', stockQty: 7 } },
+    { slug: 'makita-djv182', nameKey: 'makitaJigsaw', brand: 'MAKITA', categorySlug: 'jigsaws', price: 6990, rating: 5, reviewCount: 18, inStock: true, isNew: true, metadata: { sku: 'DJV182', stockQty: 6 } },
+    // Sanders +2
+    { slug: 'makita-bo5041', nameKey: 'makitaSander', brand: 'MAKITA', categorySlug: 'sanders', price: 3190, oldPrice: 3990, rating: 4.5, reviewCount: 58, inStock: true, metadata: { sku: 'BO5041', stockQty: 15 } },
+    { slug: 'dewalt-dwe6421', nameKey: 'dewaltSander', brand: 'DEWALT', categorySlug: 'sanders', price: 2890, rating: 4, reviewCount: 41, inStock: true, metadata: { sku: 'DWE6421', stockQty: 12 } },
+    // Lasers +4
+    { slug: 'bosch-gll-3-80', nameKey: 'boschLaser380', brand: 'BOSCH', categorySlug: 'lasers', price: 9490, oldPrice: 11990, rating: 5, reviewCount: 96, inStock: true, isHit: true, metadata: { sku: 'GLL380CG', stockQty: 8 } },
+    { slug: 'dewalt-dw088k', nameKey: 'dewaltLaser88', brand: 'DEWALT', categorySlug: 'lasers', price: 6990, rating: 4.5, reviewCount: 43, inStock: true, metadata: { sku: 'DW088K', stockQty: 9 } },
+    { slug: 'makita-sk208d', nameKey: 'makitaLaser', brand: 'MAKITA', categorySlug: 'lasers', price: 5490, oldPrice: 6490, rating: 4, reviewCount: 27, inStock: true, metadata: { sku: 'SK208DZ', stockQty: 11 } },
+    { slug: 'metabo-bll-3-15', nameKey: 'metaboLaser', brand: 'METABO', categorySlug: 'lasers', price: 7990, rating: 4.5, reviewCount: 16, inStock: true, isNew: true, metadata: { sku: 'BLL315', stockQty: 5 } },
+    // Measuring +4
+    { slug: 'bosch-glm-50c', nameKey: 'boschDistance50', brand: 'BOSCH', categorySlug: 'measuring', price: 3990, oldPrice: 4990, rating: 4.5, reviewCount: 112, inStock: true, isHit: true, metadata: { sku: 'GLM50C', stockQty: 20 } },
+    { slug: 'dewalt-dw03101', nameKey: 'dewaltDistance100', brand: 'DEWALT', categorySlug: 'measuring', price: 5490, rating: 4, reviewCount: 34, inStock: true, metadata: { sku: 'DW03101', stockQty: 7 } },
+    { slug: 'makita-ld050p', nameKey: 'makitaDistance50', brand: 'MAKITA', categorySlug: 'measuring', price: 2990, rating: 4, reviewCount: 28, inStock: true, metadata: { sku: 'LD050P', stockQty: 16 } },
+    { slug: 'milwaukee-m12-ld', nameKey: 'milwaukeeDistance', brand: 'MILWAUKEE', categorySlug: 'measuring', price: 4490, rating: 4.5, reviewCount: 21, inStock: true, metadata: { sku: 'M12LD', stockQty: 9 } },
+    // Accessories +6
+    { slug: 'bosch-sds-bit-set', nameKey: 'boschSdsBitSet', brand: 'BOSCH', categorySlug: 'accessories', price: 890, oldPrice: 1290, rating: 4.5, reviewCount: 203, inStock: true, isHit: true, metadata: { sku: 'BSCHSDS7', stockQty: 50 } },
+    { slug: 'makita-blade-set', nameKey: 'makitaBladeSet', brand: 'MAKITA', categorySlug: 'accessories', price: 1190, rating: 4.5, reviewCount: 87, inStock: true, metadata: { sku: 'MKBLADE7', stockQty: 35 } },
+    { slug: 'dewalt-bit-set-32', nameKey: 'dewaltBitSet32', brand: 'DEWALT', categorySlug: 'accessories', price: 750, oldPrice: 990, rating: 4, reviewCount: 145, inStock: true, metadata: { sku: 'DT7921', stockQty: 60 } },
+    { slug: 'milwaukee-tool-bag', nameKey: 'milwaukeeToolBag', brand: 'MILWAUKEE', categorySlug: 'accessories', price: 2190, rating: 4.5, reviewCount: 55, inStock: true, metadata: { sku: 'M482280', stockQty: 18 } },
+    { slug: 'metabo-disc-set', nameKey: 'metaboDiscSet', brand: 'METABO', categorySlug: 'accessories', price: 590, oldPrice: 890, rating: 4, reviewCount: 78, inStock: true, metadata: { sku: 'MTDSC10', stockQty: 45 } },
+    { slug: 'bosch-diamond-blade', nameKey: 'boschDiamondBlade', brand: 'BOSCH', categorySlug: 'accessories', price: 1490, rating: 5, reviewCount: 39, inStock: true, isNew: true, metadata: { sku: 'BSCHDMD', stockQty: 22 } },
   ];
 
   const products: Record<string, string> = {};

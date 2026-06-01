@@ -5,8 +5,9 @@ import { useTranslations } from 'next-intl';
 import styles from './FilterSidebar.module.css';
 
 export interface FilterSidebarProps {
-  /** Called when the user clicks "Apply". Defaults to a console.log placeholder. */
   onApply?: (state: FilterState) => void;
+  categoryRows?: { slug: string; count: number }[];
+  brandRows?: { name: string; count: number }[];
 }
 
 export interface FilterState {
@@ -20,22 +21,20 @@ export interface FilterState {
 const PRICE_MIN = 0;
 const PRICE_MAX = 25000;
 
-// Category checkbox rows reuse the existing `categories` namespace for labels;
-// counts are sample data. Brand names are proper nouns (kept as data).
-const CATEGORY_ROWS: { key: string; count: number }[] = [
-  { key: 'drills', count: 24 },
-  { key: 'grinders', count: 18 },
-  { key: 'perforators', count: 15 },
-  { key: 'jigsaws', count: 12 },
-  { key: 'sanders', count: 18 },
+const DEFAULT_CATEGORIES: { slug: string; count: number }[] = [
+  { slug: 'drills', count: 0 },
+  { slug: 'grinders', count: 0 },
+  { slug: 'perforators', count: 0 },
+  { slug: 'jigsaws', count: 0 },
+  { slug: 'sanders', count: 0 },
 ];
 
-const BRAND_ROWS: { name: string; count: number }[] = [
-  { name: 'Makita', count: 31 },
-  { name: 'Bosch', count: 27 },
-  { name: 'DeWalt', count: 14 },
-  { name: 'Milwaukee', count: 9 },
-  { name: 'Metabo', count: 6 },
+const DEFAULT_BRANDS: { name: string; count: number }[] = [
+  { name: 'Makita', count: 0 },
+  { name: 'Bosch', count: 0 },
+  { name: 'DeWalt', count: 0 },
+  { name: 'Milwaukee', count: 0 },
+  { name: 'Metabo', count: 0 },
 ];
 
 const stroke = {
@@ -56,54 +55,38 @@ function FilterIcon() {
 
 function CheckMini() {
   return (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M20 6 9 17l-5-5" />
     </svg>
   );
 }
 
-function Checkbox({
-  checked,
-  onChange,
-  label,
-  count,
-}: {
-  checked: boolean;
-  onChange: () => void;
-  label: string;
-  count: number;
+function Checkbox({ checked, onChange, label, count }: {
+  checked: boolean; onChange: () => void; label: string; count: number;
 }) {
   return (
     <label className={styles.chk}>
       <input type="checkbox" checked={checked} onChange={onChange} />
-      <span className={styles.chkBox}>
-        <CheckMini />
-      </span>
+      <span className={styles.chkBox}><CheckMini /></span>
       <span className={styles.chkLabel}>{label}</span>
       <span className={styles.chkNum}>{count}</span>
     </label>
   );
 }
 
-export default function FilterSidebar({ onApply }: FilterSidebarProps) {
+export default function FilterSidebar({ onApply, categoryRows, brandRows }: FilterSidebarProps) {
   const t = useTranslations('catalog');
   const tc = useTranslations('categories');
 
-  const [cats, setCats] = useState<Record<string, boolean>>({ drills: true });
-  const [brands, setBrands] = useState<Record<string, boolean>>({ Makita: true });
-  const [inStock, setInStock] = useState(true);
-  const [lo, setLo] = useState(1500);
-  const [hi, setHi] = useState(12000);
+  const resolvedCategories = categoryRows ?? DEFAULT_CATEGORIES;
+  const resolvedBrands = brandRows ?? DEFAULT_BRANDS;
+
+  const [cats, setCats] = useState<Record<string, boolean>>({});
+  const [brands, setBrands] = useState<Record<string, boolean>>({});
+  const [inStock, setInStock] = useState(false);
+  const [lo, setLo] = useState(PRICE_MIN);
+  const [hi, setHi] = useState(PRICE_MAX);
 
   const reset = () => {
     setCats({});
@@ -111,6 +94,7 @@ export default function FilterSidebar({ onApply }: FilterSidebarProps) {
     setInStock(false);
     setLo(PRICE_MIN);
     setHi(PRICE_MAX);
+    (onApply ?? (() => {}))({ categories: [], brands: [], priceFrom: PRICE_MIN, priceTo: PRICE_MAX, inStockOnly: false });
   };
 
   const apply = () => {
@@ -139,13 +123,13 @@ export default function FilterSidebar({ onApply }: FilterSidebarProps) {
       {/* Category */}
       <div className={styles.group}>
         <h4 className={styles.groupTitle}>{t('category')}</h4>
-        {CATEGORY_ROWS.map(({ key, count }) => (
+        {resolvedCategories.map(({ slug, count }) => (
           <Checkbox
-            key={key}
-            label={tc(key)}
+            key={slug}
+            label={tc(slug)}
             count={count}
-            checked={!!cats[key]}
-            onChange={() => setCats((c) => ({ ...c, [key]: !c[key] }))}
+            checked={!!cats[slug]}
+            onChange={() => setCats((c) => ({ ...c, [slug]: !c[slug] }))}
           />
         ))}
       </div>
@@ -153,7 +137,7 @@ export default function FilterSidebar({ onApply }: FilterSidebarProps) {
       {/* Brand */}
       <div className={styles.group}>
         <h4 className={styles.groupTitle}>{t('brand')}</h4>
-        {BRAND_ROWS.map(({ name, count }) => (
+        {resolvedBrands.map(({ name, count }) => (
           <Checkbox
             key={name}
             label={name}
@@ -170,55 +154,26 @@ export default function FilterSidebar({ onApply }: FilterSidebarProps) {
         <div className={styles.priceInputs}>
           <div className={styles.priceField}>
             <span>{t('priceFrom')}</span>
-            <input
-              type="number"
-              value={lo}
-              min={PRICE_MIN}
-              max={hi}
-              aria-label={t('priceFrom')}
-              onChange={(e) => setLo(Math.min(Number(e.target.value), hi))}
-            />
+            <input type="number" value={lo} min={PRICE_MIN} max={hi} aria-label={t('priceFrom')}
+              onChange={(e) => setLo(Math.min(Number(e.target.value), hi))} />
           </div>
           <span className={styles.priceDash}>—</span>
           <div className={styles.priceField}>
             <span>{t('priceTo')}</span>
-            <input
-              type="number"
-              value={hi}
-              min={lo}
-              max={PRICE_MAX}
-              aria-label={t('priceTo')}
-              onChange={(e) => setHi(Math.max(Number(e.target.value), lo))}
-            />
+            <input type="number" value={hi} min={lo} max={PRICE_MAX} aria-label={t('priceTo')}
+              onChange={(e) => setHi(Math.max(Number(e.target.value), lo))} />
           </div>
         </div>
         <div className={styles.range}>
           <div className={styles.rangeTrack} />
-          <div
-            className={styles.rangeFill}
-            style={{
-              left: `${((lo - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100}%`,
-              right: `${100 - ((hi - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100}%`,
-            }}
-          />
-          <input
-            type="range"
-            min={PRICE_MIN}
-            max={PRICE_MAX}
-            step={500}
-            value={lo}
-            aria-label={t('priceFrom')}
-            onChange={(e) => setLo(Math.min(Number(e.target.value), hi - 500))}
-          />
-          <input
-            type="range"
-            min={PRICE_MIN}
-            max={PRICE_MAX}
-            step={500}
-            value={hi}
-            aria-label={t('priceTo')}
-            onChange={(e) => setHi(Math.max(Number(e.target.value), lo + 500))}
-          />
+          <div className={styles.rangeFill} style={{
+            left: `${((lo - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100}%`,
+            right: `${100 - ((hi - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100}%`,
+          }} />
+          <input type="range" min={PRICE_MIN} max={PRICE_MAX} step={500} value={lo} aria-label={t('priceFrom')}
+            onChange={(e) => setLo(Math.min(Number(e.target.value), hi - 500))} />
+          <input type="range" min={PRICE_MIN} max={PRICE_MAX} step={500} value={hi} aria-label={t('priceTo')}
+            onChange={(e) => setHi(Math.max(Number(e.target.value), lo + 500))} />
         </div>
       </div>
 

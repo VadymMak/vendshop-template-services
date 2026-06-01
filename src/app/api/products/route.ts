@@ -9,14 +9,15 @@ const STORE_SLUG = process.env.STORE_SLUG ?? 'electromarket';
 // GET /api/products — list with optional filters
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const categorySlug = searchParams.get('category') ?? undefined;
-  const brand = searchParams.get('brand') ?? undefined;
+  // Supports comma-separated values: ?category=drills,grinders  ?brand=Makita,Bosch
+  const categorySlugs = (searchParams.get('category') ?? '').split(',').filter(Boolean);
+  const brandNames = (searchParams.get('brand') ?? '').split(',').filter(Boolean);
   const inStock = searchParams.get('inStock');
   const minPrice = searchParams.get('minPrice');
   const maxPrice = searchParams.get('maxPrice');
   const sort = searchParams.get('sort') ?? 'popular';
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
-  const pageSize = Math.min(100, parseInt(searchParams.get('pageSize') ?? '50', 10));
+  const pageSize = Math.min(100, parseInt(searchParams.get('pageSize') ?? '12', 10));
 
   try {
     const store = await db.store.findUniqueOrThrow({ where: { slug: STORE_SLUG } });
@@ -24,7 +25,9 @@ export async function GET(request: Request) {
     const where = {
       storeId: store.id,
       ...(inStock === 'true' ? { inStock: true } : {}),
-      ...(brand ? { brand: { equals: brand, mode: 'insensitive' as const } } : {}),
+      ...(brandNames.length > 0
+        ? { brand: { in: brandNames, mode: 'insensitive' as const } }
+        : {}),
       ...(minPrice || maxPrice
         ? {
             price: {
@@ -33,8 +36,8 @@ export async function GET(request: Request) {
             },
           }
         : {}),
-      ...(categorySlug
-        ? { category: { slug: categorySlug } }
+      ...(categorySlugs.length > 0
+        ? { category: { slug: { in: categorySlugs } } }
         : {}),
     };
 
@@ -58,7 +61,7 @@ export async function GET(request: Request) {
       }),
     ]);
 
-    return NextResponse.json({ products, total, page, pageSize });
+    return NextResponse.json({ products, total, page, pageSize, totalPages: Math.ceil(total / pageSize) });
   } catch (error) {
     console.error('[GET /api/products]', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
