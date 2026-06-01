@@ -155,6 +155,16 @@ export default function AdminAiPage() {
   // ── Settings modal state ──────────────────────────────────────────────────
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState<'status' | 'settings'>('status');
+  const [savedToast, setSavedToast] = useState(false);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const saveSettings = () => {
+    console.log('[ai settings]', { aiActive, tone, assistantName, greeting });
+    setShowSettings(false);
+    setSavedToast(true);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setSavedToast(false), 3000);
+  };
 
   // ── Indexing state ────────────────────────────────────────────────────────
   const [indexing, setIndexing] = useState(false);
@@ -291,17 +301,22 @@ export default function AdminAiPage() {
           </button>
         </div>
 
-        {/* Suggestions — below input, only on empty chat */}
-        {messages.length === 0 && (
-          <div className={styles.chatSuggestions}>
-            {SUGGESTIONS.map((s) => (
-              <button key={s} type="button" className={styles.chatSuggestion} onClick={() => sendMessage(s)}>
-                {s}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Suggestions — below input, always visible */}
+        <div className={styles.chatSuggestions}>
+          {SUGGESTIONS.map((s) => (
+            <button key={s} type="button" className={styles.chatSuggestion} onClick={() => sendMessage(s)} disabled={loading}>
+              {s}
+            </button>
+          ))}
+        </div>
       </section>
+
+      {/* ── Save toast ───────────────────────────────────────────────────── */}
+      {savedToast && (
+        <div className={styles.toast}>
+          ✓ Settings saved
+        </div>
+      )}
 
       {/* ── Settings Modal ────────────────────────────────────────────────── */}
       {showSettings && (
@@ -378,8 +393,7 @@ export default function AdminAiPage() {
                       <span className={styles.label}>Greeting message</span>
                       <textarea className={styles.textarea} rows={3} value={greeting} onChange={(e) => setGreeting(e.target.value)} />
                     </label>
-                    <button type="button" className={styles.saveBtn}
-                      onClick={() => console.log('[ai settings]', { aiActive, tone, assistantName, greeting })}>
+                    <button type="button" className={styles.saveBtn} onClick={saveSettings}>
                       Save settings
                     </button>
                   </div>
