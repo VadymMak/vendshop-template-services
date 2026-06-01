@@ -8,6 +8,7 @@ interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   toolsUsed?: string[];
+  provider?: 'openai' | 'anthropic';
   timestamp: number;
 }
 
@@ -76,6 +77,7 @@ export default function AdminAiPage() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [lastUsed, setLastUsed] = useState<string | null>(null);
+  const [provider, setProvider] = useState<'openai' | 'anthropic' | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -106,6 +108,7 @@ export default function AdminAiPage() {
       const data = (await res.json()) as {
         response: string;
         toolsUsed: string[];
+        provider: 'openai' | 'anthropic';
         updatedHistory: { role: 'user' | 'assistant'; content: string }[];
       };
 
@@ -118,8 +121,9 @@ export default function AdminAiPage() {
 
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: data.response, toolsUsed: data.toolsUsed, timestamp: Date.now() },
+        { role: 'assistant', content: data.response, toolsUsed: data.toolsUsed, provider: data.provider, timestamp: Date.now() },
       ]);
+      setProvider(data.provider);
       setLastUsed(new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }));
     } catch (err) {
       console.error('[admin chat]', err);
@@ -184,7 +188,7 @@ export default function AdminAiPage() {
         <span className={styles.statusChip}><BotIcon /> {TOOLS_COUNT} tools доступно</span>
         {lastUsed && <span className={styles.statusChipGray}>Остання відповідь: {lastUsed}</span>}
         <span className={`${styles.statusChipGray} ${styles.statusChipRight}`}>
-          Модель: claude-haiku-4-5
+          {provider === 'openai' ? 'OpenAI GPT-4o-mini' : provider === 'anthropic' ? 'Claude Haiku' : 'AI готовий'}
         </span>
       </div>
 

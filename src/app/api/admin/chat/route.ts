@@ -4,8 +4,19 @@ import { OrderStatus, PaymentStatus, PromoType } from '@prisma/client';
 
 const STORE_SLUG = process.env.STORE_SLUG ?? 'electromarket';
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-haiku-4-5-20251001';
+const OPENAI_MODEL = process.env.OPENAI_MODEL ?? 'gpt-4o-mini';
 
-// ─── Tool definitions for Claude API ───────────────────────────────────────
+// ─── SYSTEM prompt (shared between providers) ──────────────────────────────
+const SYSTEM = `You are an AI assistant for the ElectroMarket online store admin panel.
+You have access to the store database via tools.
+IMPORTANT: Detect the language of the user's message and reply in the SAME language.
+If the user writes in Russian — reply in Russian.
+If the user writes in English — reply in English.
+If the user writes in Ukrainian — reply in Ukrainian.
+Be concise, helpful, and specific. Always show actual numbers, names, and prices from the database.
+Don't explain what you're doing — just do it and present the results clearly.`;
+
+// ─── Tool definitions (Anthropic format, converted for OpenAI as needed) ───
 const TOOLS = [
   {
     name: 'get_products',
@@ -110,14 +121,26 @@ const TOOLS = [
   },
 ] as const;
 
+// ─── OpenAI tool format converter ──────────────────────────────────────────
+function toOpenAITools() {
+  return TOOLS.map((t) => ({
+    type: 'function' as const,
+    function: {
+      name: t.name,
+      description: t.description,
+      parameters: t.input_schema,
+    },
+  }));
+}
+
 // ─── Typed tool params ─────────────────────────────────────────────────────
-interface GetProductsParams   { category?: string; brand?: string; inStock?: boolean; maxPrice?: number; limit?: number }
-interface UpdatePriceParams   { productId: string; newPrice: number; oldPrice?: number }
-interface GetOrdersParams     { status?: string; period?: string; limit?: number }
-interface UpdateOrderParams   { orderId: string; status: string; trackingNumber?: string; internalNote?: string }
-interface GetCustomersParams  { sortBy?: 'orders' | 'revenue' | 'recent'; limit?: number }
-interface GetAnalyticsParams  { period?: string }
-interface CreatePromoParams   { type: string; title: string; description?: string; discountPercent?: number; productIds?: string[]; endsAt?: string }
+interface GetProductsParams     { category?: string; brand?: string; inStock?: boolean; maxPrice?: number; limit?: number }
+interface UpdatePriceParams     { productId: string; newPrice: number; oldPrice?: number }
+interface GetOrdersParams       { status?: string; period?: string; limit?: number }
+interface UpdateOrderParams     { orderId: string; status: string; trackingNumber?: string; internalNote?: string }
+interface GetCustomersParams    { sortBy?: 'orders' | 'revenue' | 'recent'; limit?: number }
+interface GetAnalyticsParams    { period?: string }
+interface CreatePromoParams     { type: string; title: string; description?: string; discountPercent?: number; productIds?: string[]; endsAt?: string }
 interface SearchKnowledgeParams { query: string }
 
 type ToolParams =
@@ -141,7 +164,7 @@ function buildDateFilter(period?: string): { createdAt?: { gte: Date } } {
   }
 }
 
-// ─── Tool executor ─────────────────────────────────────────────────────────
+// ─── Tool executor (shared by both providers) ─────────────────────────────
 async function executeTool(tool: ToolParams): Promise<string> {
   const store = await db.store.findUniqueOrThrow({ where: { slug: STORE_SLUG } });
 
@@ -207,7 +230,7 @@ async function executeTool(tool: ToolParams): Promise<string> {
         data: {
           status: p.status as OrderStatus,
           ...(p.trackingNumber ? { trackingNumber: p.trackingNumber } : {}),
-          ...(p.internalNote  ? { internalNote: p.internalNote }   : {}),
+          ...(p.internalNote   ? { internalNote: p.internalNote }    : {}),
           ...(p.status === 'DELIVERED' ? { paymentStatus: PaymentStatus.PAID } : {}),
         },
       });
@@ -304,37 +327,103 @@ async function executeTool(tool: ToolParams): Promise<string> {
   }
 }
 
-// ─── Claude API types ──────────────────────────────────────────────────────
-interface TextBlock      { type: 'text'; text: string }
-interface ToolUseBlock   { type: 'tool_use'; id: string; name: string; input: Record<string, unknown> }
-interface ToolResultBlock { type: 'tool_result'; tool_use_id: string; content: string }
-type ContentBlock = TextBlock | ToolUseBlock;
-type MessageContent = string | ContentBlock[] | ToolResultBlock[];
+// ─── OpenAI types ──────────────────────────────────────────────────────────
+interface OpenAIToolCall {
+  id: string;
+  type: 'function';
+  function: { name: string; arguments: string };
+}
 
-interface ClaudeMessage   { role: 'user' | 'assistant'; content: MessageContent }
-interface ClaudeResponse  { stop_reason: string; content: ContentBlock[] }
+interface OpenAIMessage {
+  role: 'system' | 'user' | 'assistant' | 'tool';
+  content: string | null;
+  tool_calls?: OpenAIToolCall[];
+  tool_call_id?: string;
+}
 
-// ─── POST /api/admin/chat ─────────────────────────────────────────────────
-export async function POST(req: NextRequest) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return Response.json({ error: 'ANTHROPIC_API_KEY not configured' }, { status: 500 });
+interface OpenAIResponse {
+  choices: Array<{
+    message: {
+      role: string;
+      content: string | null;
+      tool_calls?: OpenAIToolCall[];
+    };
+    finish_reason: string;
+  }>;
+}
+
+// ─── OpenAI handler ────────────────────────────────────────────────────────
+async function handleOpenAI(
+  apiKey: string,
+  message: string,
+  history?: OpenAIMessage[],
+): Promise<{ response: string; toolsUsed: string[] }> {
+  const messages: OpenAIMessage[] = [
+    { role: 'system', content: SYSTEM },
+    ...(history ?? []),
+    { role: 'user', content: message },
+  ];
+
+  const toolsUsed: string[] = [];
+
+  const callOpenAI = (msgs: OpenAIMessage[]) =>
+    fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: OPENAI_MODEL,
+        messages: msgs,
+        tools: toOpenAITools(),
+        max_tokens: 1024,
+      }),
+    }).then((r) => r.json() as Promise<OpenAIResponse>);
+
+  let result = await callOpenAI(messages);
+  let choice = result.choices[0];
+
+  while (choice.finish_reason === 'tool_calls' && choice.message.tool_calls) {
+    messages.push({
+      role: 'assistant',
+      content: choice.message.content,
+      tool_calls: choice.message.tool_calls,
+    });
+
+    for (const tc of choice.message.tool_calls) {
+      toolsUsed.push(tc.function.name);
+      const params = JSON.parse(tc.function.arguments) as Record<string, unknown>;
+      const output = await executeTool({ name: tc.function.name, input: params } as ToolParams);
+      messages.push({ role: 'tool', tool_call_id: tc.id, content: output });
+    }
+
+    result = await callOpenAI(messages);
+    choice = result.choices[0];
   }
 
-  const { message, history } = (await req.json()) as {
-    message: string;
-    history?: ClaudeMessage[];
+  return {
+    response: choice.message.content ?? 'No response from AI.',
+    toolsUsed,
   };
+}
 
-  const SYSTEM = `You are an AI assistant for the ElectroMarket online store admin panel.
-You have access to the store database via tools.
-IMPORTANT: Detect the language of the user's message and reply in the SAME language.
-If the user writes in Russian — reply in Russian.
-If the user writes in English — reply in English.
-If the user writes in Ukrainian — reply in Ukrainian.
-Be concise, helpful, and specific. Always show actual numbers, names, and prices from the database.
-Don't explain what you're doing — just do it and present the results clearly.`;
+// ─── Anthropic types ──────────────────────────────────────────────────────
+interface TextBlock       { type: 'text'; text: string }
+interface ToolUseBlock    { type: 'tool_use'; id: string; name: string; input: Record<string, unknown> }
+interface ToolResultBlock { type: 'tool_result'; tool_use_id: string; content: string }
+type ContentBlock   = TextBlock | ToolUseBlock;
+type MessageContent = string | ContentBlock[] | ToolResultBlock[];
 
+interface ClaudeMessage  { role: 'user' | 'assistant'; content: MessageContent }
+interface ClaudeResponse { stop_reason: string; content: ContentBlock[] }
+
+// ─── Anthropic handler ────────────────────────────────────────────────────
+async function handleAnthropic(
+  apiKey: string,
+  message: string,
+  history?: ClaudeMessage[],
+): Promise<{ response: string; toolsUsed: string[] }> {
   const messages: ClaudeMessage[] = [
     ...(history ?? []),
     { role: 'user', content: message },
@@ -360,7 +449,6 @@ Don't explain what you're doing — just do it and present the results clearly.`
   const toolsUsed: string[] = [];
   let result = await callClaude(messages);
 
-  // Tool-use loop — Claude may chain multiple tool calls
   while (result.stop_reason === 'tool_use') {
     const toolBlocks = result.content.filter((b): b is ToolUseBlock => b.type === 'tool_use');
     const toolResults: ToolResultBlock[] = [];
@@ -377,9 +465,40 @@ Don't explain what you're doing — just do it and present the results clearly.`
   }
 
   const textBlock = result.content.find((b): b is TextBlock => b.type === 'text');
-  return Response.json({
+  return {
     response: textBlock?.text ?? 'No response from AI.',
     toolsUsed,
-    updatedHistory: messages,
-  });
+  };
+}
+
+// ─── POST /api/admin/chat ─────────────────────────────────────────────────
+export async function POST(req: NextRequest) {
+  const openaiKey    = process.env.OPENAI_API_KEY;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+
+  if (!openaiKey && !anthropicKey) {
+    return Response.json(
+      { error: 'No AI API key configured (OPENAI_API_KEY or ANTHROPIC_API_KEY)' },
+      { status: 500 },
+    );
+  }
+
+  const { message, history } = (await req.json()) as {
+    message: string;
+    history?: unknown[];
+  };
+
+  try {
+    if (openaiKey) {
+      const { response, toolsUsed } = await handleOpenAI(openaiKey, message, history as OpenAIMessage[]);
+      return Response.json({ response, toolsUsed, provider: 'openai' });
+    }
+
+    // Fallback: Anthropic Claude
+    const { response, toolsUsed } = await handleAnthropic(anthropicKey!, message, history as ClaudeMessage[]);
+    return Response.json({ response, toolsUsed, provider: 'anthropic' });
+  } catch (err) {
+    console.error('AI chat error:', err);
+    return Response.json({ error: 'AI request failed' }, { status: 500 });
+  }
 }
