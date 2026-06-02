@@ -7,6 +7,7 @@ import Header from '@/components/layout/Header/Header';
 import Footer from '@/components/layout/Footer/Footer';
 import { getStoreConfig } from '@/lib/store-config';
 import { themeToCssVars } from '@/lib/theme';
+import { VerticalProvider } from '@/lib/vertical-context';
 import '../../globals.css';
 
 export const metadata: Metadata = {
@@ -44,9 +45,11 @@ export default async function LocaleLayout({
     <html lang={locale} data-vertical={config.vertical.vertical}>
       <body style={cssVars as React.CSSProperties}>
         <NextIntlClientProvider messages={messages}>
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          <VerticalProvider config={config.vertical}>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </VerticalProvider>
         </NextIntlClientProvider>
       </body>
     </html>

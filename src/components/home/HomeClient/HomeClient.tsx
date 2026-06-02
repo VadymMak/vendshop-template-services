@@ -7,6 +7,7 @@ import BrandsSection from '@/components/home/BrandsSection/BrandsSection';
 import TrustStrip from '@/components/home/TrustStrip/TrustStrip';
 import SubscribeBanner from '@/components/home/SubscribeBanner/SubscribeBanner';
 import PopularTags from '@/components/home/PopularTags/PopularTags';
+import { useVerticalConfig } from '@/lib/vertical-context';
 import type { ProductCardProps } from '@/components/catalog/ProductCard/ProductCard';
 import type { ProductOfDayProps } from '@/components/home/ProductOfDay/ProductOfDay';
 import styles from './HomeClient.module.css';
@@ -28,6 +29,9 @@ const noop = (_id: string) => {};
 const noopStr = (_s: string) => {};
 
 export default function HomeClient({ products, productOfDay }: HomeClientProps) {
+  const vConfig = useVerticalConfig();
+  const sections = vConfig.ui.homeSections;
+
   const fullProducts: ProductCardProps[] = products.map((p) => ({
     ...p,
     onAddToCart: noop,
@@ -37,28 +41,51 @@ export default function HomeClient({ products, productOfDay }: HomeClientProps) 
 
   return (
     <>
-      {/* 1 — Categories */}
-      <CategoriesGrid onCategoryClick={noopStr} />
+      {sections.map((section) => {
+        switch (section) {
+          case 'categories':
+            return <CategoriesGrid key={section} onCategoryClick={noopStr} />;
 
-      {/* 2 — Best Sellers (70%) + Product of the Day (30%) */}
-      <section className={styles.bestSellersSection}>
-        <div className={styles.bestSellersWrap}>
-          <BestSellers products={fullProducts} />
-          <ProductOfDay product={{ ...productOfDay, endsAt: ENDS_AT }} onAddToCart={noop} />
-        </div>
-      </section>
+          case 'bestsellers':
+            return (
+              <section key={section} className={styles.bestSellersSection}>
+                <div className={styles.bestSellersWrap}>
+                  <BestSellers products={fullProducts} />
+                  {sections.includes('product-of-day') && (
+                    <ProductOfDay product={{ ...productOfDay, endsAt: ENDS_AT }} onAddToCart={noop} />
+                  )}
+                </div>
+              </section>
+            );
 
-      {/* 3 — Brands */}
-      <BrandsSection onBrandClick={noopStr} />
+          case 'product-of-day':
+            // Rendered inside the bestsellers section above to preserve the side-by-side layout
+            return null;
 
-      {/* 4 — Trust strip */}
-      <TrustStrip />
+          case 'brands':
+            return <BrandsSection key={section} onBrandClick={noopStr} />;
 
-      {/* 5 — Subscribe banner */}
-      <SubscribeBanner />
+          case 'trust-strip':
+            return <TrustStrip key={section} />;
 
-      {/* 6 — Popular tags */}
-      <PopularTags />
+          case 'subscribe':
+            return <SubscribeBanner key={section} />;
+
+          case 'popular-tags':
+            return <PopularTags key={section} />;
+
+          // Future vertical sections — not yet implemented
+          case 'delivery-zones':
+          case 'menu-categories':
+          case 'daily-specials':
+          case 'reservations':
+          case 'hero':
+            return null;
+
+          default:
+            return null;
+        }
+      })}
     </>
   );
 }

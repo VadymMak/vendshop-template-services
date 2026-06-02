@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { useCartStore } from '@/stores/useCartStore';
+import { useVerticalConfig } from '@/lib/vertical-context';
 import styles from './CheckoutForm.module.css';
 
 type DeliveryMethod = 'branch' | 'courier' | 'pickup';
@@ -19,6 +20,11 @@ interface FormData {
   branch: string;
   paymentMethod: PaymentMethod;
   comment: string;
+  // Vertical-specific optional fields
+  companyName?: string;
+  taxId?: string;
+  tableNumber?: string;
+  timeSlot?: string;
 }
 
 const stroke = {
@@ -88,6 +94,7 @@ function SplitIcon() {
 export default function CheckoutForm() {
   const t = useTranslations('checkout');
   const router = useRouter();
+  const vConfig = useVerticalConfig();
 
   const [data, setData] = useState<FormData>({
     firstName: '',
@@ -182,6 +189,35 @@ export default function CheckoutForm() {
         </div>
       </section>
 
+      {/* Company info — B2B only */}
+      {vConfig.checkout.showCompanyFields && (
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Company info</h2>
+          <div className={styles.grid2}>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="companyName">Company name</label>
+              <input
+                id="companyName"
+                type="text"
+                className={styles.input}
+                value={data.companyName ?? ''}
+                onChange={(e) => set('companyName', e.target.value)}
+              />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="taxId">Tax ID</label>
+              <input
+                id="taxId"
+                type="text"
+                className={styles.input}
+                value={data.taxId ?? ''}
+                onChange={(e) => set('taxId', e.target.value)}
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Delivery */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>{t('delivery')}</h2>
@@ -232,6 +268,47 @@ export default function CheckoutForm() {
           </div>
         )}
       </section>
+
+      {/* Time slot — Food Market / Restaurant */}
+      {vConfig.checkout.showTimeSlots && (
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Preferred delivery time</h2>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="timeSlot">Time slot</label>
+            <select
+              id="timeSlot"
+              className={styles.input}
+              value={data.timeSlot ?? ''}
+              onChange={(e) => set('timeSlot', e.target.value)}
+            >
+              <option value="">Select time...</option>
+              <option value="asap">As soon as possible</option>
+              <option value="10-12">10:00 — 12:00</option>
+              <option value="12-14">12:00 — 14:00</option>
+              <option value="14-16">14:00 — 16:00</option>
+              <option value="16-18">16:00 — 18:00</option>
+              <option value="18-20">18:00 — 20:00</option>
+            </select>
+          </div>
+        </section>
+      )}
+
+      {/* Table number — Restaurant dine-in */}
+      {vConfig.checkout.showTableNumber && (
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Table</h2>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="tableNumber">Table number</label>
+            <input
+              id="tableNumber"
+              type="number"
+              className={styles.input}
+              value={data.tableNumber ?? ''}
+              onChange={(e) => set('tableNumber', e.target.value)}
+            />
+          </div>
+        </section>
+      )}
 
       {/* Payment */}
       <section className={styles.section}>

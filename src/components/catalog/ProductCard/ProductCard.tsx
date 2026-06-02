@@ -4,6 +4,7 @@ import { useState, type CSSProperties } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { useCartStore } from '@/stores/useCartStore';
+import { useVerticalConfig } from '@/lib/vertical-context';
 import styles from './ProductCard.module.css';
 
 export interface ProductCardProps {
@@ -124,6 +125,7 @@ export default function ProductCard({
   onFavorite,
 }: ProductCardProps) {
   const t = useTranslations('product');
+  const vConfig = useVerticalConfig();
   const addItem = useCartStore((s) => s.addItem);
   // Subscribe to items (not isInCart) so the in-cart state updates reactively.
   const inCart = useCartStore((s) => s.items.some((i) => i.id === id));
@@ -172,7 +174,9 @@ export default function ProductCard({
       </div>
 
       <div className={styles.info}>
-        <span className={styles.brand}>{brand}</span>
+        {vConfig.product.showBrand && brand && (
+          <span className={styles.brand}>{brand}</span>
+        )}
 
         <h3 className={styles.name}>
           <Link href={href}>{name}</Link>
@@ -186,6 +190,9 @@ export default function ProductCard({
         <div className={styles.price}>
           <span className={styles.priceNew}>
             {formatPrice(price)} {currency}
+            {vConfig.product.priceUnit && (
+              <span className={styles.priceUnit}>{vConfig.product.priceUnit}</span>
+            )}
           </span>
           {oldPrice != null && (
             <span className={styles.priceOld}>
@@ -211,7 +218,7 @@ export default function ProductCard({
           disabled={!inStock}
         >
           <CartPlusIcon />
-          {inCart ? t('inCart') : t('addToCart')}
+          {inCart ? t('inCart') : vConfig.ui.addToCartLabel}
         </button>
 
         <button type="button" className={styles.compare} onClick={() => onCompare(id)}>

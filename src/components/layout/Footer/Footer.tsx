@@ -2,6 +2,7 @@
 
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import { useVerticalConfig } from '@/lib/vertical-context';
 import styles from './Footer.module.css';
 
 export interface FooterProps {
@@ -75,6 +76,7 @@ export default function Footer({
 }: FooterProps) {
   const t = useTranslations('footer');
   const tc = useTranslations('categories');
+  const vConfig = useVerticalConfig();
   const telHref = `tel:${phone.replace(/[^+\d]/g, '')}`;
 
   return (
@@ -175,6 +177,15 @@ export default function Footer({
           </ul>
         </div>
       </div>
+
+      {/* Opening hours — Restaurant / Food Market only */}
+      {vConfig.store.showHours && (
+        <div className={styles.hours}>
+          <h4 className={styles.hoursTitle}>Opening hours</h4>
+          <p className={styles.hoursLine}>Mon–Fri: 9:00–21:00</p>
+          <p className={styles.hoursLine}>Sat–Sun: 10:00–18:00</p>
+        </div>
+      )}
 
       {/* Bottom bar */}
       <div className={styles.bottom}>
