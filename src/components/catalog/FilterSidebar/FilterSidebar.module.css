@@ -83,7 +83,7 @@
 .chkBox {
   width: 20px;
   height: 20px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   border: 2px solid var(--color-border);
   background: #fff;
   display: flex;
@@ -144,7 +144,7 @@
   align-items: center;
   gap: 6px;
   border: 1.5px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 8px 10px;
   transition: border-color 150ms ease;
 }

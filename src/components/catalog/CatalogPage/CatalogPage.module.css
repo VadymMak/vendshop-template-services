@@ -80,7 +80,7 @@
   z-index: 20;
   background: #fff;
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 14px 34px rgba(17, 24, 39, 0.14);
   padding: 6px;
   min-width: 230px;

@@ -72,7 +72,7 @@
 .chkBox {
   width: 20px;
   height: 20px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   border: 2px solid var(--color-border);
   background: #fff;
   display: flex;
@@ -176,7 +176,7 @@
   background: var(--color-primary);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   font-family: inherit;
   font-size: 15px;
   font-weight: 700;

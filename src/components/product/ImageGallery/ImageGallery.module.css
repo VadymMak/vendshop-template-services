@@ -32,7 +32,7 @@
 .thumb {
   background: #f8f9fa;
   border: 2px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   height: 88px;
   padding: 8px;
   cursor: pointer;

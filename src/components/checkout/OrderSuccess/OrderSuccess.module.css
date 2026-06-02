@@ -129,7 +129,7 @@
   justify-content: center;
   height: 50px;
   padding: 0 26px;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   font-family: inherit;
   font-size: 15px;
   font-weight: 700;
