@@ -84,7 +84,7 @@ function TruckIcon() {
 export default function Footer({
   storeName = 'ElectroMarket',
   phone = '+38 (097) 123-45-67',
-  email = 'info@electromarket.ua',
+  email,
   vertical,
 }: FooterProps) {
   const t = useTranslations('footer');
@@ -176,20 +176,24 @@ export default function Footer({
                 {phone}
               </a>
             </li>
-            <li>
-              <a className={styles.contactLink} href={`mailto:${email}`}>
-                <MailIcon />
-                {email}
-              </a>
-            </li>
+            {email && (
+              <li>
+                <a className={styles.contactLink} href={`mailto:${email}`}>
+                  <MailIcon />
+                  {email}
+                </a>
+              </li>
+            )}
             <li className={styles.contactItem}>
               <ClockIcon />
               {t('schedule')}
             </li>
-            <li className={styles.contactItem}>
-              <TruckIcon />
-              {t('deliveryNova')}
-            </li>
+            {!isRestaurant && (
+              <li className={styles.contactItem}>
+                <TruckIcon />
+                {t('deliveryNova')}
+              </li>
+            )}
           </ul>
         </div>
       </div>
