@@ -3,6 +3,7 @@
 import HeroSection from '@/components/home/HeroSection/HeroSection';
 import MenuCategories from '@/components/home/MenuCategories/MenuCategories';
 import DailySpecials from '@/components/home/DailySpecials/DailySpecials';
+import ReservationSection from '@/components/home/ReservationSection/ReservationSection';
 import CategoriesGrid from '@/components/home/CategoriesGrid/CategoriesGrid';
 import BestSellers from '@/components/home/BestSellers/BestSellers';
 import ProductOfDay from '@/components/home/ProductOfDay/ProductOfDay';
@@ -103,9 +104,11 @@ export default function HomeClient({ products, productOfDay, storeName }: HomeCl
           case 'daily-specials':
             return <DailySpecials key={section} />;
 
+          case 'reservations':
+            return <ReservationSection key={section} />;
+
           // Future vertical sections — not yet implemented
           case 'delivery-zones':
-          case 'reservations':
             return null;
 
           default:
