@@ -3,6 +3,7 @@
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { useVerticalConfig } from '@/lib/vertical-context';
+import type { Vertical } from '@prisma/client';
 import styles from './Footer.module.css';
 
 export interface FooterProps {
@@ -12,6 +13,8 @@ export interface FooterProps {
   phone?: string;
   /** Contact e-mail shown in the contacts column. */
   email?: string;
+  /** Controls dark theme + restaurant-specific content. */
+  vertical?: Vertical;
 }
 
 // Catalog column reuses the existing `categories` namespace so the footer links
@@ -23,6 +26,15 @@ const CATALOG_CATEGORIES = [
   'jigsaws',
   'sanders',
   'lasers',
+] as const;
+
+const RESTAURANT_CATEGORIES = [
+  'antipasti',
+  'primi',
+  'secondi',
+  'pizza',
+  'dolci',
+  'bevande',
 ] as const;
 
 const strokeProps = {
@@ -73,14 +85,17 @@ export default function Footer({
   storeName = 'ElectroMarket',
   phone = '+38 (097) 123-45-67',
   email = 'info@electromarket.ua',
+  vertical,
 }: FooterProps) {
   const t = useTranslations('footer');
   const tc = useTranslations('categories');
+  const tMenu = useTranslations('menuCategories');
   const vConfig = useVerticalConfig();
   const telHref = `tel:${phone.replace(/[^+\d]/g, '')}`;
+  const isRestaurant = vertical === 'RESTAURANT';
 
   return (
-    <footer className={styles.footer}>
+    <footer className={`${styles.footer} ${isRestaurant ? styles.footerDark : ''}`}>
       <div className={styles.wrap}>
         {/* Brand / about */}
         <div className={styles.brandCol}>
@@ -92,62 +107,63 @@ export default function Footer({
             </span>
             <span className={styles.logoText}>{storeName}</span>
           </a>
-          <p className={styles.aboutDesc}>{t('aboutDesc')}</p>
+          <p className={styles.aboutDesc}>{isRestaurant ? t('aboutDescRestaurant') : t('aboutDesc')}</p>
           <p className={styles.schedule}>
             <ClockIcon />
             {t('schedule')}
           </p>
         </div>
 
-        {/* Catalog */}
-        <nav className={styles.col} aria-label={t('catalog')}>
-          <h3 className={styles.colTitle}>{t('catalog')}</h3>
+        {/* Catalog / Menu */}
+        <nav className={styles.col} aria-label={isRestaurant ? t('menuTitle') : t('catalog')}>
+          <h3 className={styles.colTitle}>{isRestaurant ? t('menuTitle') : t('catalog')}</h3>
           <ul className={styles.links}>
-            <li>
-              <Link className={styles.link} href="/catalog">
-                {t('allCategories')}
-              </Link>
-            </li>
-            {CATALOG_CATEGORIES.map((cat) => (
-              <li key={cat}>
-                <Link className={styles.link} href={`/catalog?category=${cat}`}>
-                  {tc(cat)}
-                </Link>
-              </li>
-            ))}
+            {isRestaurant ? (
+              RESTAURANT_CATEGORIES.map((cat) => (
+                <li key={cat}>
+                  <Link className={styles.link} href={`/catalog?category=${cat}`}>
+                    {tMenu(cat)}
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <>
+                <li>
+                  <Link className={styles.link} href="/catalog">
+                    {t('allCategories')}
+                  </Link>
+                </li>
+                {CATALOG_CATEGORIES.map((cat) => (
+                  <li key={cat}>
+                    <Link className={styles.link} href={`/catalog?category=${cat}`}>
+                      {tc(cat)}
+                    </Link>
+                  </li>
+                ))}
+              </>
+            )}
           </ul>
         </nav>
 
         {/* Information */}
         <nav className={styles.col} aria-label={t('info')}>
           <h3 className={styles.colTitle}>{t('info')}</h3>
-          <ul className={styles.links}>
-            <li>
-              <a className={styles.link} href="/delivery">
-                {t('delivery')}
-              </a>
-            </li>
-            <li>
-              <a className={styles.link} href="/guarantee">
-                {t('guarantee')}
-              </a>
-            </li>
-            <li>
-              <a className={styles.link} href="/returns">
-                {t('returns')}
-              </a>
-            </li>
-            <li>
-              <a className={styles.link} href="/offer">
-                {t('offer')}
-              </a>
-            </li>
-            <li>
-              <a className={styles.link} href="/privacy">
-                {t('privacy')}
-              </a>
-            </li>
-          </ul>
+          {isRestaurant ? (
+            <ul className={styles.links}>
+              <li><a className={styles.link} href="/#menu">{t('menuLink')}</a></li>
+              <li><a className={styles.link} href="/#reservations">{t('reservationsLink')}</a></li>
+              <li><a className={styles.link} href="/delivery">{t('deliveryLink')}</a></li>
+              <li><a className={styles.link} href="/privacy">{t('privacy')}</a></li>
+            </ul>
+          ) : (
+            <ul className={styles.links}>
+              <li><a className={styles.link} href="/delivery">{t('delivery')}</a></li>
+              <li><a className={styles.link} href="/guarantee">{t('guarantee')}</a></li>
+              <li><a className={styles.link} href="/returns">{t('returns')}</a></li>
+              <li><a className={styles.link} href="/offer">{t('offer')}</a></li>
+              <li><a className={styles.link} href="/privacy">{t('privacy')}</a></li>
+            </ul>
+          )}
         </nav>
 
         {/* Contacts */}

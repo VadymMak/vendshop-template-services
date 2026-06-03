@@ -68,3 +68,23 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Restaurant / dark variant ── */
+.sectionDark {
+  background: #111;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sectionDark .icon {
+  background: rgba(212, 168, 83, 0.1);
+  color: #d4a853;
+}
+
+.sectionDark .title {
+  color: #f5f5f5;
+}
+
+.sectionDark .desc {
+  color: #9ca3af;
+}

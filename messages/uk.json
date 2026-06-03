@@ -79,7 +79,15 @@
     "payment": "Зручна оплата",
     "paymentDesc": "картка, готівка, частинами",
     "returns": "Повернення 14 днів",
-    "returnsDesc": "без питань"
+    "returnsDesc": "без питань",
+    "freshIngredients": "Свіжі продукти",
+    "freshIngredientsDesc": "щоденні поставки",
+    "fastDelivery": "Доставка 30 хв",
+    "fastDeliveryDesc": "гаряча їжа до ваших дверей",
+    "awardWinning": "Нагороди",
+    "awardWinningDesc": "найкращий італійський 2025",
+    "freeBooking": "Безкоштовне бронювання",
+    "freeBookingDesc": "без передоплати"
   },
   "footer": {
     "catalog": "Каталог",
@@ -94,7 +102,12 @@
     "aboutDesc": "Інтернет-магазин професійного електроінструменту та обладнання провідних світових брендів.",
     "schedule": "Пн–Нд: 9:00–20:00",
     "deliveryNova": "Доставка Новою Поштою по всій Україні",
-    "allCategories": "Всі категорії"
+    "allCategories": "Всі категорії",
+    "menuTitle": "Наше меню",
+    "menuLink": "Переглянути меню",
+    "reservationsLink": "Бронювання",
+    "deliveryLink": "Доставка та зони",
+    "aboutDescRestaurant": "Автентична італійська кухня з сімейними рецептами з Неаполя. Свіжа паста, піца з дров'яної печі та найкращі вина."
   },
   "tags": {
     "popularQueries": "Популярні запити:"

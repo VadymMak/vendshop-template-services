@@ -79,7 +79,15 @@
     "payment": "Easy Payment",
     "paymentDesc": "card, cash, installments",
     "returns": "14-Day Returns",
-    "returnsDesc": "no questions asked"
+    "returnsDesc": "no questions asked",
+    "freshIngredients": "Fresh Ingredients",
+    "freshIngredientsDesc": "locally sourced daily",
+    "fastDelivery": "30 Min Delivery",
+    "fastDeliveryDesc": "hot food to your door",
+    "awardWinning": "Award Winning",
+    "awardWinningDesc": "best Italian 2025",
+    "freeBooking": "Free Booking",
+    "freeBookingDesc": "no deposit required"
   },
   "footer": {
     "catalog": "Catalog",
@@ -94,7 +102,12 @@
     "aboutDesc": "Online store of professional power tools and equipment from leading global brands.",
     "schedule": "Mon–Sun: 9:00–20:00",
     "deliveryNova": "Nova Poshta delivery across Ukraine",
-    "allCategories": "All categories"
+    "allCategories": "All categories",
+    "menuTitle": "Our Menu",
+    "menuLink": "View Menu",
+    "reservationsLink": "Reservations",
+    "deliveryLink": "Delivery & Zones",
+    "aboutDescRestaurant": "Authentic Italian cuisine with family recipes from Naples. Fresh pasta, wood-fired pizza, and the finest wines."
   },
   "tags": {
     "popularQueries": "Popular searches:"

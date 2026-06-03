@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
+import { useVerticalConfig } from '@/lib/vertical-context';
 import styles from './TrustStrip.module.css';
 
 // Shared stroke attributes for the line icons (matches the design prototype).
@@ -50,11 +51,54 @@ function ReturnIcon() {
   );
 }
 
-const ITEMS: { id: string; titleKey: string; descKey: string; icon: ReactNode }[] = [
+function LeafIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" {...strokeProps} aria-hidden="true">
+      <path d="M17 8C8 10 5.9 16.17 3.82 21.34M17 8c2-1 4 0 4.5 2s-.5 6-3.5 8c-3 2-7 1.5-10-1" />
+    </svg>
+  );
+}
+
+function ClockIconLg() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" {...strokeProps} aria-hidden="true">
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M12 6.5v6l3.5 2" />
+    </svg>
+  );
+}
+
+function StarIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" {...strokeProps} aria-hidden="true">
+      <path d="M12 2.5l2.9 5.9 6.5.95-4.7 4.6 1.1 6.45L12 17.9l-5.8 2.55 1.1-6.45-4.7-4.6 6.5-.95L12 2.5Z" />
+    </svg>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" {...strokeProps} aria-hidden="true">
+      <rect x="3" y="4" width="18" height="18" rx="2" />
+      <path d="M16 2v4M8 2v4M3 10h18" />
+    </svg>
+  );
+}
+
+type TrustItem = { id: string; titleKey: string; descKey: string; icon: ReactNode };
+
+const ECOMMERCE_ITEMS: TrustItem[] = [
   { id: 'freeDelivery', titleKey: 'freeDelivery', descKey: 'freeDeliveryDesc', icon: <TruckIcon /> },
-  { id: 'guarantee', titleKey: 'guarantee', descKey: 'guaranteeDesc', icon: <ShieldIcon /> },
-  { id: 'payment', titleKey: 'payment', descKey: 'paymentDesc', icon: <CardIcon /> },
-  { id: 'returns', titleKey: 'returns', descKey: 'returnsDesc', icon: <ReturnIcon /> },
+  { id: 'guarantee',    titleKey: 'guarantee',    descKey: 'guaranteeDesc',    icon: <ShieldIcon /> },
+  { id: 'payment',      titleKey: 'payment',      descKey: 'paymentDesc',      icon: <CardIcon /> },
+  { id: 'returns',      titleKey: 'returns',      descKey: 'returnsDesc',      icon: <ReturnIcon /> },
+];
+
+const RESTAURANT_ITEMS: TrustItem[] = [
+  { id: 'freshIngredients', titleKey: 'freshIngredients', descKey: 'freshIngredientsDesc', icon: <LeafIcon /> },
+  { id: 'fastDelivery',     titleKey: 'fastDelivery',     descKey: 'fastDeliveryDesc',     icon: <ClockIconLg /> },
+  { id: 'awardWinning',     titleKey: 'awardWinning',     descKey: 'awardWinningDesc',     icon: <StarIcon /> },
+  { id: 'freeBooking',      titleKey: 'freeBooking',      descKey: 'freeBookingDesc',      icon: <CalendarIcon /> },
 ];
 
 /**
@@ -63,11 +107,15 @@ const ITEMS: { id: string; titleKey: string; descKey: string; icon: ReactNode }[
  */
 export default function TrustStrip() {
   const t = useTranslations('trust');
+  const vConfig = useVerticalConfig();
+
+  const isRestaurant = vConfig.vertical === 'RESTAURANT' || vConfig.vertical === 'FOOD_MARKET';
+  const items = isRestaurant ? RESTAURANT_ITEMS : ECOMMERCE_ITEMS;
 
   return (
-    <section className={styles.section}>
+    <section className={`${styles.section} ${isRestaurant ? styles.sectionDark : ''}`}>
       <div className={styles.wrap}>
-        {ITEMS.map((item) => (
+        {items.map((item) => (
           <div className={styles.item} key={item.id}>
             <span className={styles.icon} aria-hidden="true">
               {item.icon}

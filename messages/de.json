@@ -79,7 +79,15 @@
     "payment": "Bequeme Zahlung",
     "paymentDesc": "Karte, Bar, Raten",
     "returns": "14 Tage Rückgabe",
-    "returnsDesc": "ohne Fragen"
+    "returnsDesc": "ohne Fragen",
+    "freshIngredients": "Frische Zutaten",
+    "freshIngredientsDesc": "täglich regional bezogen",
+    "fastDelivery": "30 Min Lieferung",
+    "fastDeliveryDesc": "heißes Essen an Ihre Tür",
+    "awardWinning": "Preisgekrönt",
+    "awardWinningDesc": "bestes Italienisch 2025",
+    "freeBooking": "Kostenlose Buchung",
+    "freeBookingDesc": "keine Anzahlung"
   },
   "footer": {
     "catalog": "Katalog",
@@ -94,7 +102,12 @@
     "aboutDesc": "Online-Shop für professionelle Elektrowerkzeuge und Ausrüstung führender Weltmarken.",
     "schedule": "Mo–So: 9:00–20:00",
     "deliveryNova": "Nova Poshta Lieferung in der ganzen Ukraine",
-    "allCategories": "Alle Kategorien"
+    "allCategories": "Alle Kategorien",
+    "menuTitle": "Unsere Speisekarte",
+    "menuLink": "Speisekarte ansehen",
+    "reservationsLink": "Reservierung",
+    "deliveryLink": "Lieferung & Zonen",
+    "aboutDescRestaurant": "Authentische italienische Küche mit Familienrezepten aus Neapel. Frische Pasta, Pizza aus dem Holzofen und die besten Weine."
   },
   "tags": {
     "popularQueries": "Beliebte Suchanfragen:"

@@ -59,7 +59,7 @@ export default async function LocaleLayout({
           <VerticalProvider config={config.vertical}>
             <Header storeName={config.name} vertical={config.vertical.vertical} />
             <main>{children}</main>
-            <Footer storeName={config.name} />
+            <Footer storeName={config.name} vertical={config.vertical.vertical} />
           </VerticalProvider>
         </NextIntlClientProvider>
       </body>

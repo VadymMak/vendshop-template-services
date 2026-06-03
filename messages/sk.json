@@ -79,7 +79,15 @@
     "payment": "Pohodlná platba",
     "paymentDesc": "karta, hotovosť, splátky",
     "returns": "Vrátenie 14 dní",
-    "returnsDesc": "bez otázok"
+    "returnsDesc": "bez otázok",
+    "freshIngredients": "Čerstvé ingrediencie",
+    "freshIngredientsDesc": "denne lokálne dodávané",
+    "fastDelivery": "Doručenie 30 min",
+    "fastDeliveryDesc": "teplé jedlo k vašim dverám",
+    "awardWinning": "Ocenenia",
+    "awardWinningDesc": "najlepšie talianske 2025",
+    "freeBooking": "Bezplatná rezervácia",
+    "freeBookingDesc": "bez zálohy"
   },
   "footer": {
     "catalog": "Katalóg",
@@ -94,7 +102,12 @@
     "aboutDesc": "Internetový obchod s profesionálnym elektrickým náradím a vybavením popredných svetových značiek.",
     "schedule": "Po–Ne: 9:00–20:00",
     "deliveryNova": "Doručenie Nova Poshta po celej Ukrajine",
-    "allCategories": "Všetky kategórie"
+    "allCategories": "Všetky kategórie",
+    "menuTitle": "Naše menu",
+    "menuLink": "Zobraziť menu",
+    "reservationsLink": "Rezervácia",
+    "deliveryLink": "Doručenie a zóny",
+    "aboutDescRestaurant": "Autentická talianska kuchyňa s rodinnými receptami z Neapola. Čerstvé cestoviny, pizza z dreva a najlepšie vína."
   },
   "tags": {
     "popularQueries": "Obľúbené vyhľadávania:"

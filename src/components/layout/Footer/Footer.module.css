@@ -216,3 +216,59 @@
   color: #94a3b8;
   margin: 0;
 }
+
+/* ── Restaurant / dark variant ── */
+.footerDark {
+  background: #0a0a0a;
+  color: #cbd5e1;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footerDark .colTitle {
+  color: #d4a853;
+}
+
+.footerDark .link {
+  color: #9ca3af;
+}
+
+.footerDark .link:hover {
+  color: #d4a853;
+}
+
+.footerDark .contactLink {
+  color: #9ca3af;
+}
+
+.footerDark .contactLink:hover {
+  color: #d4a853;
+}
+
+.footerDark .contactItem {
+  color: #9ca3af;
+}
+
+.footerDark .aboutDesc {
+  color: #9ca3af;
+}
+
+.footerDark .schedule {
+  color: #9ca3af;
+}
+
+.footerDark .bottom {
+  background: #050505;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footerDark .rights {
+  color: #6b7280;
+}
+
+.footerDark .bottomLink {
+  color: #6b7280;
+}
+
+.footerDark .bottomLink:hover {
+  color: #d4a853;
+}
