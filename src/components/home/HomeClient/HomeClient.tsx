@@ -4,6 +4,8 @@ import HeroSection from '@/components/home/HeroSection/HeroSection';
 import MenuCategories from '@/components/home/MenuCategories/MenuCategories';
 import DailySpecials from '@/components/home/DailySpecials/DailySpecials';
 import ReservationSection from '@/components/home/ReservationSection/ReservationSection';
+import GallerySection from '@/components/home/GallerySection/GallerySection';
+import AboutSection from '@/components/home/AboutSection/AboutSection';
 import CategoriesGrid from '@/components/home/CategoriesGrid/CategoriesGrid';
 import BestSellers from '@/components/home/BestSellers/BestSellers';
 import ProductOfDay from '@/components/home/ProductOfDay/ProductOfDay';
@@ -140,6 +142,20 @@ export default function HomeClient({ products, productOfDay, storeName, menuCate
             return (
               <section key={section} id="reservations">
                 <ReservationSection />
+              </section>
+            );
+
+          case 'gallery':
+            return (
+              <section key={section} id="gallery">
+                <GallerySection />
+              </section>
+            );
+
+          case 'about':
+            return (
+              <section key={section} id="about">
+                <AboutSection />
               </section>
             );
 
