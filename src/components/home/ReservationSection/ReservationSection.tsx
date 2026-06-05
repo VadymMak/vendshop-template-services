@@ -131,7 +131,7 @@ export default function ReservationSection() {
         <p className={styles.subtitle}>{t('subtitle')}</p>
       </div>
 
-      <div className={styles.container}>
+      <div className={`${styles.container} ${!IS_LOGGED_IN ? styles.containerSingle : ''}`}>
         {/* ── Left: Form ── */}
         <div className={styles.formCard}>
           {submitted && (
@@ -253,8 +253,8 @@ export default function ReservationSection() {
           <p className={styles.formNote}>{t('formNote')}</p>
         </div>
 
-        {/* ── Right: Table map ── */}
-        <div className={styles.mapCard}>
+        {/* ── Right: Table map (only when logged in) ── */}
+        {IS_LOGGED_IN && <div className={styles.mapCard}>
           <p className={styles.mapTitle}>{t('selectTable')}</p>
           <p className={styles.mapSubtitle}>{t('tapToSelect')}</p>
 
@@ -329,7 +329,7 @@ export default function ReservationSection() {
           </div>
 
           <p className={styles.mapNote}>{t('mapNote')}</p>
-        </div>
+        </div>}
       </div>
     </section>
   );
