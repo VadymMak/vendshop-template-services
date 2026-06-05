@@ -58,7 +58,7 @@ async function main() {
   for (const cat of categoryData) {
     const created = await db.category.upsert({
       where: { storeId_slug: { storeId: store.id, slug: cat.slug } },
-      update: {},
+      update: { nameKey: cat.nameKey },
       create: { ...cat, storeId: store.id },
     });
     categories[cat.slug] = created.id;
@@ -286,7 +286,13 @@ async function main() {
     const { categorySlug, ...rest } = p;
     const created = await db.product.upsert({
       where: { storeId_slug: { storeId: store.id, slug: p.slug } },
-      update: { price: rest.price },
+      update: {
+        nameKey: rest.nameKey,
+        price: rest.price,
+        currency: '€',
+        metadata: rest.metadata ?? {},
+        categoryId: categories[categorySlug],
+      },
       create: {
         ...rest,
         image: '/placeholder-product.svg',
