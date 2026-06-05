@@ -115,7 +115,7 @@ export default function CatalogPage({
         id: ap.id,
         slug: ap.slug,
         brand: ap.brand ?? '',
-        name: ts(ap.nameKey),
+        name: ts.has(ap.nameKey) ? ts(ap.nameKey) : ap.nameKey,
         image: ap.image ?? '/placeholder-product.svg',
         price: ap.price,
         oldPrice: ap.oldPrice ?? undefined,

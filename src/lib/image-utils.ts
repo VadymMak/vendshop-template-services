@@ -12,16 +12,17 @@ export interface ImageVariant {
   maxWidth: number;
   maxHeight: number;
   quality: number;
+  fit?: 'inside' | 'cover' | 'contain' | 'fill' | 'outside';
 }
 
 export const GALLERY_VARIANTS: ImageVariant[] = [
-  { suffix: '-full',  maxWidth: 1200, maxHeight: 800, quality: 82 },
-  { suffix: '-thumb', maxWidth: 400,  maxHeight: 300, quality: 75 },
+  { suffix: '-full',  maxWidth: 1200, maxHeight: 800, quality: 82, fit: 'inside' },
+  { suffix: '-thumb', maxWidth: 400,  maxHeight: 300, quality: 75, fit: 'inside' },
 ];
 
 export const PRODUCT_VARIANTS: ImageVariant[] = [
-  { suffix: '-main',  maxWidth: 600, maxHeight: 600, quality: 82 },
-  { suffix: '-thumb', maxWidth: 200, maxHeight: 200, quality: 75 },
+  { suffix: '-main',  maxWidth: 600, maxHeight: 400, quality: 82, fit: 'cover' },
+  { suffix: '-thumb', maxWidth: 300, maxHeight: 200, quality: 75, fit: 'cover' },
 ];
 
 export async function processImage(
@@ -30,7 +31,7 @@ export async function processImage(
 ): Promise<ProcessedImage> {
   const result = await sharp(inputBuffer)
     .resize(variant.maxWidth, variant.maxHeight, {
-      fit: 'inside',
+      fit: variant.fit ?? 'inside',
       withoutEnlargement: true,
     })
     .webp({ quality: variant.quality })

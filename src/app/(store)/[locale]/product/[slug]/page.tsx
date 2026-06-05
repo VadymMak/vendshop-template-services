@@ -37,7 +37,8 @@ export async function generateMetadata({
   if (!product) return {};
   const ts = await getTranslations({ locale, namespace: 'sampleProducts' });
   const tp = await getTranslations({ locale, namespace: 'product' });
-  return { title: `${ts(product.nameKey)} · ${tp('breadcrumbCatalog')}` };
+  const name = ts.has(product.nameKey) ? ts(product.nameKey) : product.nameKey;
+  return { title: `${name} · ${tp('breadcrumbCatalog')}` };
 }
 
 export default async function ProductRoute({
@@ -58,7 +59,7 @@ export default async function ProductRoute({
 
   const ts = await getTranslations('sampleProducts');
   const tp = await getTranslations('product');
-  const name = ts(product.nameKey);
+  const name = ts.has(product.nameKey) ? ts(product.nameKey) : product.nameKey;
 
   const meta = (product.metadata ?? {}) as ProductMetadata;
   const isRestaurant = store.vertical === 'RESTAURANT';
