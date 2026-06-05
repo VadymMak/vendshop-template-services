@@ -339,5 +339,18 @@
     "mainHall": "Hlavná sála",
     "privateRoom": "Súkromná miestnosť",
     "seats": "miest"
+  },
+  "Gallery": {
+    "label": "Galéria",
+    "title": "Naša Atmosféra",
+    "subtitle": "Nahliadnite do Adriano — kde každý detail rozpráva príbeh talianskej vášne"
+  },
+  "About": {
+    "label": "Náš Príbeh",
+    "title": "Chuť Talianska v Každom Súste",
+    "text": "Už viac ako 15 rokov prináša Adriano hosťom autentické chute Talianska. Náš šéfkuchár osobne vyberá tie najlepšie ingrediencie od overených talianskych dodávateľov a vytvára jedlá, ktoré ctia tradíciu a zároveň prijímajú moderné kulinárske umenie.",
+    "yearsLabel": "Rokov Skúseností",
+    "dishesLabel": "Firmových Jedál",
+    "guestsLabel": "Spokojných Hostí"
   }
 }

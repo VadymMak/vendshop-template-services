@@ -339,5 +339,18 @@
     "mainHall": "Hlavní sál",
     "privateRoom": "Soukromý pokoj",
     "seats": "míst"
+  },
+  "Gallery": {
+    "label": "Galerie",
+    "title": "Naše Atmosféra",
+    "subtitle": "Nahlédněte do Adriano — kde každý detail vypráví příběh italské vášně"
+  },
+  "About": {
+    "label": "Náš Příběh",
+    "title": "Chuť Itálie v Každém Soustu",
+    "text": "Již více než 15 let přináší Adriano hostům autentické chutě Itálie. Náš šéfkuchař osobně vybírá ty nejlepší ingredience od ověřených italských dodavatelů a vytváří pokrmy, které ctí tradici a zároveň přijímají moderní kulinářské umění.",
+    "yearsLabel": "Let Zkušeností",
+    "dishesLabel": "Firmových Jídel",
+    "guestsLabel": "Spokojených Hostů"
   }
 }

@@ -339,5 +339,18 @@
     "mainHall": "Main Hall",
     "privateRoom": "Private Room",
     "seats": "seats"
+  },
+  "Gallery": {
+    "label": "Gallery",
+    "title": "Our Atmosphere",
+    "subtitle": "Step inside Adriano — where every detail tells a story of Italian passion"
+  },
+  "About": {
+    "label": "Our Story",
+    "title": "A Taste of Italy in Every Bite",
+    "text": "For over 15 years, Adriano has been bringing the authentic flavors of Italy to our guests. Our chef hand-selects the finest ingredients from trusted Italian suppliers, creating dishes that honor tradition while embracing modern culinary artistry. Every meal at Adriano is a journey through the heart of Italian cuisine.",
+    "yearsLabel": "Years of Excellence",
+    "dishesLabel": "Signature Dishes",
+    "guestsLabel": "Happy Guests"
   }
 }

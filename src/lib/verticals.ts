@@ -75,7 +75,9 @@ export type HomeSection =
   | 'delivery-zones'
   | 'menu-categories'
   | 'daily-specials'
-  | 'reservations';
+  | 'reservations'
+  | 'gallery'
+  | 'about';
 
 // ── Default configs ───────────────────────────────────────────────────────
 
@@ -208,7 +210,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
       paymentMethods: ['card', 'at_table'],
     },
     ui: {
-      homeSections: ['hero', 'menu-categories', 'daily-specials', 'reservations', 'trust-strip'],
+      homeSections: ['hero', 'menu-categories', 'daily-specials', 'reservations', 'gallery', 'about', 'trust-strip'],
       catalogStyle: 'menu',
       categoryDisplay: 'tabs',
       addToCartLabel: 'Order',

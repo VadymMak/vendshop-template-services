@@ -339,5 +339,18 @@
     "mainHall": "Hauptsaal",
     "privateRoom": "Privatzimmer",
     "seats": "Plätze"
+  },
+  "Gallery": {
+    "label": "Galerie",
+    "title": "Unsere Atmosphäre",
+    "subtitle": "Treten Sie ein in Adriano — wo jedes Detail eine Geschichte italienischer Leidenschaft erzählt"
+  },
+  "About": {
+    "label": "Unsere Geschichte",
+    "title": "Ein Geschmack Italiens in Jedem Bissen",
+    "text": "Seit über 15 Jahren bringt Adriano seinen Gästen die authentischen Aromen Italiens. Unser Küchenchef wählt persönlich die besten Zutaten von vertrauenswürdigen italienischen Lieferanten aus und kreiert Gerichte, die die Tradition ehren und gleichzeitig moderne Kochkunst umarmen.",
+    "yearsLabel": "Jahre Erfahrung",
+    "dishesLabel": "Signature-Gerichte",
+    "guestsLabel": "Zufriedene Gäste"
   }
 }
