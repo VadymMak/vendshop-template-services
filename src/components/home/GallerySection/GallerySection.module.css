@@ -101,3 +101,10 @@
 .item:hover .realImage {
   transform: scale(1.05);
 }
+
+.empty {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 1rem;
+  padding: 48px 0;
+}

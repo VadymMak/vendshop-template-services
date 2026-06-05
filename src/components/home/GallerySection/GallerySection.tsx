@@ -37,22 +37,18 @@ export default function GallerySection() {
         <p className={styles.subtitle}>{t('subtitle')}</p>
       </div>
 
-      <div className={styles.grid}>
-        {images.length > 0
-          ? images.map((img) => (
-              <div key={img.id} className={styles.item}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img.url} alt={img.alt} className={styles.realImage} />
-              </div>
-            ))
-          : Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className={styles.item}>
-                <div className={styles.placeholder}>
-                  <PlaceholderIcon />
-                </div>
-              </div>
-            ))}
-      </div>
+      {images.length > 0 ? (
+        <div className={styles.grid}>
+          {images.map((img) => (
+            <div key={img.id} className={styles.item}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={img.url} alt={img.alt} className={styles.realImage} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className={styles.empty}>Галерея скоро буде наповнена</p>
+      )}
     </div>
   );
 }

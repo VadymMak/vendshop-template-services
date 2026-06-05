@@ -16,8 +16,6 @@ export default function GalleryPage() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [urlInput, setUrlInput] = useState('');
-  const [addingUrl, setAddingUrl] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const fetchImages = useCallback(async () => {
@@ -72,30 +70,6 @@ export default function GalleryPage() {
     }
   };
 
-  const addByUrl = async () => {
-    const url = urlInput.trim();
-    if (!url) return;
-    setAddingUrl(true);
-    try {
-      const res = await fetch('/api/admin/gallery', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, alt: '' }),
-      });
-      if (!res.ok) {
-        const err = await res.json() as { error?: string };
-        alert(err.error ?? 'Помилка додавання');
-        return;
-      }
-      setUrlInput('');
-      await fetchImages();
-    } catch {
-      alert('Помилка додавання URL');
-    } finally {
-      setAddingUrl(false);
-    }
-  };
-
   const deleteImage = async (img: GalleryImage) => {
     if (!confirm('Видалити це фото?')) return;
     await fetch(`/api/admin/gallery?id=${img.id}`, { method: 'DELETE' });
@@ -139,26 +113,6 @@ export default function GalleryPage() {
         </div>
       </div>
 
-      {/* URL input */}
-      <div className={styles.urlForm}>
-        <input
-          type="url"
-          className={styles.urlInput}
-          placeholder="https://... (URL зображення)"
-          value={urlInput}
-          onChange={(e) => setUrlInput(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') void addByUrl(); }}
-        />
-        <button
-          type="button"
-          className={styles.addUrlBtn}
-          disabled={addingUrl || !urlInput.trim()}
-          onClick={() => void addByUrl()}
-        >
-          {addingUrl ? '...' : '+ Додати URL'}
-        </button>
-      </div>
-
       <p className={styles.hint}>
         Фото автоматично оптимізуються (WebP, макс. 1200×800). Підтримувані формати: JPEG, PNG, WebP, GIF, AVIF. Макс. 10MB.
       </p>
@@ -167,7 +121,7 @@ export default function GalleryPage() {
         <div className={styles.loading}>Завантаження...</div>
       ) : images.length === 0 ? (
         <div className={styles.empty}>
-          Галерея порожня — завантажте перше фото або додайте URL
+          Галерея порожня — завантажте перше фото
         </div>
       ) : (
         <div className={styles.grid}>
@@ -180,14 +134,14 @@ export default function GalleryPage() {
                   <button
                     type="button"
                     className={styles.overlayBtn}
-                    onClick={() => toggleActive(img)}
+                    onClick={() => void toggleActive(img)}
                   >
                     {img.active ? 'Сховати' : 'Показати'}
                   </button>
                   <button
                     type="button"
                     className={`${styles.overlayBtn} ${styles.overlayDelete}`}
-                    onClick={() => deleteImage(img)}
+                    onClick={() => void deleteImage(img)}
                   >
                     Видалити
                   </button>

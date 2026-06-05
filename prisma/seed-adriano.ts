@@ -490,6 +490,35 @@ async function main() {
   }
   console.log(`   ✔ ${tableData.length} tables`);
 
+  // Gallery images
+  console.log('🖼️  Seeding gallery images...');
+  const galleryImages = [
+    { url: '/placeholder-gallery.svg', alt: 'Інтер\'єр ресторану Adriano', sortOrder: 0 },
+    { url: '/placeholder-gallery.svg', alt: 'Страви від шеф-кухаря',       sortOrder: 1 },
+    { url: '/placeholder-gallery.svg', alt: 'Тераса ресторану',             sortOrder: 2 },
+    { url: '/placeholder-gallery.svg', alt: 'Італійська піца з печі',       sortOrder: 3 },
+    { url: '/placeholder-gallery.svg', alt: 'Винна карта',                  sortOrder: 4 },
+    { url: '/placeholder-gallery.svg', alt: 'Приватні заходи',              sortOrder: 5 },
+  ];
+
+  for (const img of galleryImages) {
+    await db.galleryImage.upsert({
+      where: {
+        id: `gallery-adriano-${img.sortOrder}`,
+      },
+      update: { url: img.url, alt: img.alt },
+      create: {
+        id: `gallery-adriano-${img.sortOrder}`,
+        storeId: store.id,
+        url: img.url,
+        alt: img.alt,
+        sortOrder: img.sortOrder,
+        active: true,
+      },
+    });
+  }
+  console.log(`   ✔ ${galleryImages.length} gallery images`);
+
   console.log('\n🎉 Adriano seed complete!');
   console.log(`   Store slug:   ${store.slug}`);
   console.log(`   Admin email:  ${adminEmail}`);
