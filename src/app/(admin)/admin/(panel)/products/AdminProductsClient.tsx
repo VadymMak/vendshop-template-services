@@ -384,6 +384,7 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
               <th>Назва</th>
               <th>Категорія</th>
               {!isRestaurant && <th>Бренд</th>}
+              {isRestaurant && <th>Порція</th>}
               <th>Ціна</th>
               <th>Наявність</th>
               <th className={styles.colActions}>Дії</th>
@@ -411,10 +412,11 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
                 </td>
                 <td>
                   <span className={styles.name}>{p.name}</span>
-                  <span className={styles.sku}>SKU: {p.sku}</span>
+                  {!isRestaurant && <span className={styles.sku}>SKU: {p.sku}</span>}
                 </td>
                 <td><span className={styles.catBadge}>{catLabel(p.categorySlug)}</span></td>
                 {!isRestaurant && <td className={styles.brand}>{p.brand}</td>}
+                {isRestaurant && <td className={styles.portion}>{p.portion || '—'}</td>}
                 <td>
                   <span className={styles.price}>{fmtPrice(p.price, p.currency)}</span>
                   {p.oldPrice != null && (
@@ -444,7 +446,7 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
             ))}
             {paged.length === 0 && (
               <tr>
-                <td colSpan={isRestaurant ? 7 : 8} className={styles.emptyRow}>
+                <td colSpan={8} className={styles.emptyRow}>
                   {isRestaurant ? 'Страв не знайдено' : 'Товарів не знайдено'}
                 </td>
               </tr>
@@ -481,6 +483,7 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
           initial={modalInitial}
           categories={categories}
           vertical={vertical}
+          currency={products[0]?.currency ?? 'UAH'}
           onSave={(data) => void handleSave(data)}
           onClose={() => setModal(null)}
         />

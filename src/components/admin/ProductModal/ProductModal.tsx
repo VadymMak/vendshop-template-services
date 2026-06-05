@@ -23,6 +23,7 @@ export interface ProductModalProps {
   initial: ProductFormData;
   categories: { id: string; slug: string; label: string }[];
   vertical?: Vertical;
+  currency?: string;
   onSave: (data: ProductFormData) => void;
   onClose: () => void;
 }
@@ -47,7 +48,7 @@ function CloseIcon() {
   );
 }
 
-export default function ProductModal({ mode, initial, categories, vertical, onSave, onClose }: ProductModalProps) {
+export default function ProductModal({ mode, initial, categories, vertical, currency, onSave, onClose }: ProductModalProps) {
   const [data, setData] = useState<ProductFormData>(initial);
   const [dietaryTags, setDietaryTags] = useState<string[]>(initial.dietaryTags ?? []);
   const [allergens, setAllergens] = useState(initial.allergens ?? '');
@@ -90,6 +91,7 @@ export default function ProductModal({ mode, initial, categories, vertical, onSa
     );
 
   const isRestaurant = vertical === 'RESTAURANT';
+  const currencyLabel = currency === 'EUR' ? '€' : 'грн';
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -173,7 +175,7 @@ export default function ProductModal({ mode, initial, categories, vertical, onSa
             </label>
 
             <label className={styles.field}>
-              <span className={styles.label}>Ціна, грн</span>
+              <span className={styles.label}>Ціна, {currencyLabel}</span>
               <input
                 className={styles.input}
                 type="number"
@@ -185,7 +187,7 @@ export default function ProductModal({ mode, initial, categories, vertical, onSa
             </label>
 
             <label className={styles.field}>
-              <span className={styles.label}>Стара ціна, грн</span>
+              <span className={styles.label}>Стара ціна, {currencyLabel}</span>
               <input
                 className={styles.input}
                 type="number"
