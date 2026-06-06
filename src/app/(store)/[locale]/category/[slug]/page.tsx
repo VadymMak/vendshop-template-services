@@ -47,7 +47,7 @@ export default async function CategoryRoute({
     id: p.id,
     slug: p.slug,
     brand: p.brand ?? '',
-    name: t(p.nameKey),
+    name: t.has(p.nameKey) ? t(p.nameKey) : p.nameKey,
     image: p.image ?? '/placeholder-product.svg',
     price: p.price,
     oldPrice: p.oldPrice ?? undefined,

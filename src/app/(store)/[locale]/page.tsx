@@ -34,7 +34,7 @@ export default async function HomePage({
     id: p.id,
     slug: p.slug,
     brand: p.brand ?? '',
-    name: t(p.nameKey),
+    name: t.has(p.nameKey) ? t(p.nameKey) : p.nameKey,
     image: p.image ?? '/placeholder-product.svg',
     price: p.price,
     oldPrice: p.oldPrice ?? undefined,
@@ -57,7 +57,7 @@ export default async function HomePage({
         id: pod.id,
         slug: pod.slug,
         brand: pod.brand ?? '',
-        name: t(pod.nameKey),
+        name: t.has(pod.nameKey) ? t(pod.nameKey) : pod.nameKey,
         image: pod.image ?? '/placeholder-product.svg',
         price: podPromotion.discountPercent
           ? Math.round(pod.price * (1 - podPromotion.discountPercent / 100))
@@ -119,7 +119,7 @@ export default async function HomePage({
   const dailySpecials = dbSpecials.map((p, i) => ({
     id: p.id,
     slug: p.slug,
-    name: t(p.nameKey),
+    name: t.has(p.nameKey) ? t(p.nameKey) : p.nameKey,
     description: ((p.metadata as Record<string, unknown> | null)?.description as Record<string, string> | undefined)?.en ?? '',
     price: p.price,
     currency: p.currency,

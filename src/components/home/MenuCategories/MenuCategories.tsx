@@ -50,7 +50,7 @@ export default function MenuCategories({ categories }: MenuCategoriesProps) {
               {cat.image ? (
                 <Image
                   src={cat.image}
-                  alt={t(cat.nameKey as Parameters<typeof t>[0])}
+                  alt={t.has(cat.nameKey as Parameters<typeof t>[0]) ? t(cat.nameKey as Parameters<typeof t>[0]) : cat.nameKey}
                   fill
                   className={styles.cardImage}
                 />
@@ -60,7 +60,7 @@ export default function MenuCategories({ categories }: MenuCategoriesProps) {
               <div className={styles.cardOverlay} />
               <div className={styles.cardContent}>
                 <p className={styles.cardName}>
-                  {t(cat.nameKey as Parameters<typeof t>[0])}
+                  {t.has(cat.nameKey as Parameters<typeof t>[0]) ? t(cat.nameKey as Parameters<typeof t>[0]) : cat.nameKey}
                 </p>
                 <p className={styles.cardCount}>
                   {cat.productCount} {t('dishes')}
