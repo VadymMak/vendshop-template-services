@@ -1,0 +1,46 @@
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 24px 4rem;
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.clearBtn {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.clearBtn:hover {
+  color: #ef4444;
+}
+
+.empty {
+  padding: 4rem 0;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 1.1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}

@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import type { Vertical } from '@prisma/client';
 import CartBadge from './CartBadge';
+import { useFavoritesStore } from '@/stores/useFavoritesStore';
+import { useCompareStore } from '@/stores/useCompareStore';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -12,9 +14,6 @@ interface HeaderProps {
   storeName?: string;
   /** Contact phone number shown in the announcement strip. */
   phone?: string;
-  /** Counters rendered as badges on the favorites/compare icons. Cart uses the live store. */
-  favoritesCount?: number;
-  compareCount?: number;
   /** Controls which header variant to render. */
   vertical?: Vertical;
 }
@@ -134,12 +133,29 @@ function RestaurantHeader({ storeName, phone, t }: { storeName: string; phone: s
 export default function Header({
   storeName = 'ElectroMarket',
   phone = '+38 (097) 123-45-67',
-  favoritesCount = 0,
-  compareCount = 0,
   vertical,
 }: HeaderProps) {
   const t = useTranslations('Header');
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const favoritesCount = useFavoritesStore((s) => s.items.length);
+  const compareCount = useCompareStore((s) => s.items.length);
+
+  useEffect(() => {
+    useFavoritesStore.persist.rehydrate();
+    useCompareStore.persist.rehydrate();
+  }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (q) {
+      router.push(`/catalog?q=${encodeURIComponent(q)}`);
+      setSearchQuery('');
+      setIsMenuOpen(false);
+    }
+  };
 
   if (vertical === 'RESTAURANT') {
     return <RestaurantHeader storeName={storeName} phone={phone} t={t} />;
@@ -271,10 +287,12 @@ export default function Header({
           </Link>
 
           {/* Search */}
-          <form className={styles.search} role="search">
+          <form className={styles.search} role="search" onSubmit={handleSearch}>
             <input
               className={styles.searchInput}
               type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('searchPlaceholder')}
               aria-label={t('searchPlaceholder')}
             />
@@ -402,10 +420,12 @@ export default function Header({
             <span>{t('catalog')}</span>
           </Link>
 
-          <form className={styles.mobileSearch} role="search">
+          <form className={styles.mobileSearch} role="search" onSubmit={handleSearch}>
             <input
               className={styles.searchInput}
               type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('searchPlaceholder')}
               aria-label={t('searchPlaceholder')}
             />

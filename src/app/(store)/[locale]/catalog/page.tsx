@@ -33,18 +33,30 @@ export default async function CatalogRoute({
 
   // Initial category from URL (for restaurant category tabs)
   const initialCategory = typeof sp.category === 'string' ? sp.category : '';
+  const searchQuery = typeof sp.q === 'string' ? sp.q.trim() : '';
 
   const categoryFilter = initialCategory
     ? { category: { slug: initialCategory } }
     : {};
 
+  const searchFilter = searchQuery
+    ? {
+        OR: [
+          { nameKey: { contains: searchQuery, mode: 'insensitive' as const } },
+          { brand: { contains: searchQuery, mode: 'insensitive' as const } },
+        ],
+      }
+    : {};
+
+  const baseWhere = { storeId: store.id, ...categoryFilter, ...searchFilter };
+
   const [dbProducts, total, categoryFacets, brandGroups] = await Promise.all([
     db.product.findMany({
-      where: { storeId: store.id, ...categoryFilter },
+      where: baseWhere,
       orderBy: { reviewCount: 'desc' },
       take: PAGE_SIZE,
     }),
-    db.product.count({ where: { storeId: store.id, ...categoryFilter } }),
+    db.product.count({ where: baseWhere }),
     db.category.findMany({
       where: { storeId: store.id },
       include: { _count: { select: { products: true } } },
@@ -96,6 +108,7 @@ export default async function CatalogRoute({
       facets={facets}
       vertical={store.vertical}
       initialCategory={initialCategory}
+      initialQuery={searchQuery}
     />
   );
 }

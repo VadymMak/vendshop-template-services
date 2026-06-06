@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, type CSSProperties } from 'react';
+import { type CSSProperties } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { useCartStore } from '@/stores/useCartStore';
+import { useFavoritesStore } from '@/stores/useFavoritesStore';
+import { useCompareStore } from '@/stores/useCompareStore';
 import { useVerticalConfig } from '@/lib/vertical-context';
 import styles from './ProductCard.module.css';
 
@@ -21,9 +23,9 @@ export interface ProductCardProps {
   inStock: boolean;
   isHit?: boolean;
   isNew?: boolean;
-  onAddToCart: (id: string) => void;
-  onCompare: (id: string) => void;
-  onFavorite: (id: string) => void;
+  onAddToCart?: (id: string) => void;
+  onCompare?: (id: string) => void;
+  onFavorite?: (id: string) => void;
 }
 
 // Shared stroke attributes for the line icons (matches the design prototype).
@@ -129,11 +131,14 @@ export default function ProductCard({
   const addItem = useCartStore((s) => s.addItem);
   // Subscribe to items (not isInCart) so the in-cart state updates reactively.
   const inCart = useCartStore((s) => s.items.some((i) => i.id === id));
-  const [isFavorite, setIsFavorite] = useState(false);
+  const isFavorite = useFavoritesStore((s) => s.has(id));
+  const toggleFav = useFavoritesStore((s) => s.toggle);
+  const inCompare = useCompareStore((s) => s.has(id));
+  const toggleComp = useCompareStore((s) => s.toggle);
 
   const handleFavorite = () => {
-    setIsFavorite((value) => !value);
-    onFavorite(id);
+    toggleFav({ id, slug, name, brand, image, price, oldPrice, currency: currency ?? 'грн', rating, reviewCount, inStock });
+    onFavorite?.(id);
   };
 
   // Explicit locale keeps SSR and client numbers identical (no hydration mismatch).
@@ -232,7 +237,7 @@ export default function ProductCard({
           className={`${styles.cart} ${isRestaurant ? styles.cartDark : ''} ${inCart ? styles.cartInCart : ''}`}
           onClick={() => {
             addItem({ id, slug, brand, name, image, price, oldPrice, currency });
-            onAddToCart(id);
+            onAddToCart?.(id);
           }}
           disabled={!inStock}
         >
@@ -241,7 +246,15 @@ export default function ProductCard({
         </button>
 
         {!isRestaurant && (
-          <button type="button" className={styles.compare} onClick={() => onCompare(id)}>
+          <button
+            type="button"
+            className={styles.compare}
+            style={inCompare ? { color: 'var(--color-primary)', fontWeight: 600 } : undefined}
+            onClick={() => {
+              toggleComp({ id, slug, name, brand, image, price, oldPrice, currency: currency ?? 'грн', rating, reviewCount, inStock });
+              onCompare?.(id);
+            }}
+          >
             <ScalesIcon />
             {t('compare')}
           </button>

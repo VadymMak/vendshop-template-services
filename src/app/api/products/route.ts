@@ -12,6 +12,7 @@ export async function GET(request: Request) {
   // Supports comma-separated values: ?category=drills,grinders  ?brand=Makita,Bosch
   const categorySlugs = (searchParams.get('category') ?? '').split(',').filter(Boolean);
   const brandNames = (searchParams.get('brand') ?? '').split(',').filter(Boolean);
+  const q = searchParams.get('q')?.trim() ?? '';
   const inStock = searchParams.get('inStock');
   const minPrice = searchParams.get('minPrice');
   const maxPrice = searchParams.get('maxPrice');
@@ -22,8 +23,14 @@ export async function GET(request: Request) {
   try {
     const store = await db.store.findUniqueOrThrow({ where: { slug: STORE_SLUG } });
 
-    const where = {
+    const where: Prisma.ProductWhereInput = {
       storeId: store.id,
+      ...(q ? {
+        OR: [
+          { nameKey: { contains: q, mode: 'insensitive' } },
+          { brand: { contains: q, mode: 'insensitive' } },
+        ],
+      } : {}),
       ...(inStock === 'true' ? { inStock: true } : {}),
       ...(brandNames.length > 0
         ? { brand: { in: brandNames, mode: 'insensitive' as const } }

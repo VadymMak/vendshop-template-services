@@ -21,6 +21,7 @@ export interface CatalogPageProps {
   facets: CatalogFacets;
   vertical?: string;
   initialCategory?: string;
+  initialQuery?: string;
 }
 
 interface ApiProduct {
@@ -71,6 +72,7 @@ export default function CatalogPage({
   facets,
   vertical,
   initialCategory = '',
+  initialQuery = '',
 }: CatalogPageProps) {
   const t = useTranslations('catalog');
   const ts = useTranslations('sampleProducts');
@@ -104,6 +106,7 @@ export default function CatalogPage({
       if (filters.inStockOnly) params.set('inStock', 'true');
       if (filters.priceFrom > 0) params.set('minPrice', String(filters.priceFrom));
       if (filters.priceTo < 25000) params.set('maxPrice', String(filters.priceTo));
+      if (initialQuery) params.set('q', initialQuery);
 
       const res = await fetch(`/api/products?${params.toString()}`);
       if (!res.ok) throw new Error('Failed to fetch products');
@@ -237,8 +240,7 @@ export default function CatalogPage({
           {/* Product grid */}
           <div className={`${styles.grid} ${isRestaurant ? styles.gridMenu : ''} ${loading ? styles.gridLoading : ''}`}>
             {products.map((product) => (
-              <ProductCard key={product.id} {...product}
-                onAddToCart={noop} onCompare={noop} onFavorite={noop} />
+              <ProductCard key={product.id} {...product} onAddToCart={noop} />
             ))}
             {products.length === 0 && !loading && (
               <p style={{ padding: '2rem', color: '#888' }}>{t('found', { count: 0 })}</p>
