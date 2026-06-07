@@ -4,6 +4,8 @@ import { setRequestLocale, getTranslations } from 'next-intl/server';
 import ProductPage, { type ResolvedProduct } from '@/components/product/ProductPage/ProductPage';
 import type { ProductSpec } from '@/components/product/ProductTabs/ProductTabs';
 import { db } from '@/lib/db';
+import { getBaseUrl } from '@/lib/url';
+import { routing } from '@/i18n/routing';
 
 export const revalidate = 60;
 
@@ -31,6 +33,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
+  const baseUrl = getBaseUrl();
   const store = await db.store.findUnique({ where: { slug: STORE_SLUG } });
   if (!store) return {};
   const product = await db.product.findFirst({ where: { storeId: store.id, slug } });
@@ -38,7 +41,39 @@ export async function generateMetadata({
   const ts = await getTranslations({ locale, namespace: 'sampleProducts' });
   const tp = await getTranslations({ locale, namespace: 'product' });
   const name = ts.has(product.nameKey) ? ts(product.nameKey) : product.nameKey;
-  return { title: `${name} · ${tp('breadcrumbCatalog')}` };
+  const meta = (product.metadata ?? {}) as Record<string, unknown>;
+  const description =
+    (meta.description as Record<string, string> | undefined)?.[locale] ??
+    (meta.description as Record<string, string> | undefined)?.['en'] ??
+    `${name} — ${store.name}`;
+
+  const languages: Record<string, string> = {};
+  for (const loc of routing.locales) {
+    languages[loc] = `${baseUrl}/${loc}/product/${slug}`;
+  }
+
+  return {
+    title: `${name} | ${tp('breadcrumbCatalog')}`,
+    description,
+    alternates: {
+      canonical: `${baseUrl}/${locale}/product/${slug}`,
+      languages,
+    },
+    openGraph: {
+      type: 'website',
+      title: name,
+      description,
+      url: `${baseUrl}/${locale}/product/${slug}`,
+      images: product.image ? [{ url: product.image, width: 600, height: 400, alt: name }] : [],
+      siteName: store.name,
+    },
+    twitter: {
+      card: product.image ? 'summary_large_image' : 'summary',
+      title: name,
+      description,
+      images: product.image ? [product.image] : [],
+    },
+  };
 }
 
 export default async function ProductRoute({

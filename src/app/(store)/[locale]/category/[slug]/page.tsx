@@ -5,6 +5,8 @@ import CategoryPage from '@/components/category/CategoryPage/CategoryPage';
 import type { CatalogProduct } from '@/components/catalog/CatalogPage/CatalogPage';
 import type { CategoryId } from '@/components/home/CategoriesGrid/CategoriesGrid';
 import { db } from '@/lib/db';
+import { getBaseUrl } from '@/lib/url';
+import { routing } from '@/i18n/routing';
 
 export const revalidate = 60;
 
@@ -16,12 +18,34 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
+  const baseUrl = getBaseUrl();
   const store = await db.store.findUnique({ where: { slug: STORE_SLUG } });
   if (!store) return {};
   const category = await db.category.findFirst({ where: { storeId: store.id, slug } });
   if (!category) return {};
-  const tc = await getTranslations({ locale, namespace: 'categories' });
-  return { title: tc(category.nameKey) };
+  const t = await getTranslations({ locale, namespace: 'sampleProducts' });
+  const name = t.has(category.nameKey) ? t(category.nameKey) : category.nameKey;
+
+  const languages: Record<string, string> = {};
+  for (const loc of routing.locales) {
+    languages[loc] = `${baseUrl}/${loc}/category/${slug}`;
+  }
+
+  return {
+    title: name,
+    description: `${name} — ${store.name}`,
+    alternates: {
+      canonical: `${baseUrl}/${locale}/category/${slug}`,
+      languages,
+    },
+    openGraph: {
+      type: 'website',
+      title: name,
+      description: `${name} — ${store.name}`,
+      url: `${baseUrl}/${locale}/category/${slug}`,
+      siteName: store.name,
+    },
+  };
 }
 
 export default async function CategoryRoute({

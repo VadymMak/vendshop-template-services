@@ -5,6 +5,8 @@ import BrandPage from '@/components/brand/BrandPage/BrandPage';
 import type { CatalogProduct } from '@/components/catalog/CatalogPage/CatalogPage';
 import { BRANDS, isBrandSlug } from '@/data/products';
 import { db } from '@/lib/db';
+import { getBaseUrl } from '@/lib/url';
+import { routing } from '@/i18n/routing';
 
 export const revalidate = 60;
 
@@ -13,11 +15,34 @@ const STORE_SLUG = process.env.STORE_SLUG ?? 'electromarket';
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   if (!isBrandSlug(slug)) return {};
-  return { title: BRANDS[slug].name };
+  const brand = BRANDS[slug];
+  const baseUrl = getBaseUrl();
+  const store = await db.store.findUnique({ where: { slug: STORE_SLUG } });
+
+  const languages: Record<string, string> = {};
+  for (const loc of routing.locales) {
+    languages[loc] = `${baseUrl}/${loc}/brand/${slug}`;
+  }
+
+  return {
+    title: brand.name,
+    description: store ? `${brand.name} — ${store.name}` : brand.name,
+    alternates: {
+      canonical: `${baseUrl}/${locale}/brand/${slug}`,
+      languages,
+    },
+    openGraph: {
+      type: 'website',
+      title: brand.name,
+      description: store ? `${brand.name} — ${store.name}` : brand.name,
+      url: `${baseUrl}/${locale}/brand/${slug}`,
+      siteName: store?.name,
+    },
+  };
 }
 
 export default async function BrandRoute({

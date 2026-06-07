@@ -9,6 +9,7 @@ import Footer from '@/components/layout/Footer/Footer';
 import { getStoreConfig } from '@/lib/store-config';
 import { themeToCssVars } from '@/lib/theme';
 import { VerticalProvider } from '@/lib/vertical-context';
+import { getBaseUrl } from '@/lib/url';
 import '../../globals.css';
 
 const playfair = Playfair_Display({
@@ -20,9 +21,42 @@ const playfair = Playfair_Display({
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await getStoreConfig();
+  const baseUrl = getBaseUrl();
+
+  const languages: Record<string, string> = {};
+  for (const locale of routing.locales) {
+    languages[locale] = `${baseUrl}/${locale}`;
+  }
+
   return {
-    title: config.name,
+    title: {
+      default: config.name,
+      template: `%s | ${config.name}`,
+    },
     description: `${config.name} — powered by VendShop`,
+    metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: baseUrl,
+      languages,
+    },
+    openGraph: {
+      type: 'website',
+      siteName: config.name,
+      title: config.name,
+      description: `${config.name} — powered by VendShop`,
+      url: baseUrl,
+      locale: 'uk_UA',
+      alternateLocale: ['en_US', 'de_DE', 'sk_SK', 'cs_CZ', 'ru_RU'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: config.name,
+      description: `${config.name} — powered by VendShop`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 

@@ -1,14 +1,48 @@
+import type { Metadata } from 'next';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import CatalogPage, {
   type CatalogProduct,
   type CatalogFacets,
 } from '@/components/catalog/CatalogPage/CatalogPage';
 import { db } from '@/lib/db';
+import { getBaseUrl } from '@/lib/url';
+import { routing } from '@/i18n/routing';
+import { getStoreConfig } from '@/lib/store-config';
 
 export const revalidate = 60;
 
 const STORE_SLUG = process.env.STORE_SLUG ?? 'electromarket';
 const PAGE_SIZE = 12;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const baseUrl = getBaseUrl();
+  const config = await getStoreConfig();
+
+  const languages: Record<string, string> = {};
+  for (const loc of routing.locales) {
+    languages[loc] = `${baseUrl}/${loc}/catalog`;
+  }
+
+  return {
+    title: 'Catalog',
+    description: `${config.name} — full product catalog`,
+    alternates: {
+      canonical: `${baseUrl}/${locale}/catalog`,
+      languages,
+    },
+    openGraph: {
+      type: 'website',
+      title: `Catalog — ${config.name}`,
+      url: `${baseUrl}/${locale}/catalog`,
+      siteName: config.name,
+    },
+  };
+}
 
 const BRAND_DISPLAY: Record<string, string> = {
   MAKITA: 'Makita', BOSCH: 'Bosch', DEWALT: 'DeWalt',
