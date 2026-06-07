@@ -44,7 +44,7 @@
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 700;
   line-height: 1.1;
-  color: #ffffff;
+  color: var(--color-text);
   margin: 0;
 }
 
@@ -160,7 +160,7 @@
 .promoName {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-text);
   margin: 0;
 }
 
