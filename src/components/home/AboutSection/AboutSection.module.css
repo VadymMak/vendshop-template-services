@@ -29,7 +29,7 @@
 .title {
   font-family: var(--font-heading, 'Playfair Display', serif);
   font-size: 2.25rem;
-  color: #fff;
+  color: var(--color-bg);
   margin: 0 0 20px;
 }
 

@@ -45,7 +45,7 @@
   gap: 9px;
   height: 42px;
   padding: 0 14px;
-  background: #fff;
+  background: var(--color-bg);
   border: 1.5px solid var(--color-border);
   border-radius: 9px;
   font-family: inherit;
@@ -78,7 +78,7 @@
   right: 0;
   top: calc(100% + 6px);
   z-index: 20;
-  background: #fff;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: 0 14px 34px rgba(17, 24, 39, 0.14);
@@ -95,7 +95,7 @@
   cursor: pointer;
   font-family: inherit;
   font-size: 14px;
-  color: #4b5563;
+  color: var(--color-text-muted);
   padding: 9px 12px;
   border-radius: 7px;
   transition:
@@ -104,7 +104,7 @@
 }
 
 .sortOpt:hover {
-  background: #f8fafc;
+  background: var(--color-bg-subtle);
   color: var(--color-text);
 }
 
@@ -141,12 +141,12 @@
   height: 42px;
   padding: 0 8px;
   border: 1.5px solid var(--color-border);
-  background: #fff;
+  background: var(--color-bg);
   border-radius: 9px;
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--color-text-muted);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -166,11 +166,11 @@
 .pagBtnActive {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: #fff;
+  color: var(--color-bg);
 }
 
 .pagBtnActive:hover {
-  color: #fff;
+  color: var(--color-bg);
 }
 
 .pagBtn:disabled {

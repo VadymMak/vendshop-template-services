@@ -20,7 +20,7 @@
 .title {
   font-family: var(--font-heading, 'Playfair Display', serif);
   font-size: 2.25rem;
-  color: #fff;
+  color: var(--color-contrast);
   margin: 0 0 12px;
 }
 
@@ -111,7 +111,7 @@
 }
 
 .card {
-  background: #1c1917;
+  background: var(--color-bg-dark);
   border-radius: 0.75rem;
   overflow: hidden;
   aspect-ratio: 4 / 3;

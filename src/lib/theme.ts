@@ -15,6 +15,11 @@ export interface ThemeConfig {
     overlay:       string;
     overlayAlpha:  string;
     headerBg:      string;
+    bgDark:        string;
+    warning:       string;
+    successLight:  string;
+    errorLight:    string;
+    infoLight:     string;
   };
   layout: {
     heroType:     'full-width' | 'split' | 'minimal';
@@ -41,6 +46,11 @@ export const DEFAULT_THEME: ThemeConfig = {
     overlay:       '#000000',
     overlayAlpha:  'rgba(0,0,0,0.6)',
     headerBg:      'rgba(0,0,0,0.9)',
+    bgDark:        '#1e293b',
+    warning:       '#fbbf24',
+    successLight:  '#dcfce7',
+    errorLight:    '#fef2f2',
+    infoLight:     '#eff6ff',
   },
   layout: {
     heroType:     'full-width',
@@ -95,6 +105,11 @@ export function themeToCssVars(theme: ThemeConfig): Record<string, string> {
     '--color-overlay':        theme.colors.overlay,
     '--color-overlay-alpha':  theme.colors.overlayAlpha,
     '--color-header-bg':      theme.colors.headerBg,
+    '--color-bg-dark':        theme.colors.bgDark,
+    '--color-warning':        theme.colors.warning,
+    '--color-success-light':  theme.colors.successLight,
+    '--color-error-light':    theme.colors.errorLight,
+    '--color-info-light':     theme.colors.infoLight,
     // Border radius
     '--radius-xs': radius.xs,
     '--radius-sm': radius.sm,

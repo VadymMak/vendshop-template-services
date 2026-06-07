@@ -53,7 +53,7 @@
   z-index: 1;
   max-width: 540px;
   margin: 0 auto;
-  background: #fff;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 18px;
   padding: 48px 32px;
@@ -68,7 +68,7 @@
   width: 88px;
   height: 88px;
   border-radius: 999px;
-  background: #dcfce7;
+  background: var(--color-success-light);
   color: var(--color-success);
   margin-bottom: 22px;
   animation: pop 320ms ease;
@@ -155,8 +155,8 @@
 }
 
 .btnSecondary {
-  background: #fff;
-  color: #4b5563;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
   border: 2px solid var(--color-border);
 }
 

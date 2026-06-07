@@ -1,6 +1,6 @@
 /* Best Sellers section wrapper — gray band holding the 70/30 split. */
 .bestSellersSection {
-  background: #f8f9fa;
+  background: var(--color-bg-subtle);
   padding: 32px 24px;
 }
 

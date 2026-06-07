@@ -1,5 +1,5 @@
 .section {
-  background: #ffffff;
+  background: var(--color-bg);
   padding: 48px 24px;
 }
 
@@ -27,7 +27,7 @@
 .card {
   width: 200px;
   height: 100px;
-  background: #fff;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 24px 32px;
@@ -96,7 +96,7 @@
 }
 
 .logoDewalt {
-  color: #111;
+  color: var(--color-text);
   font-weight: 900;
 }
 

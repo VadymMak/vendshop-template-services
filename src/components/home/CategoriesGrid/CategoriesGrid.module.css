@@ -1,5 +1,5 @@
 .section {
-  background: #f8f9fa;
+  background: var(--color-bg-subtle);
   padding: 24px 0;
 }
 
@@ -39,7 +39,7 @@
   gap: 16px;
   width: 100%;
   padding: 20px;
-  background: #ffffff;
+  background: var(--color-bg);
   border: none;
   /* Transparent left border reserved so the hover state never shifts layout. */
   border-left: 3px solid transparent;

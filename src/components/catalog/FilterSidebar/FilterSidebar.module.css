@@ -1,6 +1,6 @@
 /* Filter sidebar — 280px, sticky. */
 .fil {
-  background: #fff;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 14px;
   padding: 20px;
@@ -85,12 +85,12 @@
   height: 20px;
   border-radius: var(--radius-sm);
   border: 2px solid var(--color-border);
-  background: #fff;
+  background: var(--color-bg);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #fff;
+  color: var(--color-bg);
   transition:
     background 120ms ease,
     border-color 120ms ease;
@@ -116,7 +116,7 @@
 
 .chkLabel {
   font-size: 14px;
-  color: #4b5563;
+  color: var(--color-text-muted);
   flex: 1;
 }
 
@@ -216,7 +216,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--color-bg);
   border: 3px solid var(--color-primary);
   cursor: pointer;
   pointer-events: auto;
@@ -227,7 +227,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--color-bg);
   border: 3px solid var(--color-primary);
   cursor: pointer;
   pointer-events: auto;
@@ -249,7 +249,7 @@
 
 .toggleLabel {
   font-size: 14px;
-  color: #4b5563;
+  color: var(--color-text-muted);
   font-weight: 500;
 }
 
@@ -257,7 +257,7 @@
   width: 44px;
   height: 25px;
   border-radius: 999px;
-  background: #cbd5e1;
+  background: var(--color-border);
   position: relative;
   transition: background 150ms ease;
   flex-shrink: 0;
@@ -271,7 +271,7 @@
   width: 19px;
   height: 19px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--color-bg);
   transition: transform 150ms ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
@@ -284,7 +284,7 @@
 }
 
 .toggle input:checked + .toggleTrack {
-  background: #22c55e;
+  background: var(--color-success);
 }
 
 .toggle input:checked + .toggleTrack::after {
@@ -297,7 +297,7 @@
   height: 46px;
   margin-top: 18px;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-bg);
   border: none;
   border-radius: 9px;
   font-family: inherit;

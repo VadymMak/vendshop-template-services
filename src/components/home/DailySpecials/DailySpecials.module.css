@@ -26,7 +26,7 @@
   font-family: var(--font-playfair), Georgia, serif;
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-bg);
   margin: 0;
   line-height: 1.15;
 }
@@ -75,7 +75,7 @@
 .imagePlaceholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #2a2a2a 0%, #333333 100%);
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text) 100%);
 }
 
 /* ── Badge ── */
@@ -95,7 +95,7 @@
 
 .badgeChef    { color: var(--color-primary); }
 .badgePopular { color: var(--color-error); }
-.badgeNew     { color: #a78bfa; }
+.badgeNew     { color: var(--color-primary); }
 
 /* ── Card body ── */
 .cardBody {
@@ -108,7 +108,7 @@
 .dishName {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg);
   margin: 0;
   line-height: 1.3;
 }

@@ -7,8 +7,8 @@
 }
 
 .card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 3rem 2.5rem;
   max-width: 400px;
@@ -18,26 +18,26 @@
 }
 
 .icon {
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }
 
 .title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-text);
   margin: 0 0 0.5rem;
 }
 
 .subtitle {
-  color: #64748b;
+  color: var(--color-text-muted);
   margin: 0 0 1.5rem;
   font-size: 0.95rem;
 }
 
 .note {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
