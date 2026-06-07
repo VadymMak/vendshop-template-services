@@ -82,7 +82,7 @@ function TruckIcon() {
 }
 
 export default function Footer({
-  storeName = 'ElectroMarket',
+  storeName = 'Store',
   phone = '+38 (097) 123-45-67',
   email,
   vertical,

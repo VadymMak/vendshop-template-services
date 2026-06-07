@@ -1,10 +1,19 @@
 import type { Metadata } from 'next';
+import { db } from '@/lib/db';
 import '../../globals.css';
 
-export const metadata: Metadata = {
-  title: 'Admin — ElectroMarket',
-  robots: { index: false, follow: false },
-};
+const STORE_SLUG = process.env.STORE_SLUG ?? 'electromarket';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const store = await db.store.findUnique({
+    where: { slug: STORE_SLUG },
+    select: { name: true },
+  });
+  return {
+    title: `Admin — ${store?.name ?? 'Store'}`,
+    robots: { index: false, follow: false },
+  };
+}
 
 // Root layout for the whole admin section — its own <html>/<body>, no store
 // Header/Footer, no next-intl. The sidebar shell lives in the (panel) group so

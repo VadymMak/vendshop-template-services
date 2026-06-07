@@ -200,6 +200,22 @@ function BoltLogo() {
   );
 }
 
+function RestaurantLogo() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z" />
+    </svg>
+  );
+}
+
+function MarketLogo() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+    </svg>
+  );
+}
+
 function LogoutIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" {...ico} aria-hidden="true">
@@ -212,6 +228,10 @@ function LogoutIcon() {
 export default function AdminSidebar({ storeName, vertical }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+
+  const LogoIcon = vertical === 'RESTAURANT' ? RestaurantLogo
+    : vertical === 'FOOD_MARKET' ? MarketLogo
+    : BoltLogo;
 
   const verticalNav = vertical === 'RESTAURANT' ? NAV_RESTAURANT : NAV_ECOMMERCE;
   const NAV = [...NAV_SHARED_TOP, ...verticalNav, ...NAV_SHARED_BOTTOM];
@@ -226,7 +246,7 @@ export default function AdminSidebar({ storeName, vertical }: AdminSidebarProps)
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
         <span className={styles.logoIcon} aria-hidden="true">
-          <BoltLogo />
+          <LogoIcon />
         </span>
         <span className={styles.logoText}>Admin</span>
       </div>

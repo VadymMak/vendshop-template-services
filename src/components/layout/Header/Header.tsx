@@ -131,7 +131,7 @@ function RestaurantHeader({ storeName, phone, t }: { storeName: string; phone: s
 }
 
 export default function Header({
-  storeName = 'ElectroMarket',
+  storeName = 'Store',
   phone = '+38 (097) 123-45-67',
   vertical,
 }: HeaderProps) {
