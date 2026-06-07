@@ -25,3 +25,9 @@ Thumbs.db
 
 # Local dev uploads
 public/uploads/
+
+# Claude prompts + local files
+prompt-*.md
+PROJECT_REPORT.md
+.env.blob
+.claude/
