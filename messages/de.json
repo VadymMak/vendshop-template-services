@@ -135,7 +135,10 @@
     "reservationsLink": "Reservierung",
     "deliveryLink": "Lieferung & Zonen",
     "aboutDescRestaurant": "Authentische italienische Küche mit Familienrezepten aus Neapel. Frische Pasta, Pizza aus dem Holzofen und die besten Weine.",
-    "termsLink": "AGB"
+    "termsLink": "AGB",
+    "aboutDescFood": "Frische Lebensmittel, lokale Produkte und täglicher Bedarf — geliefert oder zur Abholung bereit.",
+    "freshGuarantee": "Frischegarantie",
+    "openingHours": "Öffnungszeiten"
   },
   "tags": {
     "popularQueries": "Beliebte Suchanfragen:"

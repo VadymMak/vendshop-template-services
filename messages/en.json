@@ -135,7 +135,10 @@
     "reservationsLink": "Reservations",
     "deliveryLink": "Delivery & Zones",
     "aboutDescRestaurant": "Authentic Italian cuisine with family recipes from Naples. Fresh pasta, wood-fired pizza, and the finest wines.",
-    "termsLink": "Terms & Conditions"
+    "termsLink": "Terms & Conditions",
+    "aboutDescFood": "Fresh groceries, local produce, and daily essentials delivered to your door or ready for pickup.",
+    "freshGuarantee": "Freshness Guarantee",
+    "openingHours": "Opening hours"
   },
   "tags": {
     "popularQueries": "Popular searches:"

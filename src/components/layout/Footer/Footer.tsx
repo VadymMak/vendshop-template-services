@@ -38,6 +38,17 @@ const RESTAURANT_CATEGORIES = [
   'bevande',
 ] as const;
 
+const FOOD_MARKET_CATEGORIES = [
+  'fruits',
+  'vegetables',
+  'dairy',
+  'meat',
+  'bakery',
+  'drinks',
+  'frozen',
+  'grocery',
+] as const;
+
 const strokeProps = {
   fill: 'none',
   stroke: 'currentColor',
@@ -105,10 +116,13 @@ export default function Footer({
   const displayPhone = presence.phone ?? phone;
   const displayEmail = presence.email ?? email;
   const telHref = `tel:${displayPhone.replace(/[^+\d]/g, '')}`;
-  const isRestaurant = vertical === 'RESTAURANT';
+  const effectiveVertical = vertical ?? vConfig.vertical;
+  const isRestaurant = effectiveVertical === 'RESTAURANT';
+  const isFoodMarket = effectiveVertical === 'FOOD_MARKET';
+  const isDark = isRestaurant;
 
   return (
-    <footer className={`${styles.footer} ${isRestaurant ? styles.footerDark : ''}`}>
+    <footer className={`${styles.footer} ${isDark ? styles.footerDark : ''}`}>
       <div className={styles.wrap}>
         {/* Brand / about */}
         <div className={styles.brandCol}>
@@ -120,11 +134,15 @@ export default function Footer({
             </span>
             <span className={styles.logoText}>{storeName}</span>
           </a>
-          <p className={styles.aboutDesc}>{isRestaurant ? t('aboutDescRestaurant') : t('aboutDesc')}</p>
-          <p className={styles.schedule}>
-            <ClockIcon />
-            {t('schedule')}
+          <p className={styles.aboutDesc}>
+            {isRestaurant ? t('aboutDescRestaurant') : isFoodMarket ? t('aboutDescFood') : t('aboutDesc')}
           </p>
+          {(presence.openingHours || (!isRestaurant && !isFoodMarket)) && (
+            <p className={styles.schedule}>
+              <ClockIcon />
+              {presence.openingHours ?? t('schedule')}
+            </p>
+          )}
         </div>
 
         {/* Catalog / Menu */}
@@ -139,6 +157,21 @@ export default function Footer({
                   </Link>
                 </li>
               ))
+            ) : isFoodMarket ? (
+              <>
+                <li>
+                  <Link className={styles.link} href="/catalog">
+                    {t('allCategories')}
+                  </Link>
+                </li>
+                {FOOD_MARKET_CATEGORIES.map((cat) => (
+                  <li key={cat}>
+                    <Link className={styles.link} href={`/catalog?category=${cat}`}>
+                      {tc(cat)}
+                    </Link>
+                  </li>
+                ))}
+              </>
             ) : (
               <>
                 <li>
@@ -166,6 +199,13 @@ export default function Footer({
               <li><a className={styles.link} href="/#menu">{t('menuLink')}</a></li>
               <li><a className={styles.link} href="/#reservations">{t('reservationsLink')}</a></li>
               <li><a className={styles.link} href="/delivery">{t('deliveryLink')}</a></li>
+              <li><a className={styles.link} href="/privacy">{t('privacy')}</a></li>
+            </ul>
+          ) : isFoodMarket ? (
+            <ul className={styles.links}>
+              <li><a className={styles.link} href="/delivery">{t('delivery')}</a></li>
+              <li><a className={styles.link} href="/guarantee">{t('freshGuarantee')}</a></li>
+              <li><a className={styles.link} href="/returns">{t('returns')}</a></li>
               <li><a className={styles.link} href="/privacy">{t('privacy')}</a></li>
             </ul>
           ) : (
@@ -207,7 +247,7 @@ export default function Footer({
               <ClockIcon />
               {presence.openingHours ?? t('schedule')}
             </li>
-            {!isRestaurant && !presence.hasPhysicalLocation && (
+            {!isRestaurant && !isFoodMarket && !presence.hasPhysicalLocation && (
               <li className={styles.contactItem}>
                 <TruckIcon />
                 {t('deliveryNova')}
@@ -217,12 +257,10 @@ export default function Footer({
         </div>
       </div>
 
-      {/* Opening hours — ecommerce only (restaurant shows hours in contacts) */}
-      {!isRestaurant && vConfig.store.showHours && (
+      {!isRestaurant && vConfig.store.showHours && presence.openingHours && (
         <div className={styles.hours}>
-          <h4 className={styles.hoursTitle}>Opening hours</h4>
-          <p className={styles.hoursLine}>Mon–Fri: 9:00–21:00</p>
-          <p className={styles.hoursLine}>Sat–Sun: 10:00–18:00</p>
+          <h4 className={styles.hoursTitle}>{t('openingHours')}</h4>
+          <p className={styles.hoursLine}>{presence.openingHours}</p>
         </div>
       )}
 

@@ -135,7 +135,10 @@
     "reservationsLink": "Rezervace",
     "deliveryLink": "Doručení a zóny",
     "aboutDescRestaurant": "Autentická italská kuchyně s rodinnými recepty z Neapole. Čerstvé těstoviny, pizza z dřevěné pece a nejlepší vína.",
-    "termsLink": "Podmínky použití"
+    "termsLink": "Podmínky použití",
+    "aboutDescFood": "Čerstvé potraviny, místní produkty a denní potřeby — doručené nebo připravené k vyzvednutí.",
+    "freshGuarantee": "Garance čerstvosti",
+    "openingHours": "Otevírací hodiny"
   },
   "tags": {
     "popularQueries": "Oblíbené dotazy:"
