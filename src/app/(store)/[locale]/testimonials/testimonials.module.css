@@ -1,0 +1,36 @@
+.page { padding: 3rem 0 4rem; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+.header { text-align: center; margin-bottom: 2.5rem; }
+.title { font-size: 1.75rem; font-weight: 700; color: var(--color-text); margin: 0 0 0.5rem; }
+.subtitle { font-size: 1rem; color: var(--color-text-muted); margin: 0 0 1rem; }
+.badge {
+  display: inline-block; padding: 6px 16px; border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
+  color: var(--color-primary); font-size: 0.85rem; font-weight: 600;
+}
+
+.grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem;
+}
+@media (max-width: 960px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+.empty { text-align: center; color: var(--color-text-muted); padding: 3rem 0; }
+
+.actions { text-align: center; margin-top: 1.5rem; }
+.notice {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-radius: 8px;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-bg));
+  color: var(--color-text-secondary); font-size: 0.85rem; margin: 0 0 1rem;
+}
+.btn {
+  display: inline-block; padding: 10px 24px; border-radius: 8px;
+  background: var(--color-primary); color: var(--color-contrast, #fff);
+  font-size: 0.9rem; font-weight: 600; text-decoration: none;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.btn:hover { opacity: 0.9; }
+.backLink { display: block; margin-top: 1rem; color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem; }
+.backLink:hover { color: var(--color-primary); }

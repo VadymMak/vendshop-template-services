@@ -33,7 +33,7 @@ export default async function HomePage({
   // Fetch bestsellers and product-of-day from DB
   const store = await db.store.findUniqueOrThrow({ where: { slug: STORE_SLUG } });
 
-  const [hitProducts, newProducts, podPromotion, dbZones] = await Promise.all([
+  const [hitProducts, newProducts, podPromotion, dbZones, approvedTestimonials, testimonialsCount] = await Promise.all([
     db.product.findMany({
       where: { storeId: store.id, isHit: true, inStock: true },
       orderBy: { reviewCount: 'desc' },
@@ -53,7 +53,25 @@ export default async function HomePage({
           orderBy: { fee: 'asc' },
         })
       : Promise.resolve([]),
+    db.testimonial.findMany({
+      where: { storeId: store.id, status: 'APPROVED' },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+      include: { customer: { select: { name: true } } },
+    }),
+    db.testimonial.count({
+      where: { storeId: store.id, status: 'APPROVED' },
+    }),
   ]);
+
+  const testimonialItems = approvedTestimonials.map((t) => ({
+    id: t.id,
+    customerName: t.customer.name ?? 'Customer',
+    text: t.text,
+    rating: t.rating,
+    locale: t.locale,
+    createdAt: t.createdAt.toISOString(),
+  }));
 
   const deliveryZones = dbZones.map((z) => ({
     id: z.id,
@@ -223,6 +241,8 @@ export default async function HomePage({
         dailySpecials={dailySpecials.length > 0 ? dailySpecials : undefined}
         deliveryZones={deliveryZones.length > 0 ? deliveryZones : undefined}
         foodCategories={foodCategories.length > 0 ? foodCategories : undefined}
+        testimonials={testimonialItems}
+        testimonialsCount={testimonialsCount}
       />
     </>
   );

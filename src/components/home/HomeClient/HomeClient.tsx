@@ -19,6 +19,8 @@ const TrustStrip = dynamic(() => import('@/components/home/TrustStrip/TrustStrip
 const PromoBanner = dynamic(() => import('@/components/home/PromoBanner'));
 const SubscribeBanner = dynamic(() => import('@/components/home/SubscribeBanner/SubscribeBanner'));
 const PopularTags = dynamic(() => import('@/components/home/PopularTags/PopularTags'));
+const TestimonialsSection = dynamic(() => import('@/components/home/TestimonialsSection/TestimonialsSection'));
+import type { TestimonialItem } from '@/components/home/TestimonialsSection/TestimonialsSection';
 import { useVerticalConfig } from '@/lib/vertical-context';
 import type { ProductCardProps } from '@/components/catalog/ProductCard/ProductCard';
 import type { ProductOfDayProps } from '@/components/home/ProductOfDay/ProductOfDay';
@@ -56,6 +58,8 @@ interface HomeClientProps {
   dailySpecials?: DailySpecialItem[];
   deliveryZones?: ZoneData[];
   foodCategories?: { slug: string; nameKey: string; productCount: number }[];
+  testimonials?: TestimonialItem[];
+  testimonialsCount?: number;
 }
 
 // Module-level constant: countdown target is fixed for the session duration.
@@ -64,7 +68,7 @@ const ENDS_AT = new Date(Date.now() + ((2 * 24 + 14) * 3600 + 37 * 60 + 22) * 10
 const noop = (_id: string) => {};
 const noopStr = (_s: string) => {};
 
-export default function HomeClient({ products, newArrivals, productOfDay, storeName, menuCategories, dailySpecials, deliveryZones, foodCategories }: HomeClientProps) {
+export default function HomeClient({ products, newArrivals, productOfDay, storeName, menuCategories, dailySpecials, deliveryZones, foodCategories, testimonials, testimonialsCount }: HomeClientProps) {
   const vConfig = useVerticalConfig();
   const sections = vConfig.ui.homeSections;
 
@@ -124,6 +128,15 @@ export default function HomeClient({ products, newArrivals, productOfDay, storeN
 
           case 'brands':
             return <BrandsSection key={section} onBrandClick={noopStr} />;
+
+          case 'testimonials':
+            return (
+              <TestimonialsSection
+                key={section}
+                testimonials={testimonials ?? []}
+                totalCount={testimonialsCount ?? 0}
+              />
+            );
 
           case 'trust-strip':
             return (

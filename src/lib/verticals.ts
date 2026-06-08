@@ -80,7 +80,8 @@ export type HomeSection =
   | 'daily-specials'
   | 'reservations'
   | 'gallery'
-  | 'about';
+  | 'about'
+  | 'testimonials';
 
 // ── Default configs ───────────────────────────────────────────────────────
 
@@ -118,7 +119,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
       paymentMethods: ['card', 'cod', 'liqpay', 'wayforpay'],
     },
     ui: {
-      homeSections: ['hero', 'categories', 'bestsellers', 'product-of-day', 'how-it-works', 'brands', 'popular-tags', 'trust-strip', 'subscribe'],
+      homeSections: ['hero', 'categories', 'bestsellers', 'product-of-day', 'how-it-works', 'brands', 'popular-tags', 'testimonials', 'trust-strip', 'subscribe'],
       catalogStyle: 'grid',
       categoryDisplay: 'sidebar',
       addToCartLabel: 'Add to cart',
@@ -165,7 +166,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
       paymentMethods: ['card', 'liqpay'],
     },
     ui: {
-      homeSections: ['hero', 'categories', 'daily-specials', 'bestsellers', 'how-it-works', 'delivery-zones', 'trust-strip'],
+      homeSections: ['hero', 'categories', 'daily-specials', 'bestsellers', 'how-it-works', 'delivery-zones', 'testimonials', 'trust-strip'],
       catalogStyle: 'grid',
       categoryDisplay: 'chips',
       addToCartLabel: 'Add to basket',
@@ -213,7 +214,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
       paymentMethods: ['card', 'at_table'],
     },
     ui: {
-      homeSections: ['hero', 'menu-categories', 'daily-specials', 'reservations', 'gallery', 'about', 'trust-strip'],
+      homeSections: ['hero', 'menu-categories', 'daily-specials', 'reservations', 'gallery', 'about', 'testimonials', 'trust-strip'],
       catalogStyle: 'menu',
       categoryDisplay: 'tabs',
       addToCartLabel: 'Order',
@@ -258,7 +259,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
       paymentMethods: ['card', 'cod'],
     },
     ui: {
-      homeSections: ['promo-banner', 'categories', 'bestsellers', 'product-of-day', 'new-arrivals', 'brands', 'how-it-works', 'trust-strip', 'subscribe'],
+      homeSections: ['promo-banner', 'categories', 'bestsellers', 'product-of-day', 'new-arrivals', 'brands', 'how-it-works', 'testimonials', 'trust-strip', 'subscribe'],
       catalogStyle: 'grid',
       categoryDisplay: 'sidebar',
       addToCartLabel: 'Add to Cart',
@@ -308,7 +309,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
       paymentMethods: ['invoice', 'card', 'wayforpay'],
     },
     ui: {
-      homeSections: ['hero', 'categories', 'bestsellers', 'brands', 'trust-strip'],
+      homeSections: ['hero', 'categories', 'bestsellers', 'brands', 'testimonials', 'trust-strip'],
       catalogStyle: 'list',
       categoryDisplay: 'sidebar',
       addToCartLabel: 'Request quote',
