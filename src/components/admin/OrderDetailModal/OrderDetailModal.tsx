@@ -1,26 +1,25 @@
 'use client';
 
 import { useState } from 'react';
+import type { Vertical } from '@prisma/client';
 import {
   type AdminOrder,
   type OrderStatus,
   STATUS_ORDER,
-  STATUS_LABEL,
-  PAYMENT_LABEL,
-  orderTotal,
-  orderCount,
+  DELIVERY_MODE_LABELS,
+  getStatusLabels,
+  fmtPrice,
 } from '@/components/admin/orderTypes';
 import styles from './OrderDetailModal.module.css';
 
 export interface OrderDetailModalProps {
   order: AdminOrder;
+  vertical?: Vertical;
   onStatusChange: (id: string, status: OrderStatus) => void;
-  onSaveTtn: (id: string, ttn: string) => void;
+  onSaveTracking: (id: string, trackingNumber: string) => void;
   onNotify: (id: string) => void;
   onClose: () => void;
 }
-
-const fmt = (n: number) => new Intl.NumberFormat('uk-UA').format(n);
 
 function CloseIcon() {
   return (
@@ -41,18 +40,30 @@ function BellIcon() {
 
 export default function OrderDetailModal({
   order,
+  vertical,
   onStatusChange,
-  onSaveTtn,
+  onSaveTracking,
   onNotify,
   onClose,
 }: OrderDetailModalProps) {
-  const [ttn, setTtn] = useState(order.ttn ?? '');
+  const [tracking, setTracking] = useState(order.trackingNumber ?? '');
+
+  const isFoodMarket = vertical === 'FOOD_MARKET';
+  const statusLabels = getStatusLabels(vertical ?? 'ECOMMERCE', order.deliveryMode);
+
+  const customerName = order.customer?.name ?? order.guestName ?? 'Гість';
+  const customerPhone = order.customer?.phone ?? order.guestPhone ?? '—';
+  const customerEmail = order.customer?.email ?? order.guestEmail ?? '—';
+  const itemCount = order.items.reduce((s, i) => s + i.quantity, 0);
+  const dateStr = new Date(order.createdAt).toLocaleDateString('uk-UA', {
+    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+  });
 
   return (
     <div className={styles.overlay} onClick={onClose} role="presentation">
       <div className={styles.dialog} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
         <div className={styles.head}>
-          <h2 className={styles.title}>Замовлення #{order.id}</h2>
+          <h2 className={styles.title}>Замовлення {order.orderNumber}</h2>
           <button type="button" className={styles.close} onClick={onClose} aria-label="Закрити">
             <CloseIcon />
           </button>
@@ -63,51 +74,70 @@ export default function OrderDetailModal({
           <div className={styles.info}>
             <div className={styles.infoBlock}>
               <span className={styles.infoLabel}>Дата</span>
-              <span className={styles.infoValue}>{order.date}</span>
+              <span className={styles.infoValue}>{dateStr}</span>
             </div>
+
             <div className={styles.infoBlock}>
               <span className={styles.infoLabel}>Покупець</span>
-              <span className={styles.infoValue}>{order.customer}</span>
-              <span className={styles.infoSub}>{order.phone}</span>
-              <span className={styles.infoSub}>{order.email}</span>
+              <span className={styles.infoValue}>{customerName}</span>
+              <span className={styles.infoSub}>{customerPhone}</span>
+              <span className={styles.infoSub}>{customerEmail}</span>
             </div>
+
             <div className={styles.infoBlock}>
               <span className={styles.infoLabel}>Доставка</span>
-              <span className={styles.infoValue}>{order.delivery.method}</span>
-              <span className={styles.infoSub}>
-                {order.delivery.city}, {order.delivery.address}
-              </span>
+              <span className={styles.infoValue}>{DELIVERY_MODE_LABELS[order.deliveryMode]}</span>
+              {isFoodMarket && order.deliveryZone ? (
+                <>
+                  <span className={styles.infoSub}>{order.deliveryZone.name}</span>
+                  <span className={styles.infoSub}>
+                    ~{order.deliveryZone.estimatedMin ?? 30}–{order.deliveryZone.estimatedMax ?? 60} хв
+                  </span>
+                  {order.deliveryFee > 0 && (
+                    <span className={styles.infoSub}>
+                      Вартість: {fmtPrice(order.deliveryFee, order.currency)}
+                    </span>
+                  )}
+                </>
+              ) : (
+                order.deliveryAddress && (
+                  <span className={styles.infoSub}>
+                    {[order.deliveryAddress.city, order.deliveryAddress.address].filter(Boolean).join(', ')}
+                  </span>
+                )
+              )}
             </div>
+
             <div className={styles.infoBlock}>
               <span className={styles.infoLabel}>Оплата</span>
-              <span className={styles.infoValue}>{PAYMENT_LABEL[order.payment]}</span>
-              <span className={styles.infoSub}>{STATUS_LABEL[order.status]}</span>
+              <span className={styles.infoValue}>{order.paymentMethod ?? '—'}</span>
+              <span className={styles.infoSub}>{statusLabels[order.status]}</span>
             </div>
           </div>
 
           {/* Items */}
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Товари ({orderCount(order)})</h3>
+            <h3 className={styles.sectionTitle}>Товари ({itemCount})</h3>
             <ul className={styles.items}>
-              {order.items.map((it, i) => (
-                <li key={i} className={styles.item}>
+              {order.items.map((it) => (
+                <li key={it.id} className={styles.item}>
                   <span className={styles.itemImg}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={it.image} alt="" />
+                    <img src={it.product?.image ?? '/placeholder-product.svg'} alt="" />
                   </span>
-                  <span className={styles.itemName}>{it.name}</span>
-                  <span className={styles.itemQty}>× {it.qty}</span>
-                  <span className={styles.itemPrice}>{fmt(it.price * it.qty)} грн</span>
+                  <span className={styles.itemName}>{it.product?.nameKey ?? 'Продукт'}</span>
+                  <span className={styles.itemQty}>× {it.quantity}</span>
+                  <span className={styles.itemPrice}>{fmtPrice(it.price * it.quantity, order.currency)}</span>
                 </li>
               ))}
             </ul>
             <div className={styles.total}>
               <span>До сплати</span>
-              <span className={styles.totalVal}>{fmt(orderTotal(order))} грн</span>
+              <span className={styles.totalVal}>{fmtPrice(order.total, order.currency)}</span>
             </div>
           </div>
 
-          {/* Status + TTN */}
+          {/* Status + Tracking */}
           <div className={styles.controls}>
             <label className={styles.control}>
               <span className={styles.controlLabel}>Статус</span>
@@ -118,28 +148,37 @@ export default function OrderDetailModal({
               >
                 {STATUS_ORDER.map((s) => (
                   <option key={s} value={s}>
-                    {STATUS_LABEL[s]}
+                    {statusLabels[s]}
                   </option>
                 ))}
               </select>
             </label>
 
-            <div className={styles.control}>
-              <span className={styles.controlLabel}>Номер ТТН</span>
-              <div className={styles.ttnRow}>
-                <input
-                  className={styles.input}
-                  type="text"
-                  value={ttn}
-                  placeholder="Введіть номер ТТН"
-                  onChange={(e) => setTtn(e.target.value)}
-                />
-                <button type="button" className={styles.ttnSave} onClick={() => onSaveTtn(order.id, ttn)}>
-                  Зберегти ТТН
-                </button>
+            {!isFoodMarket && (
+              <div className={styles.control}>
+                <span className={styles.controlLabel}>Номер ТТН</span>
+                <div className={styles.ttnRow}>
+                  <input
+                    className={styles.input}
+                    type="text"
+                    value={tracking}
+                    placeholder="Введіть номер ТТН"
+                    onChange={(e) => setTracking(e.target.value)}
+                  />
+                  <button type="button" className={styles.ttnSave} onClick={() => onSaveTracking(order.id, tracking)}>
+                    Зберегти ТТН
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
+
+          {order.customerNote && (
+            <div className={styles.noteBlock}>
+              <span className={styles.noteLabel}>Коментар покупця</span>
+              <span className={styles.noteText}>{order.customerNote}</span>
+            </div>
+          )}
 
           <button type="button" className={styles.notify} onClick={() => onNotify(order.id)}>
             <BellIcon />

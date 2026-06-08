@@ -1,47 +1,105 @@
-export type OrderStatus = 'new' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-export type PaymentMethod = 'wayforpay' | 'liqpay' | 'cod';
+// Prisma-aligned order types for admin UI
 
-export interface OrderItem {
-  name: string;
-  qty: number;
-  price: number;
-  image: string;
-}
+export type OrderStatus =
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'PROCESSING'
+  | 'SHIPPED'
+  | 'DELIVERED'
+  | 'CANCELLED'
+  | 'REFUNDED';
+
+export type DeliveryMode = 'SHIPPING' | 'COURIER' | 'PICKUP' | 'DINE_IN';
+
+export type PaymentStatus = 'UNPAID' | 'PAID' | 'REFUNDED' | 'FAILED';
 
 export interface AdminOrder {
   id: string;
-  customer: string;
-  phone: string;
-  email: string;
-  payment: PaymentMethod;
+  orderNumber: string;
   status: OrderStatus;
-  date: string;
-  delivery: { method: string; city: string; address: string };
-  items: OrderItem[];
-  ttn?: string;
+  deliveryMode: DeliveryMode;
+  deliveryAddress: { city?: string; address?: string; zip?: string } | null;
+  deliveryZone: { name: string; fee: number; estimatedMin?: number; estimatedMax?: number } | null;
+  deliveryFee: number;
+  trackingNumber: string | null;
+  paymentMethod: string | null;
+  paymentStatus: PaymentStatus;
+  subtotal: number;
+  total: number;
+  currency: string;
+  customerNote: string | null;
+  internalNote: string | null;
+  createdAt: string;
+  customer: { name: string; email: string; phone: string | null } | null;
+  guestName: string | null;
+  guestEmail: string | null;
+  guestPhone: string | null;
+  items: {
+    id: string;
+    quantity: number;
+    price: number;
+    product: { nameKey: string; image: string | null } | null;
+  }[];
 }
 
 export const STATUS_ORDER: OrderStatus[] = [
-  'new',
-  'processing',
-  'shipped',
-  'delivered',
-  'cancelled',
+  'PENDING',
+  'CONFIRMED',
+  'PROCESSING',
+  'SHIPPED',
+  'DELIVERED',
+  'CANCELLED',
+  'REFUNDED',
 ];
 
-export const STATUS_LABEL: Record<OrderStatus, string> = {
-  new: 'Новий',
-  processing: 'Обробляється',
-  shipped: 'Відправлено',
-  delivered: 'Доставлено',
-  cancelled: 'Скасовано',
+export const STATUS_LABELS_ECOMMERCE: Record<OrderStatus, string> = {
+  PENDING: 'Новий',
+  CONFIRMED: 'Підтверджений',
+  PROCESSING: 'В обробці',
+  SHIPPED: 'Відправлений',
+  DELIVERED: 'Доставлений',
+  CANCELLED: 'Скасований',
+  REFUNDED: 'Повернення',
 };
 
-export const PAYMENT_LABEL: Record<PaymentMethod, string> = {
-  wayforpay: 'WayForPay',
-  liqpay: 'LiqPay',
-  cod: 'Наложений',
+export const STATUS_LABELS_FOOD: Record<OrderStatus, string> = {
+  PENDING: 'Новий',
+  CONFIRMED: 'Підтверджений',
+  PROCESSING: 'Збирається',
+  SHIPPED: 'Доставляється',
+  DELIVERED: 'Доставлений',
+  CANCELLED: 'Скасований',
+  REFUNDED: 'Повернення',
 };
 
-export const orderTotal = (o: AdminOrder) => o.items.reduce((s, i) => s + i.price * i.qty, 0);
-export const orderCount = (o: AdminOrder) => o.items.reduce((s, i) => s + i.qty, 0);
+export const STATUS_LABELS_FOOD_PICKUP: Record<OrderStatus, string> = {
+  PENDING: 'Новий',
+  CONFIRMED: 'Підтверджений',
+  PROCESSING: 'Пакується',
+  SHIPPED: 'Готовий до видачі',
+  DELIVERED: 'Видано',
+  CANCELLED: 'Скасований',
+  REFUNDED: 'Повернення',
+};
+
+export const DELIVERY_MODE_LABELS: Record<DeliveryMode, string> = {
+  SHIPPING: 'Пошта',
+  COURIER: 'Кур\'єр',
+  PICKUP: 'Самовивіз',
+  DINE_IN: 'В закладі',
+};
+
+export function getStatusLabels(
+  vertical: string,
+  deliveryMode?: DeliveryMode | null,
+): Record<OrderStatus, string> {
+  if (vertical === 'FOOD_MARKET') {
+    return deliveryMode === 'PICKUP' ? STATUS_LABELS_FOOD_PICKUP : STATUS_LABELS_FOOD;
+  }
+  return STATUS_LABELS_ECOMMERCE;
+}
+
+export const fmtPrice = (amount: number, currency: string) => {
+  if (currency === 'EUR') return `€${amount.toFixed(2)}`;
+  return `${new Intl.NumberFormat('uk-UA').format(amount)} грн`;
+};
