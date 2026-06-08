@@ -1,32 +1,33 @@
 'use client';
 
+import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import styles from './PopularTags.module.css';
 
-export interface PopularTagsProps {
-  /** Optional click handler — receives the tag label. */
-  onTagClick?: (tag: string) => void;
+// Brand tags → search by brand name via ?q=
+// Category tags → filter by category slug via ?category=
+interface TagItem {
+  label: string;
+  href: string;
 }
 
-// Search terms / brand names — kept as data (not translated), the same way
-// brand wordmarks are handled in BrandsSection. Only the label is localized.
-const TAGS = [
-  'Makita',
-  'Bosch',
-  'DeWalt',
-  'Milwaukee',
-  'Metabo',
-  'Перфоратор',
-  'Дриль',
-  'Болгарка',
-  'Шурупокрут',
-  'Акумуляторний інструмент',
-  'Лазерний рівень',
-  'Професійний інструмент',
-  'Інструмент для дому',
+const TAGS: TagItem[] = [
+  { label: 'Makita', href: '/catalog?q=Makita' },
+  { label: 'Bosch', href: '/catalog?q=Bosch' },
+  { label: 'DeWalt', href: '/catalog?q=DeWalt' },
+  { label: 'Milwaukee', href: '/catalog?q=Milwaukee' },
+  { label: 'Metabo', href: '/catalog?q=Metabo' },
+  { label: 'Перфоратор', href: '/catalog?category=perforators' },
+  { label: 'Дриль', href: '/catalog?category=drills' },
+  { label: 'Болгарка', href: '/catalog?category=grinders' },
+  { label: 'Шурупокрут', href: '/catalog?category=drills' },
+  { label: 'Акумуляторний інструмент', href: '/catalog?q=акумуляторний' },
+  { label: 'Лазерний рівень', href: '/catalog?category=lasers' },
+  { label: 'Професійний інструмент', href: '/catalog?q=професійний' },
+  { label: 'Інструмент для дому', href: '/catalog?q=дому' },
 ];
 
-export default function PopularTags({ onTagClick }: PopularTagsProps) {
+export default function PopularTags() {
   const t = useTranslations('tags');
 
   return (
@@ -35,17 +36,13 @@ export default function PopularTags({ onTagClick }: PopularTagsProps) {
         <span className={styles.label}>{t('popularQueries')}</span>
         <div className={styles.row}>
           {TAGS.map((tag) => (
-            <a
-              key={tag}
-              href="#"
+            <Link
+              key={tag.label}
+              href={tag.href}
               className={styles.tag}
-              onClick={(e) => {
-                e.preventDefault();
-                onTagClick?.(tag);
-              }}
             >
-              {tag}
-            </a>
+              {tag.label}
+            </Link>
           ))}
         </div>
       </div>
