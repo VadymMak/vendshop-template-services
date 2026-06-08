@@ -497,3 +497,47 @@
   font-size: 13px;
   color: #4b5563;
 }
+
+/* ── Food Market badges ───────────────────────────── */
+.foodBadges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.weightText {
+  font-size: 12px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.tempBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tempFrozen {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.tempRefrigerated {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.organicBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  background: #dcfce7;
+  color: #16a34a;
+}

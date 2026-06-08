@@ -46,6 +46,11 @@ export default async function AdminProductsPage() {
       allergens: (meta.allergens as string) ?? '',
       portion: (meta.portion as string) ?? '',
       prepTime: (meta.prepTime as number) ?? 0,
+      weight: (meta.weight as string) ?? '',
+      expiryDays: (meta.expiryDays as number) ?? 0,
+      temperature: (meta.temperature as string) ?? 'room',
+      calories: (meta.calories as number) ?? 0,
+      organic: (meta.organic as boolean) ?? false,
     };
   });
 

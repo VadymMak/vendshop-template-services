@@ -23,10 +23,17 @@ interface AdminProduct {
   image: string;
   isHit: boolean;
   isNew: boolean;
+  // RESTAURANT fields
   dietaryTags: string[];
   allergens: string;
   portion: string;
   prepTime: number;
+  // FOOD_MARKET fields
+  weight: string;
+  expiryDays: number;
+  temperature: string;
+  calories: number;
+  organic: boolean;
 }
 
 interface CategoryItem {
@@ -68,6 +75,11 @@ function mapApiProduct(p: Record<string, unknown>, cats: CategoryItem[] = []): A
     allergens: (meta.allergens as string) ?? '',
     portion: (meta.portion as string) ?? '',
     prepTime: (meta.prepTime as number) ?? 0,
+    weight: (meta.weight as string) ?? '',
+    expiryDays: (meta.expiryDays as number) ?? 0,
+    temperature: (meta.temperature as string) ?? 'room',
+    calories: (meta.calories as number) ?? 0,
+    organic: (meta.organic as boolean) ?? false,
   };
 }
 
@@ -104,6 +116,7 @@ type ModalState = { mode: 'add' } | { mode: 'edit'; id: string } | null;
 
 export default function AdminProductsClient({ vertical, initialProducts, categories }: Props) {
   const isRestaurant = vertical === 'RESTAURANT';
+  const isFood = vertical === 'FOOD_MARKET';
 
   const [products, setProducts] = useState<AdminProduct[]>(initialProducts);
   const [loading, setLoading] = useState(false);
@@ -128,7 +141,7 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
     return products.filter((p) => {
       if (q && !p.name.toLowerCase().includes(q) && !p.sku.toLowerCase().includes(q)) return false;
       if (categoryFilter !== 'all' && p.categorySlug !== categoryFilter) return false;
-      if (!isRestaurant && brandFilter !== 'all' && p.brand !== brandFilter) return false;
+      if (!isRestaurant && !isFood && brandFilter !== 'all' && p.brand !== brandFilter) return false;
       if (inStockOnly && !p.inStock) return false;
       return true;
     });
@@ -171,7 +184,15 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
                   portion: data.portion ?? '',
                   prepTime: data.prepTime ?? 0,
                 }
-              : undefined,
+              : isFood
+                ? {
+                    weight: data.weight || undefined,
+                    expiryDays: data.expiryDays ? Number(data.expiryDays) : undefined,
+                    temperature: data.temperature ?? 'room',
+                    calories: data.calories ? Number(data.calories) : undefined,
+                    organic: data.organic ?? false,
+                  }
+                : undefined,
           }),
         });
         if (res.ok) {
@@ -205,7 +226,15 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
                   portion: data.portion ?? '',
                   prepTime: data.prepTime ?? 0,
                 }
-              : { sku: `NEW-${Date.now().toString().slice(-5)}` },
+              : isFood
+                ? {
+                    weight: data.weight || undefined,
+                    expiryDays: data.expiryDays ? Number(data.expiryDays) : undefined,
+                    temperature: data.temperature ?? 'room',
+                    calories: data.calories ? Number(data.calories) : undefined,
+                    organic: data.organic ?? false,
+                  }
+                : { sku: `NEW-${Date.now().toString().slice(-5)}` },
           }),
         });
         if (res.ok) {
@@ -285,6 +314,11 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
         allergens: editing.allergens,
         portion: editing.portion,
         prepTime: editing.prepTime,
+        weight: editing.weight,
+        expiryDays: editing.expiryDays ? String(editing.expiryDays) : '',
+        temperature: editing.temperature || 'room',
+        calories: editing.calories ? String(editing.calories) : '',
+        organic: editing.organic,
       }
     : {
         name: '',
@@ -293,10 +327,15 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
         price: '',
         oldPrice: '',
         inStock: true,
+        weight: '',
+        expiryDays: '',
+        temperature: 'room',
+        calories: '',
+        organic: false,
       };
 
-  const pageTitle = isRestaurant ? 'Страви / Меню' : 'Товари';
-  const addLabel = isRestaurant ? 'Додати страву' : 'Додати товар';
+  const pageTitle = isRestaurant ? 'Страви / Меню' : isFood ? 'Продукти' : 'Товари';
+  const addLabel = isRestaurant ? 'Додати страву' : isFood ? 'Додати продукт' : 'Додати товар';
 
   return (
     <div className={styles.page}>
@@ -336,7 +375,7 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
           ))}
         </select>
 
-        {!isRestaurant && (
+        {!isRestaurant && !isFood && (
           <select
             className={styles.select}
             value={brandFilter}
@@ -383,8 +422,9 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
               <th>Фото</th>
               <th>Назва</th>
               <th>Категорія</th>
-              {!isRestaurant && <th>Бренд</th>}
+              {!isRestaurant && !isFood && <th>Бренд</th>}
               {isRestaurant && <th>Порція</th>}
+              {isFood && <th>Вага / Зберігання</th>}
               <th>Ціна</th>
               <th>Наявність</th>
               <th className={styles.colActions}>Дії</th>
@@ -415,8 +455,22 @@ export default function AdminProductsClient({ vertical, initialProducts, categor
                   {!isRestaurant && <span className={styles.sku}>SKU: {p.sku}</span>}
                 </td>
                 <td><span className={styles.catBadge}>{catLabel(p.categorySlug)}</span></td>
-                {!isRestaurant && <td className={styles.brand}>{p.brand}</td>}
+                {!isRestaurant && !isFood && <td className={styles.brand}>{p.brand}</td>}
                 {isRestaurant && <td className={styles.portion}>{p.portion || '—'}</td>}
+                {isFood && (
+                  <td>
+                    <div className={styles.foodBadges}>
+                      {p.weight && <span className={styles.weightText}>{p.weight}</span>}
+                      {p.temperature === 'frozen' && (
+                        <span className={`${styles.tempBadge} ${styles.tempFrozen}`}>❄️ frozen</span>
+                      )}
+                      {p.temperature === 'refrigerated' && (
+                        <span className={`${styles.tempBadge} ${styles.tempRefrigerated}`}>🧊 fridge</span>
+                      )}
+                      {p.organic && <span className={styles.organicBadge}>🌿</span>}
+                    </div>
+                  </td>
+                )}
                 <td>
                   <span className={styles.price}>{fmtPrice(p.price, p.currency)}</span>
                   {p.oldPrice != null && (

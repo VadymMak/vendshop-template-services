@@ -12,10 +12,17 @@ export interface ProductFormData {
   oldPrice: string;
   inStock: boolean;
   image?: string;
+  // RESTAURANT fields
   dietaryTags?: string[];
   allergens?: string;
   portion?: string;
   prepTime?: number;
+  // FOOD_MARKET fields
+  weight?: string;
+  expiryDays?: string;
+  temperature?: string;
+  calories?: string;
+  organic?: boolean;
 }
 
 export interface ProductModalProps {
@@ -91,7 +98,14 @@ export default function ProductModal({ mode, initial, categories, vertical, curr
     );
 
   const isRestaurant = vertical === 'RESTAURANT';
+  const isFood = vertical === 'FOOD_MARKET';
   const currencyLabel = currency === 'EUR' ? '€' : 'грн';
+
+  const [foodWeight, setFoodWeight] = useState(initial.weight ?? '');
+  const [foodExpiryDays, setFoodExpiryDays] = useState(initial.expiryDays ?? '');
+  const [foodTemperature, setFoodTemperature] = useState(initial.temperature ?? 'room');
+  const [foodCalories, setFoodCalories] = useState(initial.calories ?? '');
+  const [foodOrganic, setFoodOrganic] = useState(initial.organic ?? false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,6 +113,13 @@ export default function ProductModal({ mode, initial, categories, vertical, curr
       ...data,
       image: imageUrl || undefined,
       ...(isRestaurant && { dietaryTags, allergens, portion, prepTime }),
+      ...(isFood && {
+        weight: foodWeight,
+        expiryDays: foodExpiryDays,
+        temperature: foodTemperature,
+        calories: foodCalories,
+        organic: foodOrganic,
+      }),
     });
   };
 
@@ -108,8 +129,8 @@ export default function ProductModal({ mode, initial, categories, vertical, curr
         <div className={styles.head}>
           <h2 className={styles.title}>
             {mode === 'add'
-              ? (isRestaurant ? 'Додати страву' : 'Додати товар')
-              : (isRestaurant ? 'Редагувати страву' : 'Редагувати товар')}
+              ? (isRestaurant ? 'Додати страву' : isFood ? 'Додати продукт' : 'Додати товар')
+              : (isRestaurant ? 'Редагувати страву' : isFood ? 'Редагувати продукт' : 'Редагувати товар')}
           </h2>
           <button type="button" className={styles.close} onClick={onClose} aria-label="Закрити">
             <CloseIcon />
@@ -209,6 +230,66 @@ export default function ProductModal({ mode, initial, categories, vertical, curr
               <span className={styles.track} />
             </span>
           </label>
+
+          {isFood && (
+            <div className={styles.foodFields}>
+              <h3 className={styles.fieldGroupTitle}>Характеристики продукту</h3>
+              <div className={styles.grid2}>
+                <label className={styles.field}>
+                  <span className={styles.label}>Вага / Об&#39;єм</span>
+                  <input
+                    className={styles.input}
+                    type="text"
+                    value={foodWeight}
+                    onChange={(e) => setFoodWeight(e.target.value)}
+                    placeholder="1 kg"
+                  />
+                </label>
+                <label className={styles.field}>
+                  <span className={styles.label}>Термін зберігання (днів)</span>
+                  <input
+                    className={styles.input}
+                    type="number"
+                    min={0}
+                    value={foodExpiryDays}
+                    onChange={(e) => setFoodExpiryDays(e.target.value)}
+                    placeholder="14"
+                  />
+                </label>
+                <label className={styles.field}>
+                  <span className={styles.label}>Зберігання</span>
+                  <select
+                    className={styles.input}
+                    value={foodTemperature}
+                    onChange={(e) => setFoodTemperature(e.target.value)}
+                  >
+                    <option value="room">Кімнатне</option>
+                    <option value="refrigerated">Холодильник</option>
+                    <option value="frozen">Заморожене</option>
+                  </select>
+                </label>
+                <label className={styles.field}>
+                  <span className={styles.label}>Калорії / 100г</span>
+                  <input
+                    className={styles.input}
+                    type="number"
+                    min={0}
+                    value={foodCalories}
+                    onChange={(e) => setFoodCalories(e.target.value)}
+                    placeholder="52"
+                  />
+                </label>
+              </div>
+              <label className={styles.organicToggle}>
+                <input
+                  type="checkbox"
+                  checked={foodOrganic}
+                  onChange={(e) => setFoodOrganic(e.target.checked)}
+                />
+                <span>🌿 Органічний продукт</span>
+              </label>
+            </div>
+          )}
 
           {isRestaurant && (
             <div className={styles.restaurantFields}>
