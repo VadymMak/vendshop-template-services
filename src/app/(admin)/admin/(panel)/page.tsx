@@ -14,35 +14,97 @@ export default async function AdminDashboardPage() {
   }
 
   const isRestaurant = store.vertical === 'RESTAURANT';
+  const isServices = store.vertical === 'SERVICES';
 
-  // Shared queries
-  const [productCount, orderCount] = await Promise.all([
-    db.product.count({ where: { storeId: store.id } }),
-    db.order.count({ where: { storeId: store.id } }),
-  ]);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
-  // Restaurant-specific queries
-  let todayReservations = 0;
-  let pendingReservations = 0;
-  let weekReservations = 0;
-  let recentReservations: Array<{
-    id: string;
-    name: string;
-    guests: number;
-    time: string;
-    status: string;
-    date: Date;
-  }> = [];
+  // ── SERVICES vertical (barbershop / salon) ────────────────────────
+  if (isServices) {
+    const [
+      todayAppointments,
+      clientCount,
+      reviewCount,
+      masterCount,
+      upcomingAppointments,
+      topMasters,
+    ] = await Promise.all([
+      db.appointment.count({
+        where: { storeId: store.id, date: { gte: today, lt: tomorrow } },
+      }),
+      db.customer.count({ where: { storeId: store.id } }),
+      db.testimonial.count({ where: { storeId: store.id, status: 'APPROVED' } }),
+      db.serviceMaster.count({ where: { storeId: store.id, active: true } }),
+      db.appointment.findMany({
+        where: { storeId: store.id, date: { gte: today } },
+        orderBy: [{ date: 'asc' }, { timeSlot: 'asc' }],
+        take: 5,
+        select: {
+          id: true,
+          date: true,
+          timeSlot: true,
+          status: true,
+          guestName: true,
+          service: { select: { nameKey: true } },
+          customer: { select: { name: true } },
+        },
+      }),
+      db.serviceMaster.findMany({
+        where: { storeId: store.id, active: true },
+        take: 5,
+        select: {
+          id: true,
+          name: true,
+          photo: true,
+          _count: { select: { appointments: true } },
+        },
+        orderBy: { appointments: { _count: 'desc' } },
+      }),
+    ]);
 
+    return (
+      <DashboardClient
+        vertical={store.vertical}
+        stats={{
+          products: 0,
+          orders: 0,
+          reviews: 0,
+          todayReservations: 0,
+          pendingReservations: 0,
+          weekReservations: 0,
+          todayAppointments,
+          clientCount,
+          reviewCount,
+          masterCount,
+        }}
+        recentOrders={[]}
+        recentReservations={[]}
+        topProducts={[]}
+        upcomingAppointments={upcomingAppointments.map((a) => ({
+          id: a.id,
+          date: a.date.toLocaleDateString('sk-SK'),
+          timeSlot: a.timeSlot,
+          status: a.status,
+          clientName: a.customer?.name ?? a.guestName ?? '—',
+          service: a.service.nameKey,
+        }))}
+        topMasters={topMasters.map((m) => ({
+          name: m.name,
+          photo: m.photo ?? '/placeholder-product.svg',
+          appointmentCount: m._count.appointments,
+        }))}
+      />
+    );
+  }
+
+  // ── RESTAURANT vertical ───────────────────────────────────────────
   if (isRestaurant) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
     const weekAgo = new Date(today);
     weekAgo.setDate(weekAgo.getDate() - 7);
 
-    [todayReservations, pendingReservations, weekReservations, recentReservations] =
+    const [todayReservations, pendingReservations, weekReservations, recentReservations, productCount] =
       await Promise.all([
         db.reservation.count({
           where: { storeId: store.id, date: { gte: today, lt: tomorrow } },
@@ -59,33 +121,62 @@ export default async function AdminDashboardPage() {
           take: 5,
           select: { id: true, name: true, guests: true, time: true, status: true, date: true },
         }),
+        db.product.count({ where: { storeId: store.id } }),
       ]);
+
+    return (
+      <DashboardClient
+        vertical={store.vertical}
+        stats={{
+          products: productCount,
+          orders: 0,
+          reviews: 0,
+          todayReservations,
+          pendingReservations,
+          weekReservations,
+          todayAppointments: 0,
+          clientCount: 0,
+          reviewCount: 0,
+          masterCount: 0,
+        }}
+        recentOrders={[]}
+        recentReservations={recentReservations.map((r) => ({
+          id: r.id,
+          name: r.name,
+          guests: r.guests,
+          time: r.time,
+          status: r.status,
+          date: r.date.toLocaleDateString('sk-SK'),
+        }))}
+        topProducts={[]}
+      />
+    );
   }
 
-  // Ecommerce-specific: recent orders
-  const recentOrders = !isRestaurant
-    ? await db.order.findMany({
-        where: { storeId: store.id },
-        orderBy: { createdAt: 'desc' },
-        take: 5,
-        select: {
-          id: true,
-          guestName: true,
-          guestEmail: true,
-          total: true,
-          status: true,
-          createdAt: true,
-        },
-      })
-    : [];
-
-  // Top products (both verticals)
-  const topProducts = await db.product.findMany({
-    where: { storeId: store.id, isHit: true },
-    orderBy: { reviewCount: 'desc' },
-    take: 5,
-    select: { id: true, nameKey: true, image: true, reviewCount: true },
-  });
+  // ── Ecommerce vertical (default) ─────────────────────────────────
+  const [productCount, orderCount, recentOrders, topProducts] = await Promise.all([
+    db.product.count({ where: { storeId: store.id } }),
+    db.order.count({ where: { storeId: store.id } }),
+    db.order.findMany({
+      where: { storeId: store.id },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      select: {
+        id: true,
+        guestName: true,
+        guestEmail: true,
+        total: true,
+        status: true,
+        createdAt: true,
+      },
+    }),
+    db.product.findMany({
+      where: { storeId: store.id, isHit: true },
+      orderBy: { reviewCount: 'desc' },
+      take: 5,
+      select: { id: true, nameKey: true, image: true, reviewCount: true },
+    }),
+  ]);
 
   return (
     <DashboardClient
@@ -94,25 +185,22 @@ export default async function AdminDashboardPage() {
         products: productCount,
         orders: orderCount,
         reviews: 0,
-        todayReservations,
-        pendingReservations,
-        weekReservations,
+        todayReservations: 0,
+        pendingReservations: 0,
+        weekReservations: 0,
+        todayAppointments: 0,
+        clientCount: 0,
+        reviewCount: 0,
+        masterCount: 0,
       }}
       recentOrders={recentOrders.map((o) => ({
         id: o.id,
         customer: o.guestName ?? o.guestEmail ?? '—',
         total: `${o.total} €`,
         status: o.status,
-        date: o.createdAt.toLocaleDateString('uk-UA'),
+        date: o.createdAt.toLocaleDateString('sk-SK'),
       }))}
-      recentReservations={recentReservations.map((r) => ({
-        id: r.id,
-        name: r.name,
-        guests: r.guests,
-        time: r.time,
-        status: r.status,
-        date: r.date.toLocaleDateString('uk-UA'),
-      }))}
+      recentReservations={[]}
       topProducts={topProducts.map((p) => ({
         name: p.nameKey,
         sales: p.reviewCount,
