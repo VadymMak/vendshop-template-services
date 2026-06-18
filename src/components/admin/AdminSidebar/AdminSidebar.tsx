@@ -158,6 +158,15 @@ const NAV_RESTAURANT: NavItem[] = [
 // ── SERVICES (Barbershop / Beauty / etc.) ────────────────────────────────
 const NAV_SERVICES: NavItem[] = [
   {
+    href: '/admin/services',
+    label: 'Služby',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
+        <path d="M6 3v12M6 3C6 3 3 6 3 9s3 3 3 3M6 15c0 0-3-1-3-3M18 3v12M18 3c0 0 3 3 3 6s-3 3-3 3M18 15c0 0 3-1 3-3M6 19h12M9 19v2M15 19v2" />
+      </svg>
+    ),
+  },
+  {
     href: '/admin/appointments',
     label: 'Записи',
     icon: (

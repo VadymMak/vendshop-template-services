@@ -1569,3 +1569,69 @@ body {
 .btn-sm { padding: 0.35rem 0.8rem; font-size: 0.8rem; border-radius: 6px; cursor: pointer; border: 1px solid transparent; font-family: inherit; }
 .btn-danger { background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.3); }
 .btn-danger:hover { background: rgba(239,68,68,0.3); }
+
+/* ── Admin Services page ── */
+.admin-services__form {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--color-gold, #C96030);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.admin-services__form h3 {
+  color: var(--color-text-primary, #fff);
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+.admin-services__form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 1rem;
+}
+.admin-services__list { display: flex; flex-direction: column; gap: 0.75rem; }
+.admin-services__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--color-border, rgba(201,96,48,0.15));
+  border-radius: 8px;
+  flex-wrap: wrap;
+  transition: opacity 0.2s;
+}
+.admin-services__item--inactive { opacity: 0.4; }
+.admin-services__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.admin-services__name { color: var(--color-text-primary, #fff); font-weight: 600; }
+.admin-services__desc { color: var(--color-text-muted, #666); font-size: 0.8rem; }
+.admin-services__meta { color: var(--color-text-muted, #666); font-size: 0.75rem; }
+.admin-services__price {
+  color: var(--color-gold, #C96030);
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 52px;
+  text-align: right;
+  white-space: nowrap;
+}
+.admin-services__actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* ── Service card skeleton ── */
+.service-card--skeleton { min-height: 120px; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.5; }
+}
+.service-card__duration { color: var(--color-text-muted, #666); font-size: 0.8rem; margin-top: 0.4rem; }
+
+@media (max-width: 900px) { .admin-services__form-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) {
+  .admin-services__form-grid { grid-template-columns: 1fr; }
+  .admin-services__item { flex-direction: column; align-items: flex-start; }
+  .admin-services__price { text-align: left; }
+}

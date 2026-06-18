@@ -1,8 +1,32 @@
-import { SERVICES } from '@/lib/constants';
+'use client';
+
+import { useState, useEffect } from 'react';
 import GoldDivider from '@/components/ui/GoldDivider';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 
+interface Service {
+  id: string;
+  nameKey: string;
+  description?: string | null;
+  price: number;
+  duration?: number | null;
+  category?: string | null;
+}
+
 export default function ServicesSection() {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/services')
+      .then((r) => r.json())
+      .then((d: { services?: Service[] }) => {
+        setServices(d.services ?? []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
   return (
     <section id="sluzby" className="services">
       <ScrollReveal direction="up" className="section-header">
@@ -15,17 +39,26 @@ export default function ServicesSection() {
       </ScrollReveal>
 
       <div className="services__grid">
-        {SERVICES.map((service, i) => (
-          <ScrollReveal key={service.name} direction="scale" delay={i * 100}>
-            <div className="service-card">
-              <div>
-                <h3 className="service-card__name">{service.name}</h3>
-                <p className="service-card__desc">{service.description}</p>
-              </div>
-              <div className="service-card__price">{service.price}</div>
-            </div>
-          </ScrollReveal>
-        ))}
+        {loading
+          ? [0, 1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="service-card service-card--skeleton" />
+            ))
+          : services.map((s, i) => (
+              <ScrollReveal key={s.id} direction="scale" delay={i * 100}>
+                <div className="service-card">
+                  <div>
+                    <h3 className="service-card__name">{s.nameKey}</h3>
+                    {s.description && (
+                      <p className="service-card__desc">{s.description}</p>
+                    )}
+                    {s.duration && (
+                      <p className="service-card__duration">⏱ {s.duration} min</p>
+                    )}
+                  </div>
+                  <div className="service-card__price">€{s.price}</div>
+                </div>
+              </ScrollReveal>
+            ))}
       </div>
     </section>
   );
