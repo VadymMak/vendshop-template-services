@@ -1,24 +1,23 @@
 import Link from 'next/link';
+import { db } from '@/lib/db';
 import TestimonialCard from '@/components/ui/TestimonialCard';
 
-interface Testimonial {
-  id: string;
-  name: string;
-  content: string;
-  rating: number;
-  createdAt: string;
-  adminReply?: string | null;
-  adminReplyAt?: string | null;
-}
-
-async function getTestimonials(): Promise<Testimonial[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+async function getTestimonials() {
   try {
-    const res = await fetch(`${baseUrl}/api/testimonials`, { cache: 'no-store' });
-    if (!res.ok) return [];
-    const data = await res.json() as { items: Testimonial[] };
-    return data.items ?? [];
-  } catch {
+    const storeSlug = process.env.STORE_SLUG ?? 'kate-barber';
+    const store = await db.store.findUnique({ where: { slug: storeSlug } });
+    if (!store) {
+      console.error('[testimonials] Store not found:', storeSlug);
+      return [];
+    }
+    const results = await db.testimonial.findMany({
+      where: { storeId: store.id, status: 'APPROVED' },
+      orderBy: { createdAt: 'desc' },
+      include: { customer: { select: { name: true } } },
+    });
+    return results;
+  } catch (err) {
+    console.error('[testimonials] DB error:', err);
     return [];
   }
 }
@@ -37,7 +36,11 @@ export default async function TestimonialsPage() {
         <div className="testimonials-list__header">
           <div>
             <span className="section-eyebrow">Recenzie</span>
-            <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', color: 'var(--color-text-primary)', marginTop: '0.5rem' }}>
+            <h1 style={{
+              fontSize: 'clamp(2rem, 4vw, 3rem)',
+              color: 'var(--color-text-primary)',
+              marginTop: '0.5rem',
+            }}>
               Čo hovoria naši klienti
             </h1>
             {avgRating && (
@@ -54,7 +57,15 @@ export default async function TestimonialsPage() {
         {testimonials.length > 0 ? (
           <div className="testimonials-page__grid">
             {testimonials.map((t) => (
-              <TestimonialCard key={t.id} {...t} />
+              <TestimonialCard
+                key={t.id}
+                name={t.customer.name ?? 'Klient'}
+                content={t.text}
+                rating={t.rating}
+                createdAt={t.createdAt.toISOString()}
+                adminReply={t.adminReply}
+                adminReplyAt={t.adminReplyAt?.toISOString() ?? null}
+              />
             ))}
           </div>
         ) : (
