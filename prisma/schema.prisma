@@ -136,7 +136,6 @@ model Customer {
   orders       Order[]
   testimonials Testimonial[]
   appointments Appointment[]
-  enrollments  Enrollment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -514,57 +513,33 @@ enum AppointmentStatus {
 // ============ DIGITAL PRODUCT ============
 
 model DigitalProduct {
-  id          String      @id @default(cuid())
-  storeId     String
-  store       Store       @relation(fields: [storeId], references: [id])
-  slug        String
-  title       String
-  description String?
-  price       Float
-  image       String?
-  type        DigitalType @default(COURSE)
-  active      Boolean     @default(true)
-
-  lessons     Lesson[]
-  enrollments Enrollment[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  storeId      String
+  store        Store    @relation(fields: [storeId], references: [id])
+  slug         String
+  price        Float
+  currency     String   @default("EUR")
+  fileUrl      String?
+  previewUrl   String?
+  active       Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  translations DigitalProductTranslation[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@unique([storeId, slug])
   @@index([storeId, active])
 }
 
-enum DigitalType {
-  COURSE
-  EBOOK
-  VIDEO
-  TEMPLATE
-}
+model DigitalProductTranslation {
+  id          String         @id @default(cuid())
+  productId   String
+  product     DigitalProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  locale      String
+  name        String
+  description String?
 
-model Lesson {
-  id               String         @id @default(cuid())
-  digitalProductId String
-  digitalProduct   DigitalProduct @relation(fields: [digitalProductId], references: [id])
-  title            String
-  videoUrl         String?
-  content          String?
-  duration         Int?
-  sortOrder        Int            @default(0)
-  free             Boolean        @default(false)
-}
-
-model Enrollment {
-  id               String         @id @default(cuid())
-  digitalProductId String
-  digitalProduct   DigitalProduct @relation(fields: [digitalProductId], references: [id])
-  customerId       String
-  customer         Customer       @relation(fields: [customerId], references: [id])
-  paymentId        String?
-  paidAt           DateTime       @default(now())
-
-  @@unique([digitalProductId, customerId])
-  @@index([customerId])
+  @@unique([productId, locale])
 }
 
 // ============ ADMIN AUTH ============

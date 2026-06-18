@@ -1,5 +1,16 @@
 import type { ServiceItem, MasterItem, StaticTestimonial, GalleryImageItem, HoursRow, Service, TeamMember, Testimonial, GalleryImage, Stat, WhyUsItem } from './types';
 
+export const SUPPORTED_LOCALES = ['sk', 'en', 'uk', 'cs', 'de'] as const;
+export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
+
+export const LOCALE_LABELS: Record<SupportedLocale, string> = {
+  sk: 'Slovenčina',
+  en: 'English',
+  uk: 'Українська',
+  cs: 'Čeština',
+  de: 'Deutsch',
+};
+
 export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '421900123456';
 export const WHATSAPP_LINKS = {
   booking:  `https://wa.me/${WHATSAPP_NUMBER}?text=Dobr%C3%BD%20de%C5%88%2C%20chcel%20by%20som%20si%20rezervova%C5%A5%20term%C3%ADn.`,

@@ -5,6 +5,7 @@ import type { Vertical } from '@prisma/client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import StoreLogo from '@/components/ui/StoreLogo';
+import { FLAGS } from '@/lib/feature-flags';
 import styles from './AdminSidebar.module.css';
 
 const ADMIN_NAV_LABELS = {
@@ -172,10 +173,11 @@ const NAV_RESTAURANT: NavItem[] = [
 ];
 
 // ── SERVICES (Barbershop / Beauty / etc.) ────────────────────────────────
-const NAV_SERVICES: NavItem[] = [
+const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   {
     href: '/admin/hero',
     label: ADMIN_NAV_LABELS.hero,
+    show: FLAGS.heroEditor,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="3" width="18" height="14" rx="2" />
@@ -186,6 +188,7 @@ const NAV_SERVICES: NavItem[] = [
   {
     href: '/admin/services',
     label: ADMIN_NAV_LABELS.services,
+    show: true,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M6 3v12M6 3C6 3 3 6 3 9s3 3 3 3M6 15c0 0-3-1-3-3M18 3v12M18 3c0 0 3 3 3 6s-3 3-3 3M18 15c0 0 3-1 3-3M6 19h12M9 19v2M15 19v2" />
@@ -195,6 +198,7 @@ const NAV_SERVICES: NavItem[] = [
   {
     href: '/admin/appointments',
     label: ADMIN_NAV_LABELS.reservations,
+    show: FLAGS.booking,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -206,6 +210,7 @@ const NAV_SERVICES: NavItem[] = [
   {
     href: '/admin/masters',
     label: ADMIN_NAV_LABELS.masters,
+    show: FLAGS.team,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="12" cy="8" r="4" />
@@ -216,6 +221,7 @@ const NAV_SERVICES: NavItem[] = [
   {
     href: '/admin/gallery',
     label: ADMIN_NAV_LABELS.gallery,
+    show: FLAGS.gallery,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -227,13 +233,27 @@ const NAV_SERVICES: NavItem[] = [
   {
     href: '/admin/testimonials',
     label: ADMIN_NAV_LABELS.reviews,
+    show: FLAGS.reviews,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M12 3.5l2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 17l-5.25 2.75 1-5.85L3.5 9.65l5.9-.85L12 3.5Z" />
       </svg>
     ),
   },
+  {
+    href: '/admin/products',
+    label: ADMIN_NAV_LABELS.products,
+    show: FLAGS.digitalProducts,
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
+        <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />
+        <path d="m3 8 9 5 9-5M12 13v8" />
+      </svg>
+    ),
+  },
 ];
+
+const NAV_SERVICES: NavItem[] = NAV_SERVICES_ALL.filter((item) => item.show);
 
 // ── FOOD_MARKET ──────────────────────────────────────────────────────────
 const NAV_FOOD_MARKET: NavItem[] = [
@@ -281,10 +301,11 @@ const NAV_FOOD_MARKET: NavItem[] = [
 ];
 
 // ── Shared bottom ─────────────────────────────────────────────────────────
-const NAV_SHARED_BOTTOM: NavItem[] = [
+const NAV_SHARED_BOTTOM_ALL: (NavItem & { show: boolean })[] = [
   {
     href: '/admin/theme',
     label: ADMIN_NAV_LABELS.theme,
+    show: FLAGS.themeEditor,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="13.5" cy="6.5" r="2" />
@@ -298,6 +319,7 @@ const NAV_SHARED_BOTTOM: NavItem[] = [
   {
     href: '/admin/ai',
     label: ADMIN_NAV_LABELS.ai,
+    show: FLAGS.aiManagement,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="5" y="7" width="14" height="12" rx="3" />
@@ -309,6 +331,7 @@ const NAV_SHARED_BOTTOM: NavItem[] = [
   {
     href: '/admin/settings',
     label: ADMIN_NAV_LABELS.settings,
+    show: true,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="12" cy="12" r="3" />
@@ -317,6 +340,8 @@ const NAV_SHARED_BOTTOM: NavItem[] = [
     ),
   },
 ];
+
+const NAV_SHARED_BOTTOM: NavItem[] = NAV_SHARED_BOTTOM_ALL.filter((item) => item.show);
 
 function LogoutIcon() {
   return (
