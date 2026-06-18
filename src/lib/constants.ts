@@ -1,4 +1,4 @@
-import type { ServiceItem, MasterItem, StaticTestimonial, GalleryImageItem, HoursRow } from './types';
+import type { ServiceItem, MasterItem, StaticTestimonial, GalleryImageItem, HoursRow, Service, TeamMember, Testimonial, GalleryImage, Stat, WhyUsItem } from './types';
 
 export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '421900123456';
 export const WHATSAPP_LINKS = {
@@ -30,12 +30,11 @@ export const STATIC_TESTIMONIALS: StaticTestimonial[] = [
 ];
 
 export const GALLERY_IMAGES: GalleryImageItem[] = [
-  { src: '/gallery/gallery-1.webp', alt: 'Classic haircut' },
-  { src: '/gallery/gallery-2.webp', alt: 'Beard shaping' },
-  { src: '/gallery/gallery-3.webp', alt: 'Modern style' },
-  { src: '/gallery/gallery-4.webp', alt: 'Fade cut' },
-  { src: '/gallery/gallery-5.webp', alt: 'Beard trim' },
-  { src: '/gallery/gallery-6.webp', alt: 'Studio atmosphere' },
+  { src: '/gallery/gallery-1-chair.webp',   alt: 'Štýlové barbershop kreslo' },
+  { src: '/gallery/gallery-2-haircut.webp', alt: 'Presný strih' },
+  { src: '/gallery/gallery-3-beard.webp',   alt: 'Briadkový styling' },
+  { src: '/gallery/gallery-4-result.webp',  alt: 'Výsledok - perfektný strih' },
+  { src: '/gallery/gallery-5-studio.webp',  alt: 'Kate Barber Studio interiér' },
 ];
 
 export const BUSINESS_HOURS: HoursRow[] = [
@@ -46,7 +45,7 @@ export const BUSINESS_HOURS: HoursRow[] = [
 
 export const CONTACT = {
   city:        'Trenčín',
-  address:     'Palackého 12, Trenčín 911 01',
+  address:     'Mierové námestie 10\n911 01 Trenčín',
   phone:       '+421 900 123 456',
   phoneHref:   'tel:+421900123456',
   email:       'info@katebarber.sk',
@@ -60,3 +59,49 @@ export const CONTACT = {
 export const BUSINESS_START = '09:00';
 export const BUSINESS_END   = '19:00';
 export const SLOT_INTERVAL  = 30; // minutes
+
+// Alias for ContactSection
+export const HOURS: HoursRow[] = BUSINESS_HOURS;
+
+// Kate-barber display data (used in sections)
+export const SERVICES: Service[] = [
+  { name: 'Pánsky strih',       description: 'Klasický alebo moderný strih, konzultácia zahrnutá',       price: '€15' },
+  { name: 'Úprava brady',       description: 'Tvarovanie, zastrihnutie a ošetrenie brady',               price: '€10' },
+  { name: 'Strih + Brada',      description: 'Kompletný balík — strih vlasov aj úprava brady',           price: '€22' },
+  { name: 'Klasické holenie',   description: 'Horúci uterák, pena a britva — tradičný rituál',           price: '€18' },
+  { name: 'Starostlivosť o pleť', description: 'Hĺbkové čistenie, maska a hydratácia',                  price: '€25' },
+  { name: 'Detský strih',       description: 'Pre malých gentlemanov do 12 rokov',                      price: '€10' },
+  { name: 'Otec + Syn',         description: 'Spoločný strih pre otca a syna — zľava 15%',              price: '€22' },
+  { name: 'VIP Balík',          description: 'Strih, brada, holenie, pleť — kompletný grooming',        price: '€45' },
+];
+
+export const TEAM: TeamMember[] = [
+  { name: 'Kate Novák',   role: 'Zakladateľka',    experience: '8 rokov skúseností', photo: '/team/team-kate.webp'   },
+  { name: 'Lucia Svoboda', role: 'Senior barberka', experience: '5 rokov skúseností', photo: '/team/team-lucia.webp'  },
+  { name: 'Martin Blaho', role: 'Barber',           experience: '3 roky skúseností',  photo: '/team/team-martin.webp' },
+];
+
+export const STATS: Stat[] = [
+  { number: '7+',   label: 'Rokov skúseností'  },
+  { number: '12K+', label: 'Spokojných klientov' },
+  { number: '4',    label: 'Profesionálni barberi' },
+  { number: '4.9',  label: 'Google hodnotenie'  },
+];
+
+export const TESTIMONIALS: Testimonial[] = [
+  { stars: 5, text: '"Najlepší barber shop v Trenčíne. Kate presne vie, čo chcem, aj keď to neviem vysvetliť. Atmosféra je skvelá, vždy odchádzam spokojný."', author: 'Peter N.',   date: 'Google recenzia · marec 2026'  },
+  { stars: 5, text: '"Chodím sem s malým synom — obaja odchádzame ako noví ľudia. Balík Otec + Syn je geniálny nápad. Veľký palec hore!"',                     author: 'Marek K.',   date: 'Google recenzia · február 2026' },
+  { stars: 5, text: '"Klasické holenie tu je zážitok. Horúci uterák, voňavá pena, a výsledok dokonalý. Odporúčam každému."',                                   author: 'Jakub V.',   date: 'Google recenzia · január 2026'  },
+];
+
+export const BARBERS: string[] = STATIC_MASTERS.map(m => m.name);
+export const SERVICE_OPTIONS: string[] = SERVICES.map(s => `${s.name} — ${s.price}`);
+
+export const WHY_US_ITEMS: WhyUsItem[] = [
+  { icon: 'scissors', title: 'Vieme, že si originál',        description: 'Nekopírujeme. Chceme vyzdvihnúť tvoju jedinečnosť.'                        },
+  { icon: 'location', title: 'Sme v centre Trenčína',        description: 'Nájdeš nás na Mierovom námestí, priamo v srdci mesta.'                    },
+  { icon: 'trend',    title: 'Sledujeme trendy',             description: 'Najnovšie strihy aj klasika v podaní profesionálnych barberov.'           },
+  { icon: 'star',     title: 'Sme profesionáli',             description: 'Každý barber v tíme má minimálne 3 roky skúseností.'                      },
+  { icon: 'click',    title: 'Objednávka na 3 kliky',        description: 'WhatsApp alebo formulár — rezervácia za pár sekúnd.'                      },
+  { icon: 'medal',    title: '4.9 na Google',                description: 'Stovky spokojných klientov. Prečítaj si recenzie.'                        },
+];

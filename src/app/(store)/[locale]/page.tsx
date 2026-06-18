@@ -1,13 +1,16 @@
 import { setRequestLocale } from 'next-intl/server';
-import { features } from '@/lib/features';
 import HeroSection from '@/components/sections/HeroSection';
+import DecorativeDivider from '@/components/ui/DecorativeDivider';
+import StatsBar from '@/components/sections/StatsBar';
 import ServicesSection from '@/components/sections/ServicesSection';
-import TeamSection from '@/components/sections/TeamSection';
+import WhyUsSection from '@/components/sections/WhyUsSection';
 import GallerySection from '@/components/sections/GallerySection';
-import BookingSection from '@/components/sections/BookingSection';
+import TeamSection from '@/components/sections/TeamSection';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
-import CoursesSection from '@/components/sections/CoursesSection';
-import CtaSection from '@/components/sections/CtaSection';
+import BookingSection from '@/components/sections/BookingSection';
+import AboutSection from '@/components/sections/AboutSection';
+import ContactSection from '@/components/sections/ContactSection';
+import WhatsAppButton from '@/components/ui/WhatsAppButton';
 
 export const revalidate = 60;
 
@@ -20,15 +23,19 @@ export default async function HomePage({
   setRequestLocale(locale);
 
   return (
-    <main>
+    <>
       <HeroSection />
+      <DecorativeDivider />
+      <StatsBar />
       <ServicesSection />
-      {features.team && <TeamSection />}
-      {features.gallery && <GallerySection />}
-      <BookingSection />
-      {features.digital && features.courses && <CoursesSection />}
+      <WhyUsSection />
+      <GallerySection />
+      <TeamSection />
       <TestimonialsSection />
-      <CtaSection />
-    </main>
+      <BookingSection />
+      <AboutSection />
+      <ContactSection />
+      <WhatsAppButton />
+    </>
   );
 }

@@ -1,31 +1,30 @@
 import Image from 'next/image';
 import { GALLERY_IMAGES } from '@/lib/constants';
-import ScrollReveal from '@/components/ui/ScrollReveal';
 import GoldDivider from '@/components/ui/GoldDivider';
+import ScrollReveal from '@/components/ui/ScrollReveal';
 
 export default function GallerySection() {
   return (
-    <section id="gallery" className="section-full">
-      <div className="section">
-        <ScrollReveal className="section-header">
-          <p className="section-label">Portfolio</p>
-          <h2 className="section-title">Our Work</h2>
-          <GoldDivider />
-        </ScrollReveal>
-      </div>
+    <section id="galeria" className="gallery">
+      <ScrollReveal direction="up" className="section-header">
+        <p className="section-label">Naša práca</p>
+        <h2 className="section-title">Galéria</h2>
+        <GoldDivider />
+      </ScrollReveal>
 
       <ScrollReveal direction="up" delay={150}>
         <div className="gallery-grid">
-          {GALLERY_IMAGES.map((image) => (
+          {GALLERY_IMAGES.map((image, index) => (
             <div key={image.src} className="gallery-item">
               <Image
                 src={image.src}
                 alt={image.alt}
                 fill
-                className="gallery-item__image"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes="(max-width: 768px) 50vw, 33vw"
+                className="gallery-img"
+                priority={index === 0}
               />
-              <div className="gallery-item__overlay" />
+              <div className="gallery-overlay" />
             </div>
           ))}
         </div>

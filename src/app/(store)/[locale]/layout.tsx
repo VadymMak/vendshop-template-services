@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { Playfair_Display } from 'next/font/google';
+import { Playfair_Display, DM_Sans } from 'next/font/google';
 import { routing, type Locale } from '@/i18n/routing';
 import Header from '@/components/layout/Header/Header';
 import Footer from '@/components/layout/Footer/Footer';
@@ -19,6 +19,12 @@ const playfair = Playfair_Display({
   weight: ['400', '700'],
   style: ['normal', 'italic'],
   variable: '--font-playfair',
+});
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '700'],
+  variable: '--font-dm-sans',
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -100,7 +106,7 @@ export default async function LocaleLayout({
   const theme = process.env.NEXT_PUBLIC_THEME ?? 'dark';
 
   return (
-    <html lang={locale} data-vertical={config.vertical.vertical} data-theme={theme} className={playfair.variable}>
+    <html lang={locale} data-vertical={config.vertical.vertical} data-theme={theme} className={`${playfair.variable} ${dmSans.variable}`}>
       <head>
         <link rel="preconnect" href="https://conuflmgcnkfqjmncsth.public.blob.vercel-storage.com" />
         <link rel="dns-prefetch" href="https://conuflmgcnkfqjmncsth.public.blob.vercel-storage.com" />
@@ -110,9 +116,9 @@ export default async function LocaleLayout({
           <CustomerProvider>
             <VerticalProvider config={config.vertical}>
               <PresenceProvider presence={config.presence}>
-                <Header storeName={config.name} vertical={config.vertical.vertical} />
+                <Header />
                 <main>{children}</main>
-                <Footer storeName={config.name} vertical={config.vertical.vertical} />
+                <Footer />
               </PresenceProvider>
             </VerticalProvider>
           </CustomerProvider>
