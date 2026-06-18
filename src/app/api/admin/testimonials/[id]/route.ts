@@ -1,7 +1,17 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { db } from '@/lib/db';
 import { verifyAdminToken, getAdminSecret, ADMIN_COOKIE } from '@/lib/adminAuth';
+
+const LOCALES = ['en', 'uk', 'ru', 'de', 'sk', 'cs', 'pl'] as const;
+
+function revalidateTestimonialPages() {
+  for (const locale of LOCALES) {
+    revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}/testimonials`);
+  }
+}
 
 async function checkAdmin(): Promise<boolean> {
   const c = await cookies();
@@ -43,6 +53,8 @@ export async function PATCH(
       include: { customer: { select: { name: true, email: true } } },
     });
 
+    revalidateTestimonialPages();
+
     return NextResponse.json({
       id: updated.id,
       text: updated.text,
@@ -72,6 +84,7 @@ export async function DELETE(
 
   try {
     await db.testimonial.delete({ where: { id } });
+    revalidateTestimonialPages();
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[admin testimonials DELETE]', err);
