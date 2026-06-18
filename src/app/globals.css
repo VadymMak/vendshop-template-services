@@ -1227,3 +1227,32 @@ body::after {
   transform: scale(1.1);
   box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
 }
+
+/* ===== FORCE DARK OVERRIDE (last rule wins) ===== */
+html {
+  background-color: #0A0A0A !important;
+  color-scheme: dark;
+}
+body {
+  background-color: #0A0A0A !important;
+  color: #FFFFFF !important;
+}
+.hero,
+.services,
+.team,
+.gallery,
+.about,
+.contact,
+.footer {
+  background-color: #0A0A0A !important;
+}
+.stats-bar,
+.why-us,
+.testimonials {
+  background-color: #111111 !important;
+}
+.service-card,
+.why-us__card,
+.testimonial-card {
+  background-color: #161616 !important;
+}

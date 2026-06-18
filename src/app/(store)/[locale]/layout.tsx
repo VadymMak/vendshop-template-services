@@ -101,7 +101,18 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
   const config = await getStoreConfig();
-  const cssVars = themeToCssVars(config.theme);
+  // Merge ecommerce theme vars with kate-barber dark vars that must win
+  const cssVars = {
+    ...themeToCssVars(config.theme),
+    '--color-bg':            '#0A0A0A',
+    '--color-bg-alt':        '#111111',
+    '--color-bg-card':       '#161616',
+    '--color-text-primary':  '#FFFFFF',
+    '--color-text-secondary':'#B0A898',
+    '--color-text-muted':    '#666666',
+    '--color-gold':          '#C96030',
+    '--color-border':        'rgba(201, 96, 48, 0.15)',
+  };
 
   const theme = process.env.NEXT_PUBLIC_THEME ?? 'dark';
 
