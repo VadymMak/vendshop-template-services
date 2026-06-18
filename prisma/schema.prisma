@@ -47,6 +47,7 @@ model Store {
   services         Service[]
   appointments     Appointment[]
   digitalProducts  DigitalProduct[]
+  heroConfig       HeroConfig?
 }
 
 enum Vertical {
@@ -353,6 +354,21 @@ model RestaurantTable {
 
   @@unique([storeId, number])
   @@index([storeId, zone])
+}
+
+// ============ HERO CONFIG ============
+
+model HeroConfig {
+  id        String  @id @default(cuid())
+  storeId   String  @unique
+  store     Store   @relation(fields: [storeId], references: [id])
+
+  title     String  @default("Kate Barber Studio")
+  subtitle  String  @default("Prémiový barber studio v Trenčíne")
+  ctaText   String  @default("Rezervovať termín")
+  imageUrl  String?
+
+  updatedAt DateTime @updatedAt
 }
 
 // ============ GALLERY (RESTAURANT) ============

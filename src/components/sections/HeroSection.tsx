@@ -2,7 +2,30 @@ import Image from 'next/image';
 import { WHATSAPP_LINKS } from '@/lib/constants';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 
-export default function HeroSection() {
+interface HeroConfig {
+  title?: string | null;
+  subtitle?: string | null;
+  ctaText?: string | null;
+  imageUrl?: string | null;
+}
+
+interface HeroSectionProps {
+  config?: HeroConfig | null;
+}
+
+const DEFAULTS = {
+  title: 'Umenie klasického holičstva',
+  subtitle: 'Prémiový barber studio v Trenčíne pre ženy aj mužov.',
+  ctaText: 'Rezervovať termín',
+  imageUrl: '/hero-barbershop.webp',
+};
+
+export default function HeroSection({ config }: HeroSectionProps) {
+  const title = config?.title || DEFAULTS.title;
+  const subtitle = config?.subtitle || DEFAULTS.subtitle;
+  const ctaText = config?.ctaText || DEFAULTS.ctaText;
+  const imageSrc = config?.imageUrl || DEFAULTS.imageUrl;
+
   return (
     <section className="hero">
       <div className="hero__inner">
@@ -13,19 +36,13 @@ export default function HeroSection() {
             Est. 2018 — Trenčín
           </p>
 
-          <h1 className="hero__title">
-            Umenie <em>klasického</em>
-            <br />
-            holičstva
-          </h1>
+          <h1 className="hero__title">{title}</h1>
 
-          <p className="hero__subtitle">
-            Prémiový barber studio v Trenčíne pre ženy aj mužov.
-          </p>
+          <p className="hero__subtitle">{subtitle}</p>
 
           <div className="hero__buttons">
             <a href="#rezervacia" className="btn-primary">
-              Rezervovať termín
+              {ctaText}
             </a>
             <a
               href={WHATSAPP_LINKS.booking}
@@ -46,7 +63,7 @@ export default function HeroSection() {
         {/* RIGHT — image */}
         <div className="hero__image-wrap">
           <Image
-            src="/hero-barbershop.webp"
+            src={imageSrc}
             alt="Kate Barber Studio interior"
             fill
             className="hero__image"
@@ -54,6 +71,7 @@ export default function HeroSection() {
             fetchPriority="high"
             sizes="(max-width: 768px) 100vw, 42vw"
             quality={85}
+            unoptimized={imageSrc.startsWith('http')}
           />
           <div className="hero__overlay" />
         </div>

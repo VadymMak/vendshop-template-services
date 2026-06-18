@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 // that /admin/login can render without it.
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="uk">
+    <html lang="sk">
       <body>{children}</body>
     </html>
   );

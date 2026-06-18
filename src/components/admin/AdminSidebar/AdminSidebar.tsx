@@ -33,7 +33,7 @@ interface AdminSidebarProps {
 const NAV_SHARED_TOP: NavItem[] = [
   {
     href: '/admin',
-    label: 'Дашборд',
+    label: 'Prehľad',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="3" width="7" height="9" rx="1.5" />
@@ -158,6 +158,16 @@ const NAV_RESTAURANT: NavItem[] = [
 // ── SERVICES (Barbershop / Beauty / etc.) ────────────────────────────────
 const NAV_SERVICES: NavItem[] = [
   {
+    href: '/admin/hero',
+    label: 'Hero sekcia',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
+        <rect x="3" y="3" width="18" height="14" rx="2" />
+        <path d="M3 21h18M8 21v-4M16 21v-4" />
+      </svg>
+    ),
+  },
+  {
     href: '/admin/services',
     label: 'Služby',
     icon: (
@@ -168,7 +178,7 @@ const NAV_SERVICES: NavItem[] = [
   },
   {
     href: '/admin/appointments',
-    label: 'Записи',
+    label: 'Rezervácie',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -179,7 +189,7 @@ const NAV_SERVICES: NavItem[] = [
   },
   {
     href: '/admin/masters',
-    label: 'Майстри',
+    label: 'Majstri',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="12" cy="8" r="4" />
@@ -189,7 +199,7 @@ const NAV_SERVICES: NavItem[] = [
   },
   {
     href: '/admin/gallery',
-    label: 'Галерея',
+    label: 'Galéria',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -258,7 +268,7 @@ const NAV_FOOD_MARKET: NavItem[] = [
 const NAV_SHARED_BOTTOM: NavItem[] = [
   {
     href: '/admin/theme',
-    label: 'Тема',
+    label: 'Téma',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="13.5" cy="6.5" r="2" />
@@ -271,7 +281,7 @@ const NAV_SHARED_BOTTOM: NavItem[] = [
   },
   {
     href: '/admin/ai',
-    label: 'AI керування',
+    label: 'AI správa',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="5" y="7" width="14" height="12" rx="3" />
@@ -282,7 +292,7 @@ const NAV_SHARED_BOTTOM: NavItem[] = [
   },
   {
     href: '/admin/settings',
-    label: 'Налаштування',
+    label: 'Nastavenia',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="12" cy="12" r="3" />
