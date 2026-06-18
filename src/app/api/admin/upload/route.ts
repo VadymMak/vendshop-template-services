@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { put } from '@vercel/blob';
 import { cookies } from 'next/headers';
 import { verifyAdminToken, getAdminSecret, ADMIN_COOKIE } from '@/lib/adminAuth';
 import {
@@ -8,10 +9,8 @@ import {
   PRODUCT_VARIANTS,
   type ImageVariant,
 } from '@/lib/image-utils';
-import path from 'path';
-import fs from 'fs/promises';
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'electromarket';
+const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
 
 const PURPOSE_VARIANTS: Record<string, ImageVariant[]> = {
   gallery: GALLERY_VARIANTS,
@@ -24,7 +23,6 @@ async function saveToBlob(
   baseName: string,
   timestamp: number,
 ): Promise<Record<string, string>> {
-  const { put } = await import('@vercel/blob');
   const urls: Record<string, string> = {};
   for (const { suffix, processed: img } of processed) {
     const blobPath = `${purpose}/${STORE_SLUG}/${timestamp}-${baseName}${suffix}.webp`;
@@ -33,24 +31,6 @@ async function saveToBlob(
       contentType: img.contentType,
     });
     urls[suffix] = blob.url;
-  }
-  return urls;
-}
-
-async function saveLocally(
-  processed: Array<{ suffix: string; processed: { buffer: Buffer; contentType: string } }>,
-  purpose: string,
-  baseName: string,
-  timestamp: number,
-): Promise<Record<string, string>> {
-  const dir = path.join(process.cwd(), 'public', 'uploads', purpose, STORE_SLUG);
-  await fs.mkdir(dir, { recursive: true });
-  const urls: Record<string, string> = {};
-  for (const { suffix, processed: img } of processed) {
-    const fileName = `${timestamp}-${baseName}${suffix}.webp`;
-    const filePath = path.join(dir, fileName);
-    await fs.writeFile(filePath, img.buffer);
-    urls[suffix] = `/uploads/${purpose}/${STORE_SLUG}/${fileName}`;
   }
   return urls;
 }
@@ -84,16 +64,13 @@ export async function POST(request: Request) {
     const baseName = file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_');
     const timestamp = Date.now();
 
-    const useBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
-    const urls = useBlob
-      ? await saveToBlob(processed, purpose, baseName, timestamp)
-      : await saveLocally(processed, purpose, baseName, timestamp);
+    const urls = await saveToBlob(processed, purpose, baseName, timestamp);
 
     return NextResponse.json({
       urls,
       url: urls[variants[0].suffix],
       thumbnailUrl: urls[variants.at(-1)!.suffix],
-      storage: useBlob ? 'blob' : 'local',
+      storage: 'blob',
     });
   } catch (error) {
     console.error('[admin upload]', error);
