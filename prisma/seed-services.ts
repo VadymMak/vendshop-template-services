@@ -1,6 +1,14 @@
-import { PrismaClient } from '@prisma/client';
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+dotenv.config();
 
-const prisma = new PrismaClient();
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const store = await prisma.store.upsert({
@@ -24,7 +32,7 @@ async function main() {
         sun: null,
       }),
     },
-    update: {},
+    update: { vertical: 'SERVICES' },
   });
 
   console.log(`Store: ${store.name} (${store.id})`);
@@ -47,10 +55,10 @@ async function main() {
 
   // Services
   const serviceData = [
-    { slug: 'haircut',    nameKey: 'services.haircut',   price: 15, duration: 45, category: 'Hair',    sortOrder: 0 },
-    { slug: 'beard-trim', nameKey: 'services.beard',     price: 10, duration: 30, category: 'Beard',   sortOrder: 1 },
-    { slug: 'hair-beard', nameKey: 'services.hairBeard', price: 22, duration: 60, category: 'Hair',    sortOrder: 2 },
-    { slug: 'styling',    nameKey: 'services.styling',   price: 12, duration: 30, category: 'Styling', sortOrder: 3 },
+    { slug: 'haircut',    nameKey: 'services.haircut',   price: 15, duration: 45, category: 'Hair'    },
+    { slug: 'beard-trim', nameKey: 'services.beard',     price: 10, duration: 30, category: 'Beard'   },
+    { slug: 'hair-beard', nameKey: 'services.hairBeard', price: 22, duration: 60, category: 'Hair'    },
+    { slug: 'styling',    nameKey: 'services.styling',   price: 12, duration: 30, category: 'Styling' },
   ];
 
   for (const s of serviceData) {
@@ -61,6 +69,18 @@ async function main() {
     });
   }
   console.log('Services seeded');
+
+  // AdminUser
+  const bcrypt = await import('bcryptjs');
+  const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@kate-barber.sk';
+  const adminPassword = process.env.ADMIN_PASSWORD ?? 'KateBarber2026!';
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
+  await prisma.adminUser.upsert({
+    where: { email: adminEmail },
+    create: { email: adminEmail, passwordHash, name: 'Admin', storeId: store.id },
+    update: { passwordHash, storeId: store.id },
+  });
+  console.log('AdminUser seeded');
 
   console.log('Done!');
 }
