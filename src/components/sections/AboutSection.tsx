@@ -8,8 +8,8 @@ export default function AboutSection() {
         <ScrollReveal direction="left">
           <div className="about__image-wrap">
             <Image
-              src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=800&q=80"
-              alt="Kate Barber interiér"
+              src="/about-barbershop.webp"
+              alt="Kate Barber Studio interiér"
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="about__image"
