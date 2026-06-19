@@ -28,6 +28,8 @@ export async function POST(_req: NextRequest) {
 
   const chunks: { type: string; content: string; metadata: object }[] = [];
 
+  // ── Layer 1: DB data ──────────────────────────────────────────────────────
+
   // About / Store info
   chunks.push({
     type: 'about',
@@ -44,7 +46,7 @@ export async function POST(_req: NextRequest) {
     });
   }
 
-  // Services (nameKey is the identifier/slug; description is the human text)
+  // Services
   const services = await db.service.findMany({
     where: { storeId: store.id, active: true },
   });
@@ -84,7 +86,50 @@ export async function POST(_req: NextRequest) {
     });
   }
 
-  // Save with embeddings
+  const dbChunksCount = chunks.length;
+
+  // ── Layer 2: Web pages crawl ──────────────────────────────────────────────
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+  const pagesToCrawl = [
+    { path: '/sk', label: 'Hlavná stránka' },
+    { path: '/sk/testimonials', label: 'Recenzie stránka' },
+    { path: '/sk/products', label: 'Produkty stránka' },
+  ];
+
+  for (const page of pagesToCrawl) {
+    try {
+      const res = await fetch(`${baseUrl}${page.path}`, {
+        headers: { 'User-Agent': 'StoreRAGCrawler/1.0' },
+        cache: 'no-store',
+      });
+      if (!res.ok) continue;
+
+      const html = await res.text();
+      const text = html
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 3000);
+
+      if (text.length < 100) continue;
+
+      chunks.push({
+        type: 'webpage',
+        content: `Obsah stránky "${page.label}" (${page.path}):\n${text}`,
+        metadata: { url: page.path, label: page.label },
+      });
+    } catch (err) {
+      console.warn(`[crawl] Failed to fetch ${page.path}:`, err);
+    }
+  }
+
+  const webChunksCount = chunks.length - dbChunksCount;
+
+  // ── Save all chunks with embeddings ──────────────────────────────────────
+
   let saved = 0;
   for (const chunk of chunks) {
     const embedding = await getEmbedding(chunk.content);
@@ -101,5 +146,9 @@ export async function POST(_req: NextRequest) {
     saved++;
   }
 
-  return NextResponse.json({ ok: true, chunksIndexed: saved });
+  return NextResponse.json({
+    ok: true,
+    chunksIndexed: saved,
+    breakdown: { db: dbChunksCount, web: webChunksCount },
+  });
 }

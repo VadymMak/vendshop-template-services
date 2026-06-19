@@ -169,18 +169,21 @@ export default function AdminAiPage() {
   // ── Indexing state ────────────────────────────────────────────────────────
   const [indexing, setIndexing] = useState(false);
   const [indexed, setIndexed] = useState<number | null>(null);
+  const [breakdown, setBreakdown] = useState<{ db: number; web: number } | null>(null);
   const [progress, setProgress] = useState(TOTAL_PRODUCTS);
 
   const reindex = async () => {
     if (indexing) return;
     setIndexing(true);
     setIndexed(null);
+    setBreakdown(null);
     try {
       const res = await fetch('/api/admin/ai/crawl', { method: 'POST' });
-      const data = (await res.json()) as { chunksIndexed?: number; error?: string };
+      const data = (await res.json()) as { chunksIndexed?: number; breakdown?: { db: number; web: number }; error?: string };
       if (data.chunksIndexed !== undefined) {
         setIndexed(data.chunksIndexed);
         setProgress(data.chunksIndexed);
+        if (data.breakdown) setBreakdown(data.breakdown);
       }
     } catch {
       // silent
@@ -221,8 +224,8 @@ export default function AdminAiPage() {
           {indexing ? 'Indexujem...' : 'Aktualizovať znalosti'}
         </button>
         {indexed !== null && (
-          <span className={styles.statusChipGray} style={{ color: 'var(--color-copper, #c97c3a)' }}>
-            ✓ {indexed} chunks
+          <span className={styles.statusChipIndexed}>
+            ✓ {indexed} chunks{breakdown ? ` (${breakdown.db} DB + ${breakdown.web} web)` : ''}
           </span>
         )}
         {lastUsed && <span className={styles.statusChipGray}>Posledná odpoveď: {lastUsed}</span>}
