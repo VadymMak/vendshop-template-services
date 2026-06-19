@@ -85,7 +85,6 @@ export default function DashboardClient({
             <StatCard label="Dnešné rezervácie" value={stats.todayAppointments} />
             <StatCard label="Klienti" value={stats.clientCount} />
             <StatCard label="Recenzie" value={stats.reviewCount} />
-            <StatCard label="Majstri" value={stats.masterCount} />
           </>
         ) : isRestaurant ? (
           <>
@@ -104,7 +103,7 @@ export default function DashboardClient({
         )}
       </div>
 
-      <div className={styles.row}>
+      <div className={isServices ? styles.rowFull : styles.row}>
         <section className={styles.panel}>
           <h2 className={styles.panelTitle}>
             {isServices
@@ -203,41 +202,29 @@ export default function DashboardClient({
           </div>
         </section>
 
-        <section className={styles.panel}>
-          <h2 className={styles.panelTitle}>
-            {isServices ? 'Najlepší majstri' : isRestaurant ? 'Najlepšie jedlá' : 'Najlepšie produkty'}
-          </h2>
-          <ul className={styles.top}>
-            {isServices
-              ? topMasters.map((m, i) => (
-                  <li key={m.name} className={styles.topItem}>
-                    <span className={styles.topRank}>{i + 1}</span>
-                    <span className={styles.topImg}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={m.photo} alt="" />
-                    </span>
-                    <span className={styles.topName}>{m.name}</span>
-                    <span className={styles.topSales}>{m.appointmentCount} rezervácií</span>
-                  </li>
-                ))
-              : topProducts.map((p, i) => (
-                  <li key={p.name} className={styles.topItem}>
-                    <span className={styles.topRank}>{i + 1}</span>
-                    <span className={styles.topImg}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={p.image} alt="" />
-                    </span>
-                    <span className={styles.topName}>{p.name}</span>
-                    <span className={styles.topSales}>
-                      {p.sales} {isRestaurant ? 'recenzií' : 'predaní'}
-                    </span>
-                  </li>
-                ))}
-            {(isServices ? topMasters : topProducts).length === 0 && (
-              <li className={styles.emptyCell}>Žiadne dáta</li>
-            )}
-          </ul>
-        </section>
+        {!isServices && (
+          <section className={styles.panel}>
+            <h2 className={styles.panelTitle}>
+              {isRestaurant ? 'Najlepšie jedlá' : 'Najlepšie produkty'}
+            </h2>
+            <ul className={styles.top}>
+              {topProducts.map((p, i) => (
+                <li key={p.name} className={styles.topItem}>
+                  <span className={styles.topRank}>{i + 1}</span>
+                  <span className={styles.topImg}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.image} alt="" />
+                  </span>
+                  <span className={styles.topName}>{p.name}</span>
+                  <span className={styles.topSales}>
+                    {p.sales} {isRestaurant ? 'recenzií' : 'predaní'}
+                  </span>
+                </li>
+              ))}
+              {topProducts.length === 0 && <li className={styles.emptyCell}>Žiadne dáta</li>}
+            </ul>
+          </section>
+        )}
       </div>
     </div>
   );

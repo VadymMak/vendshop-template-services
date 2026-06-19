@@ -210,7 +210,7 @@ const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   {
     href: '/admin/masters',
     label: ADMIN_NAV_LABELS.masters,
-    show: FLAGS.team,
+    show: false,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="12" cy="8" r="4" />
@@ -221,7 +221,7 @@ const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   {
     href: '/admin/gallery',
     label: ADMIN_NAV_LABELS.gallery,
-    show: FLAGS.gallery,
+    show: false,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="3" width="18" height="18" rx="2" />

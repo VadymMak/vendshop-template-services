@@ -2,12 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react';
 import WorkingHours from '@/components/admin/WorkingHours';
+import GalleryTab from './GalleryTab';
+import MastersTab from './MastersTab';
 import styles from './settings.module.css';
 
-type Tab = 'store' | 'notifications' | 'security' | 'schedule';
+type Tab = 'store' | 'gallery' | 'masters' | 'notifications' | 'security' | 'schedule';
 
 const BASE_TABS: { key: Tab; label: string }[] = [
   { key: 'store',         label: 'Obchod' },
+  { key: 'gallery',       label: 'Galéria' },
+  { key: 'masters',       label: 'Majstri' },
   { key: 'notifications', label: 'Notifikácie' },
   { key: 'security',      label: 'Bezpečnosť' },
 ];
@@ -211,6 +215,20 @@ export default function AdminSettingsPage() {
               </button>
             </>
           )}
+        </div>
+      )}
+
+      {/* TAB — Galéria */}
+      {tab === 'gallery' && (
+        <div className={styles.card}>
+          <GalleryTab />
+        </div>
+      )}
+
+      {/* TAB — Majstri */}
+      {tab === 'masters' && (
+        <div className={styles.card}>
+          <MastersTab />
         </div>
       )}
 

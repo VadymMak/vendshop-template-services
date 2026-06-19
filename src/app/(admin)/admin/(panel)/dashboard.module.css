@@ -14,7 +14,7 @@
 /* ── Stat cards ───────────────────────────────────── */
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 18px;
   margin-bottom: 24px;
 }
@@ -104,6 +104,13 @@
 .row {
   display: grid;
   grid-template-columns: 6fr 4fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.rowFull {
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 18px;
   align-items: start;
 }
