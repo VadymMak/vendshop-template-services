@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 
 interface Service {
   id: string;
@@ -14,20 +16,10 @@ interface Service {
 
 const EMPTY = { nameKey: '', description: '', price: 0, duration: 30, category: '' };
 
-const SERVICE_NAMES: Record<string, string> = {
-  'services.beard':    'Strihanie brady',
-  'services.haircut':  'Strihanie vlasov',
-  'services.hairBeard': 'Vlasy + Brada',
-  'services.styling':  'Styling',
-  'services.shave':    'Holenie',
-  'services.kids':     'Detský strih',
-};
-
-function displayName(nameKey: string) {
-  return SERVICE_NAMES[nameKey] ?? nameKey;
-}
-
 export default function AdminServicesPage() {
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+
   const [services, setServices] = useState<Service[]>([]);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY);
@@ -100,7 +92,7 @@ export default function AdminServicesPage() {
   }
 
   async function remove(id: string) {
-    if (!window.confirm('Vymazať túto službu?')) return;
+    if (!window.confirm(t.services.confirmDelete)) return;
     await fetch(`/api/admin/services/${id}`, { method: 'DELETE' });
     await load();
   }
@@ -110,14 +102,14 @@ export default function AdminServicesPage() {
   return (
     <div className="admin-page">
       <div className="admin-page__header">
-        <h1>Služby</h1>
+        <h1>{t.services.title}</h1>
         {!isEditing && (
           <button
             type="button"
             className="btn-primary btn-sm"
             onClick={() => { setShowAdd(true); setEditId(null); setForm(EMPTY); }}
           >
-            + Pridať službu
+            {t.services.addService}
           </button>
         )}
       </div>
@@ -125,10 +117,10 @@ export default function AdminServicesPage() {
       {/* Add / Edit form */}
       {isEditing && (
         <div className="admin-services__form">
-          <h3>{editId ? 'Upraviť službu' : 'Nová služba'}</h3>
+          <h3>{editId ? t.services.editService : t.services.newService}</h3>
           <div className="admin-services__form-grid">
             <div className="booking__field">
-              <label>Názov *</label>
+              <label>{t.services.nameLabel} *</label>
               <input
                 value={form.nameKey}
                 onChange={(e) => setForm((p) => ({ ...p, nameKey: e.target.value }))}
@@ -136,7 +128,7 @@ export default function AdminServicesPage() {
               />
             </div>
             <div className="booking__field">
-              <label>Cena (€) *</label>
+              <label>{t.services.priceLabel} *</label>
               <input
                 type="number"
                 min="0"
@@ -146,7 +138,7 @@ export default function AdminServicesPage() {
               />
             </div>
             <div className="booking__field">
-              <label>Trvanie (min)</label>
+              <label>{t.services.durationLabel}</label>
               <input
                 type="number"
                 min="5"
@@ -156,7 +148,7 @@ export default function AdminServicesPage() {
               />
             </div>
             <div className="booking__field">
-              <label>Kategória</label>
+              <label>{t.services.categoryLabel}</label>
               <input
                 value={form.category ?? ''}
                 onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))}
@@ -164,7 +156,7 @@ export default function AdminServicesPage() {
               />
             </div>
             <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
-              <label>Popis</label>
+              <label>{t.services.descriptionLabel}</label>
               <textarea
                 rows={2}
                 value={form.description ?? ''}
@@ -180,10 +172,10 @@ export default function AdminServicesPage() {
               onClick={save}
               disabled={saving || !form.nameKey.trim()}
             >
-              {saving ? 'Ukladá sa...' : 'Uložiť'}
+              {saving ? t.common.saving : t.common.save}
             </button>
             <button type="button" className="btn-outline btn-sm" onClick={cancelForm}>
-              Zrušiť
+              {t.common.cancel}
             </button>
           </div>
         </div>
@@ -193,7 +185,7 @@ export default function AdminServicesPage() {
       <div className="admin-services__list">
         {services.length === 0 ? (
           <p style={{ color: 'var(--color-text-muted)', padding: '2rem' }}>
-            Žiadne služby. Pridajte prvú.
+            {t.services.noServices}
           </p>
         ) : services.map((s) => (
           <div
@@ -201,7 +193,9 @@ export default function AdminServicesPage() {
             className={`admin-services__item${s.active ? '' : ' admin-services__item--inactive'}`}
           >
             <div className="admin-services__info">
-              <span className="admin-services__name">{displayName(s.nameKey)}</span>
+              <span className="admin-services__name">
+                {t.services.names[s.nameKey] ?? s.nameKey}
+              </span>
               {s.description && (
                 <span className="admin-services__desc">{s.description}</span>
               )}
@@ -219,21 +213,21 @@ export default function AdminServicesPage() {
                 onClick={() => toggleActive(s)}
                 title={s.active ? 'Skryť zo stránky' : 'Zobraziť na stránke'}
               >
-                {s.active ? 'Skryť' : 'Zobraziť'}
+                {s.active ? t.common.hide : t.common.show}
               </button>
               <button
                 type="button"
                 className="btn-sm btn-outline"
                 onClick={() => startEdit(s)}
               >
-                Upraviť
+                {t.common.edit}
               </button>
               <button
                 type="button"
                 className="btn-sm btn-danger"
                 onClick={() => remove(s.id)}
               >
-                Zmazať
+                {t.common.delete}
               </button>
             </div>
           </div>

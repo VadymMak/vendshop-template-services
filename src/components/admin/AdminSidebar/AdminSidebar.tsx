@@ -6,26 +6,10 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import StoreLogo from '@/components/ui/StoreLogo';
 import { FLAGS } from '@/lib/feature-flags';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
+import type { AdminTranslations, AdminLocale } from '@/lib/admin-i18n';
 import styles from './AdminSidebar.module.css';
-
-const ADMIN_NAV_LABELS = {
-  dashboard:      'Prehľad',
-  hero:           'Hero sekcia',
-  services:       'Služby',
-  reservations:   'Rezervácie',
-  masters:        'Majstri',
-  gallery:        'Galéria',
-  reviews:        'Recenzie',
-  products:       'Produkty',
-  orders:         'Objednávky',
-  promotions:     'Akcie',
-  menu:           'Jedálny lístok',
-  tables:         'Stoly',
-  deliveryZones:  'Doručovacie zóny',
-  theme:          'Téma',
-  ai:             'AI správa',
-  settings:       'Nastavenia',
-} as const;
 
 const ico = {
   fill: 'none',
@@ -35,9 +19,11 @@ const ico = {
   strokeLinejoin: 'round' as const,
 };
 
+type NavKey = keyof AdminTranslations['nav'];
+
 interface NavItem {
   href: string;
-  label: string;
+  labelKey: NavKey;
   icon: ReactNode;
 }
 
@@ -50,7 +36,7 @@ interface AdminSidebarProps {
 const NAV_SHARED_TOP: NavItem[] = [
   {
     href: '/admin',
-    label: ADMIN_NAV_LABELS.dashboard,
+    labelKey: 'dashboard',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="3" width="7" height="9" rx="1.5" />
@@ -66,7 +52,7 @@ const NAV_SHARED_TOP: NavItem[] = [
 const NAV_ECOMMERCE: NavItem[] = [
   {
     href: '/admin/products',
-    label: ADMIN_NAV_LABELS.products,
+    labelKey: 'products',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />
@@ -76,7 +62,7 @@ const NAV_ECOMMERCE: NavItem[] = [
   },
   {
     href: '/admin/orders',
-    label: ADMIN_NAV_LABELS.orders,
+    labelKey: 'orders',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="9" cy="20" r="1.5" />
@@ -87,7 +73,7 @@ const NAV_ECOMMERCE: NavItem[] = [
   },
   {
     href: '/admin/reviews',
-    label: ADMIN_NAV_LABELS.reviews,
+    labelKey: 'reviews',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M12 3.5l2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 17l-5.25 2.75 1-5.85L3.5 9.65l5.9-.85L12 3.5Z" />
@@ -96,7 +82,7 @@ const NAV_ECOMMERCE: NavItem[] = [
   },
   {
     href: '/admin/promotions',
-    label: ADMIN_NAV_LABELS.promotions,
+    labelKey: 'promotions',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M3 11V6.5A1.5 1.5 0 0 1 4.5 5H11l9 9-6.5 6.5-9-9Z" />
@@ -110,7 +96,7 @@ const NAV_ECOMMERCE: NavItem[] = [
 const NAV_RESTAURANT: NavItem[] = [
   {
     href: '/admin/reservations',
-    label: ADMIN_NAV_LABELS.reservations,
+    labelKey: 'reservations',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -121,7 +107,7 @@ const NAV_RESTAURANT: NavItem[] = [
   },
   {
     href: '/admin/products',
-    label: ADMIN_NAV_LABELS.menu,
+    labelKey: 'menu',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />
@@ -131,7 +117,7 @@ const NAV_RESTAURANT: NavItem[] = [
   },
   {
     href: '/admin/tables',
-    label: ADMIN_NAV_LABELS.tables,
+    labelKey: 'tables',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="4" y="8" width="16" height="8" rx="2" />
@@ -141,7 +127,7 @@ const NAV_RESTAURANT: NavItem[] = [
   },
   {
     href: '/admin/gallery',
-    label: ADMIN_NAV_LABELS.gallery,
+    labelKey: 'gallery',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -152,7 +138,7 @@ const NAV_RESTAURANT: NavItem[] = [
   },
   {
     href: '/admin/orders',
-    label: ADMIN_NAV_LABELS.orders,
+    labelKey: 'orders',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="9" cy="20" r="1.5" />
@@ -163,7 +149,7 @@ const NAV_RESTAURANT: NavItem[] = [
   },
   {
     href: '/admin/reviews',
-    label: ADMIN_NAV_LABELS.reviews,
+    labelKey: 'reviews',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M12 3.5l2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 17l-5.25 2.75 1-5.85L3.5 9.65l5.9-.85L12 3.5Z" />
@@ -176,7 +162,7 @@ const NAV_RESTAURANT: NavItem[] = [
 const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   {
     href: '/admin/hero',
-    label: ADMIN_NAV_LABELS.hero,
+    labelKey: 'hero',
     show: FLAGS.heroEditor,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -187,7 +173,7 @@ const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   },
   {
     href: '/admin/services',
-    label: ADMIN_NAV_LABELS.services,
+    labelKey: 'services',
     show: true,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -197,7 +183,7 @@ const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   },
   {
     href: '/admin/rezervacie',
-    label: 'Rezervácie',
+    labelKey: 'reservations',
     show: FLAGS.booking,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -209,7 +195,7 @@ const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   },
   {
     href: '/admin/masters',
-    label: ADMIN_NAV_LABELS.masters,
+    labelKey: 'masters',
     show: false,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -220,7 +206,7 @@ const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   },
   {
     href: '/admin/gallery',
-    label: ADMIN_NAV_LABELS.gallery,
+    labelKey: 'gallery',
     show: false,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -232,7 +218,7 @@ const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   },
   {
     href: '/admin/testimonials',
-    label: ADMIN_NAV_LABELS.reviews,
+    labelKey: 'reviews',
     show: FLAGS.reviews,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -242,7 +228,7 @@ const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
   },
   {
     href: '/admin/products',
-    label: ADMIN_NAV_LABELS.products,
+    labelKey: 'products',
     show: FLAGS.digitalProducts,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -259,7 +245,7 @@ const NAV_SERVICES: NavItem[] = NAV_SERVICES_ALL.filter((item) => item.show);
 const NAV_FOOD_MARKET: NavItem[] = [
   {
     href: '/admin/products',
-    label: ADMIN_NAV_LABELS.products,
+    labelKey: 'products',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />
@@ -269,7 +255,7 @@ const NAV_FOOD_MARKET: NavItem[] = [
   },
   {
     href: '/admin/orders',
-    label: ADMIN_NAV_LABELS.orders,
+    labelKey: 'orders',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <circle cx="9" cy="20" r="1.5" />
@@ -280,7 +266,7 @@ const NAV_FOOD_MARKET: NavItem[] = [
   },
   {
     href: '/admin/delivery-zones',
-    label: ADMIN_NAV_LABELS.deliveryZones,
+    labelKey: 'deliveryZones',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M3 6.5h11v9H3zM14 9.5h4l3 3v3h-7z" />
@@ -291,7 +277,7 @@ const NAV_FOOD_MARKET: NavItem[] = [
   },
   {
     href: '/admin/reviews',
-    label: ADMIN_NAV_LABELS.reviews,
+    labelKey: 'reviews',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
         <path d="M12 3.5l2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 17l-5.25 2.75 1-5.85L3.5 9.65l5.9-.85L12 3.5Z" />
@@ -304,7 +290,7 @@ const NAV_FOOD_MARKET: NavItem[] = [
 const NAV_SHARED_BOTTOM_ALL: (NavItem & { show: boolean })[] = [
   {
     href: '/admin/theme',
-    label: ADMIN_NAV_LABELS.theme,
+    labelKey: 'theme',
     show: FLAGS.themeEditor,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -318,7 +304,7 @@ const NAV_SHARED_BOTTOM_ALL: (NavItem & { show: boolean })[] = [
   },
   {
     href: '/admin/ai',
-    label: ADMIN_NAV_LABELS.ai,
+    labelKey: 'ai',
     show: FLAGS.aiManagement,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -330,7 +316,7 @@ const NAV_SHARED_BOTTOM_ALL: (NavItem & { show: boolean })[] = [
   },
   {
     href: '/admin/settings',
-    label: ADMIN_NAV_LABELS.settings,
+    labelKey: 'settings',
     show: true,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
@@ -355,6 +341,8 @@ function LogoutIcon() {
 export default function AdminSidebar({ storeName, vertical }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { locale, changeLocale } = useAdminLocale();
+  const t = getAdminT(locale);
 
   const verticalNav = vertical === 'RESTAURANT'
     ? NAV_RESTAURANT
@@ -391,16 +379,29 @@ export default function AdminSidebar({ storeName, vertical }: AdminSidebarProps)
               className={`${styles.item} ${active ? styles.itemActive : ''}`}
             >
               <span className={styles.itemIcon}>{item.icon}</span>
-              {item.label}
+              {t.nav[item.labelKey]}
             </Link>
           );
         })}
       </nav>
 
       <div className={styles.footer}>
+        <select
+          value={locale}
+          onChange={(e) => changeLocale(e.target.value as AdminLocale)}
+          className={styles.localeSwitcher}
+          aria-label="Admin language"
+        >
+          <option value="sk">🇸🇰 SK</option>
+          <option value="en">🇬🇧 EN</option>
+          <option value="cs">🇨🇿 CS</option>
+          <option value="de">🇩🇪 DE</option>
+          <option value="uk">🇺🇦 UK</option>
+        </select>
+
         <button type="button" className={styles.logout} onClick={handleLogout}>
           <LogoutIcon />
-          Вийти
+          {t.nav.logout}
         </button>
         <span className={styles.store}>{storeName}</span>
       </div>

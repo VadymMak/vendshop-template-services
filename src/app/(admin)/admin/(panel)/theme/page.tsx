@@ -4,28 +4,18 @@ import { useEffect, useState } from 'react';
 import styles from './theme.module.css';
 import { DEFAULT_THEME, type ThemeConfig } from '@/lib/theme';
 import { THEME_PRESETS } from '@/lib/theme-presets';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 
-const COLOR_FIELDS: { key: keyof ThemeConfig['colors']; label: string; hint: string }[] = [
-  { key: 'bg',            label: 'Background',        hint: 'Page background color' },
-  { key: 'primary',       label: 'Primary',           hint: 'Buttons, links, accents' },
-  { key: 'primaryDark',   label: 'Primary Dark',      hint: 'Hover/active state' },
-  { key: 'primaryLight',  label: 'Primary Light',     hint: 'Light tint backgrounds' },
-  { key: 'text',          label: 'Text',              hint: 'Main text color' },
-  { key: 'textSecondary', label: 'Text Secondary',    hint: 'Muted labels' },
-  { key: 'textMuted',     label: 'Text Muted',        hint: 'Even more subtle' },
-  { key: 'border',        label: 'Border',            hint: 'Dividers, card borders' },
-  { key: 'bgSubtle',      label: 'Background Subtle', hint: 'Cards hover, sections' },
-  { key: 'success',       label: 'Success',           hint: 'Positive states' },
-  { key: 'error',         label: 'Error',             hint: 'Negative states' },
-  { key: 'contrast',      label: 'Contrast Text',     hint: 'Text color on colored buttons' },
-  { key: 'overlay',       label: 'Overlay Base',      hint: 'Base color for overlays (hex)' },
-  { key: 'overlayAlpha',  label: 'Overlay w/ Alpha',  hint: 'Semi-transparent overlay (rgba)' },
-  { key: 'headerBg',      label: 'Header Scrolled',   hint: 'Scrolled header background (rgba)' },
+const COLOR_KEYS: (keyof ThemeConfig['colors'])[] = [
+  'bg', 'primary', 'primaryDark', 'primaryLight',
+  'text', 'textSecondary', 'textMuted', 'border', 'bgSubtle',
+  'success', 'error', 'contrast', 'overlay', 'overlayAlpha', 'headerBg',
 ];
 
-const HERO_OPTIONS: ThemeConfig['layout']['heroType'][]     = ['full-width', 'split', 'minimal'];
-const CARD_OPTIONS: ThemeConfig['layout']['cardStyle'][]    = ['shadow', 'border', 'flat'];
-const NAV_OPTIONS: ThemeConfig['layout']['navPosition'][]   = ['top', 'side'];
+const HERO_OPTIONS: ThemeConfig['layout']['heroType'][]       = ['full-width', 'split', 'minimal'];
+const CARD_OPTIONS: ThemeConfig['layout']['cardStyle'][]      = ['shadow', 'border', 'flat'];
+const NAV_OPTIONS: ThemeConfig['layout']['navPosition'][]     = ['top', 'side'];
 const RADIUS_OPTIONS: ThemeConfig['layout']['borderRadius'][] = ['sharp', 'rounded', 'pill'];
 
 function borderRadiusValue(v: ThemeConfig['layout']['borderRadius']) {
@@ -38,6 +28,9 @@ export default function ThemeEditorPage() {
   const [theme, setTheme] = useState<ThemeConfig | null>(null);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState('');
+
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
 
   useEffect(() => {
     fetch('/api/admin/theme').then((r) => r.json()).then(setTheme);
@@ -64,16 +57,16 @@ export default function ThemeEditorPage() {
     setTheme({ ...theme, colors: { ...DEFAULT_THEME.colors } });
   };
 
-  if (!theme) return <div className={styles.loading}>Loading theme...</div>;
+  if (!theme) return <div className={styles.loading}>{t.common.loading}</div>;
 
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <h1 className={styles.h1}>Theme Editor</h1>
+        <h1 className={styles.h1}>{t.theme.title}</h1>
         <div className={styles.actions}>
-          <button className={styles.resetBtn} onClick={resetColors}>Reset to defaults</button>
+          <button className={styles.resetBtn} onClick={resetColors}>{t.theme.resetColors}</button>
           <button className={styles.saveBtn} onClick={save} disabled={saving}>
-            {saving ? 'Saving...' : 'Save Theme'}
+            {saving ? t.theme.saving : t.theme.saveTheme}
           </button>
         </div>
       </div>
@@ -81,8 +74,8 @@ export default function ThemeEditorPage() {
       {toast && <div className={styles.toast}>{toast}</div>}
 
       <section className={styles.section} style={{ marginBottom: '24px' }}>
-        <h2 className={styles.h2}>Hotové témy</h2>
-        <p className={styles.presetsHint}>Vyberte tému ako základ, potom upravte farby nižšie</p>
+        <h2 className={styles.h2}>{t.theme.presetsTitle}</h2>
+        <p className={styles.presetsHint}>{t.theme.presetsSubtitle}</p>
         <div className={styles.presetsGrid}>
           {THEME_PRESETS.map((preset) => (
             <button
@@ -107,29 +100,33 @@ export default function ThemeEditorPage() {
       <div className={styles.grid}>
         {/* Colors Section */}
         <section className={styles.section}>
-          <h2 className={styles.h2}>Colors</h2>
+          <h2 className={styles.h2}>{t.theme.colors}</h2>
           <div className={styles.colorGrid}>
-            {COLOR_FIELDS.map((field) => (
-              <div key={field.key} className={styles.colorField}>
+            {COLOR_KEYS.map((key) => (
+              <div key={key} className={styles.colorField}>
                 <label className={styles.colorLabel}>
                   <input
                     type="color"
-                    value={theme.colors[field.key]}
+                    value={theme.colors[key]}
                     onChange={(e) => setTheme({
                       ...theme,
-                      colors: { ...theme.colors, [field.key]: e.target.value },
+                      colors: { ...theme.colors, [key]: e.target.value },
                     })}
                     className={styles.colorInput}
                   />
-                  <span className={styles.colorName}>{field.label}</span>
+                  <span className={styles.colorName}>
+                    {t.theme.colorLabels[key] ?? key}
+                  </span>
                 </label>
-                <span className={styles.colorHint}>{field.hint}</span>
+                <span className={styles.colorHint}>
+                  {t.theme.colorDescriptions[key] ?? ''}
+                </span>
                 <input
                   type="text"
-                  value={theme.colors[field.key]}
+                  value={theme.colors[key]}
                   onChange={(e) => setTheme({
                     ...theme,
-                    colors: { ...theme.colors, [field.key]: e.target.value },
+                    colors: { ...theme.colors, [key]: e.target.value },
                   })}
                   className={styles.hexInput}
                   pattern="^#[0-9a-fA-F]{6}$"
@@ -141,10 +138,10 @@ export default function ThemeEditorPage() {
 
         {/* Layout Section */}
         <section className={styles.section}>
-          <h2 className={styles.h2}>Layout</h2>
+          <h2 className={styles.h2}>{t.theme.layout}</h2>
 
           <div className={styles.layoutField}>
-            <label className={styles.layoutLabel}>Hero Type</label>
+            <label className={styles.layoutLabel}>{t.theme.heroType}</label>
             <div className={styles.optionGroup}>
               {HERO_OPTIONS.map((opt) => (
                 <button
@@ -159,7 +156,7 @@ export default function ThemeEditorPage() {
           </div>
 
           <div className={styles.layoutField}>
-            <label className={styles.layoutLabel}>Card Style</label>
+            <label className={styles.layoutLabel}>{t.theme.cardStyle}</label>
             <div className={styles.optionGroup}>
               {CARD_OPTIONS.map((opt) => (
                 <button
@@ -174,7 +171,7 @@ export default function ThemeEditorPage() {
           </div>
 
           <div className={styles.layoutField}>
-            <label className={styles.layoutLabel}>Navigation</label>
+            <label className={styles.layoutLabel}>{t.theme.navigation}</label>
             <div className={styles.optionGroup}>
               {NAV_OPTIONS.map((opt) => (
                 <button
@@ -189,7 +186,7 @@ export default function ThemeEditorPage() {
           </div>
 
           <div className={styles.layoutField}>
-            <label className={styles.layoutLabel}>Border Radius</label>
+            <label className={styles.layoutLabel}>{t.theme.borderRadius}</label>
             <div className={styles.optionGroup}>
               {RADIUS_OPTIONS.map((opt) => (
                 <button
@@ -206,7 +203,7 @@ export default function ThemeEditorPage() {
 
         {/* Live Preview */}
         <section className={styles.section}>
-          <h2 className={styles.h2}>Preview</h2>
+          <h2 className={styles.h2}>{t.theme.preview}</h2>
           <div className={styles.preview}>
             <div className={styles.previewCard}>
               <div className={styles.previewHeader} style={{ background: theme.colors.primary, color: '#fff' }}>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 import styles from './rezervacie.module.css';
 
 type AppointmentStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
@@ -18,21 +20,21 @@ interface Appointment {
   createdAt: string;
 }
 
-const STATUS_LABELS: Record<AppointmentStatus, string> = {
-  PENDING:   'Čaká',
-  CONFIRMED: 'Potvrdená',
-  COMPLETED: 'Dokončená',
-  CANCELLED: 'Zrušená',
-  NO_SHOW:   'Neprišiel',
-};
-
-const FILTERS: { value: string; label: string }[] = [
-  { value: 'ALL',       label: 'Všetky' },
-  { value: 'PENDING',   label: 'Čakajúce' },
-  { value: 'CONFIRMED', label: 'Potvrdené' },
-  { value: 'COMPLETED', label: 'Dokončené' },
-  { value: 'CANCELLED', label: 'Zrušené' },
+const FILTER_KEYS: { value: string; tKey: keyof ReturnType<typeof getAdminT>['reservations'] }[] = [
+  { value: 'ALL',       tKey: 'all' },
+  { value: 'PENDING',   tKey: 'pending' },
+  { value: 'CONFIRMED', tKey: 'confirmed' },
+  { value: 'COMPLETED', tKey: 'completed' },
+  { value: 'CANCELLED', tKey: 'cancelled' },
 ];
+
+const STATUS_T_MAP: Record<AppointmentStatus, keyof ReturnType<typeof getAdminT>['reservations']> = {
+  PENDING:   'pending',
+  CONFIRMED: 'confirmed',
+  CANCELLED: 'cancelled',
+  COMPLETED: 'completed',
+  NO_SHOW:   'noShow',
+};
 
 function avatarLetter(name: string | null) {
   return name ? name.trim()[0]?.toUpperCase() ?? '?' : '?';
@@ -43,6 +45,10 @@ function fmtDate(iso: string) {
 }
 
 export default function RezervaciaPage() {
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+  const r = t.reservations;
+
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading]           = useState(true);
   const [activeFilter, setActiveFilter] = useState('ALL');
@@ -93,7 +99,6 @@ export default function RezervaciaPage() {
     }
   };
 
-  // Stats from loaded data (regardless of filter for total view)
   const stats = {
     pending:   appointments.filter((a) => a.status === 'PENDING').length,
     confirmed: appointments.filter((a) => a.status === 'CONFIRMED').length,
@@ -105,13 +110,14 @@ export default function RezervaciaPage() {
     <div className={styles.page}>
       {/* Top bar */}
       <div className={styles.topBar}>
-        <h1 className={styles.title}>Rezervácie</h1>
+        <h1 className={styles.title}>{r.title}</h1>
         <div className={styles.topRight}>
           <input
             type="date"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
             className={styles.datePicker}
+            aria-label={r.title}
           />
           {dateFilter && (
             <button
@@ -119,7 +125,7 @@ export default function RezervaciaPage() {
               className={styles.clearDateBtn}
               onClick={() => setDateFilter('')}
             >
-              ✕ Všetky dátumy
+              {r.clearDate}
             </button>
           )}
         </div>
@@ -129,43 +135,43 @@ export default function RezervaciaPage() {
       <div className={styles.stats}>
         <div className={`${styles.statCard} ${styles.statPending}`}>
           <div className={styles.statValue}>{stats.pending}</div>
-          <div className={styles.statLabel}>Čakajúce</div>
+          <div className={styles.statLabel}>{r.statPending}</div>
         </div>
         <div className={`${styles.statCard} ${styles.statConfirmed}`}>
           <div className={styles.statValue}>{stats.confirmed}</div>
-          <div className={styles.statLabel}>Potvrdené</div>
+          <div className={styles.statLabel}>{r.statConfirmed}</div>
         </div>
         <div className={`${styles.statCard} ${styles.statCompleted}`}>
           <div className={styles.statValue}>{stats.completed}</div>
-          <div className={styles.statLabel}>Dokončené</div>
+          <div className={styles.statLabel}>{r.statCompleted}</div>
         </div>
         <div className={`${styles.statCard} ${styles.statCancelled}`}>
           <div className={styles.statValue}>{stats.cancelled}</div>
-          <div className={styles.statLabel}>Zrušené</div>
+          <div className={styles.statLabel}>{r.statCancelled}</div>
         </div>
       </div>
 
       {/* Filter tabs */}
       <div className={styles.filters}>
-        {FILTERS.map((f) => (
+        {FILTER_KEYS.map((f) => (
           <button
             key={f.value}
             type="button"
             onClick={() => setActiveFilter(f.value)}
             className={`${styles.filterBtn} ${activeFilter === f.value ? styles.filterActive : ''}`}
           >
-            {f.label}
+            {r[f.tKey] as string}
           </button>
         ))}
       </div>
 
       {/* Cards */}
       {loading ? (
-        <div className={styles.loading}>Načítavam rezervácie...</div>
+        <div className={styles.loading}>{r.loading}</div>
       ) : (
         <div className={styles.grid}>
           {appointments.length === 0 && (
-            <div className={styles.empty}>Žiadne rezervácie</div>
+            <div className={styles.empty}>{r.noReservations}</div>
           )}
 
           {appointments.map((a) => {
@@ -176,6 +182,8 @@ export default function RezervaciaPage() {
                   `Dobrý deň, ${a.guestName ?? ''} — ohľadom Vašej rezervácie ${a.timeSlot} dňa ${fmtDate(a.date)}.`
                 )}`
               : null;
+
+            const statusLabel = r[STATUS_T_MAP[a.status]] as string;
 
             return (
               <div
@@ -196,7 +204,7 @@ export default function RezervaciaPage() {
                     )}
                   </div>
                   <span className={`${styles.badge} ${styles[`badge${a.status}`]}`}>
-                    {STATUS_LABELS[a.status]}
+                    {statusLabel}
                   </span>
                 </div>
 
@@ -225,7 +233,7 @@ export default function RezervaciaPage() {
                       className={`${styles.btn} ${styles.btnConfirm}`}
                       onClick={() => void updateStatus(a.id, 'CONFIRMED')}
                     >
-                      Potvrdiť
+                      {r.confirm}
                     </button>
                   )}
                   {(a.status === 'PENDING' || a.status === 'CONFIRMED') && (
@@ -235,7 +243,7 @@ export default function RezervaciaPage() {
                       className={`${styles.btn} ${styles.btnComplete}`}
                       onClick={() => void updateStatus(a.id, 'COMPLETED')}
                     >
-                      Dokončiť
+                      {r.complete}
                     </button>
                   )}
                   {a.status !== 'CANCELLED' && a.status !== 'COMPLETED' && (
@@ -245,7 +253,7 @@ export default function RezervaciaPage() {
                       className={`${styles.btn} ${styles.btnCancel}`}
                       onClick={() => void cancelAppointment(a.id)}
                     >
-                      Zrušiť
+                      {r.cancel}
                     </button>
                   )}
                   {waLink && (
@@ -255,7 +263,7 @@ export default function RezervaciaPage() {
                       rel="noopener noreferrer"
                       className={`${styles.btn} ${styles.btnWa}`}
                     >
-                      WhatsApp
+                      {r.whatsapp}
                     </a>
                   )}
                 </div>

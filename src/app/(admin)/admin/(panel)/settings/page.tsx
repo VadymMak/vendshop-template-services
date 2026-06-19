@@ -6,16 +6,12 @@ import WorkingHoursEditor, { DEFAULT_HOURS, type HoursMap } from './WorkingHours
 import GalleryTab from './GalleryTab';
 import MastersTab from './MastersTab';
 import styles from './settings.module.css';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 
 type Tab = 'store' | 'gallery' | 'masters' | 'notifications' | 'security' | 'schedule';
 
-const BASE_TABS: { key: Tab; label: string }[] = [
-  { key: 'store',         label: 'Obchod' },
-  { key: 'gallery',       label: 'Galéria' },
-  { key: 'masters',       label: 'Majstri' },
-  { key: 'notifications', label: 'Notifikácie' },
-  { key: 'security',      label: 'Bezpečnosť' },
-];
+const BASE_TAB_KEYS: Tab[] = ['store', 'gallery', 'masters', 'notifications', 'security'];
 
 const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 
@@ -61,6 +57,9 @@ function parseHours(raw: unknown): HoursMap {
 }
 
 export default function AdminSettingsPage() {
+  const { locale } = useAdminLocale();
+  const tr = getAdminT(locale);
+
   const [tab, setTab] = useState<Tab>('store');
   const [vertical, setVertical] = useState('');
   const [loading, setLoading] = useState(true);
@@ -113,9 +112,9 @@ export default function AdminSettingsPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  const tabs = [
-    ...BASE_TABS,
-    ...(vertical === 'RESTAURANT' ? [{ key: 'schedule' as Tab, label: 'Rozvrh' }] : []),
+  const tabKeys: Tab[] = [
+    ...BASE_TAB_KEYS,
+    ...(vertical === 'RESTAURANT' ? ['schedule' as Tab] : []),
   ];
 
   const [toast, setToast] = useState(false);
@@ -177,17 +176,17 @@ export default function AdminSettingsPage() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.h1}>Nastavenia</h1>
+      <h1 className={styles.h1}>{tr.settings.title}</h1>
 
       <div className={styles.tabs}>
-        {tabs.map((t) => (
+        {tabKeys.map((key) => (
           <button
-            key={t.key}
+            key={key}
             type="button"
-            className={`${styles.tab} ${tab === t.key ? styles.tabActive : ''}`}
-            onClick={() => setTab(t.key)}
+            className={`${styles.tab} ${tab === key ? styles.tabActive : ''}`}
+            onClick={() => setTab(key)}
           >
-            {t.label}
+            {tr.settings.tabs[key]}
           </button>
         ))}
       </div>
@@ -208,7 +207,7 @@ export default function AdminSettingsPage() {
                 marginBottom: '1.5rem',
               }}>
                 <p style={{ color: '#888', fontSize: '0.78rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '1rem' }}>
-                  Logo salóna
+                  {tr.settings.logoLabel}
                 </p>
                 {logoUrl ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -219,7 +218,7 @@ export default function AdminSettingsPage() {
                       style={{ height: '56px', objectFit: 'contain', background: '#1a1a1a', borderRadius: '8px', padding: '0.5rem' }}
                     />
                     <label style={{ cursor: logoUploading ? 'wait' : 'pointer', color: '#B87333', fontSize: '0.875rem', textDecoration: 'underline' }}>
-                      {logoUploading ? 'Nahrávam...' : 'Zmeniť logo'}
+                      {logoUploading ? tr.settings.uploading : tr.settings.changeLogo}
                       <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: 'none' }} disabled={logoUploading} />
                     </label>
                   </div>
@@ -230,7 +229,7 @@ export default function AdminSettingsPage() {
                     border: '1px dashed rgba(255,255,255,0.12)', borderRadius: '8px', color: '#666',
                   }}>
                     <span style={{ fontSize: '1.5rem', lineHeight: 1 }}>↑</span>
-                    <span>{logoUploading ? 'Nahrávam...' : 'Nahrať logo'}</span>
+                    <span>{logoUploading ? tr.settings.uploading : tr.settings.uploadLogo}</span>
                     <span style={{ fontSize: '0.75rem', color: '#444' }}>WebP / PNG / JPG · výstup 400×120 · max 5 MB</span>
                     <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: 'none' }} disabled={logoUploading} />
                   </label>
@@ -262,7 +261,7 @@ export default function AdminSettingsPage() {
               {/* ── Working hours editor ─────────────────────────────── */}
               <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
                 <p style={{ color: '#888', fontSize: '0.78rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
-                  Pracovné hodiny
+                  {tr.settings.workingHoursLabel}
                 </p>
                 <WorkingHoursEditor value={hours} onChange={setHours} />
               </div>
@@ -289,7 +288,7 @@ export default function AdminSettingsPage() {
               </Field>
 
               <button type="button" className={styles.saveBtn} onClick={saveStore} disabled={saving}>
-                {saving ? 'Ukladám...' : 'Uložiť zmeny'}
+                {saving ? tr.settings.savingBtn : tr.settings.saveBtn}
               </button>
             </>
           )}
