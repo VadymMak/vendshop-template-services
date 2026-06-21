@@ -4,5 +4,11 @@
   "framework": "nextjs",
   "env": {
     "REGION_BUNDLE": "UA"
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-appointments",
+      "schedule": "0 1 * * *"
+    }
+  ]
 }

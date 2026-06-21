@@ -44,6 +44,14 @@ export default function DateTimePicker({
 
   const timeSlots = generateTimeSlots(selectedDay.getDay());
 
+  const isToday = selectedDay.toDateString() === days[0].toDateString();
+  const nowHHMM = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Europe/Bratislava',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(new Date()).trim();
+
   const handleDaySelect = (day: Date) => {
     if (day.getDay() === 0) return;
     setSelectedTime('');
@@ -54,6 +62,7 @@ export default function DateTimePicker({
 
   const handleTimeSelect = (time: string) => {
     if (bookedSlots.includes(time)) return;
+    if (isToday && time <= nowHHMM) return;
     setSelectedTime(time);
     onSelect(selectedDay.toISOString().split('T')[0], time);
   };
@@ -90,11 +99,13 @@ export default function DateTimePicker({
           <p className="date-picker__closed">Zatvorené</p>
         ) : (
           timeSlots.map((slot) => {
-            const isBooked   = bookedSlots.includes(slot);
-            const isSelected = selectedTime === slot;
+            const isBooked      = bookedSlots.includes(slot);
+            const isPast        = isToday && slot <= nowHHMM;
+            const isUnavailable = isBooked || isPast;
+            const isSelected    = selectedTime === slot;
             let cls = 'date-picker__time';
-            if (isSelected) cls += ' date-picker__time--selected';
-            if (isBooked)   cls += ' date-picker__time--booked';
+            if (isSelected)    cls += ' date-picker__time--selected';
+            if (isUnavailable) cls += ' date-picker__time--booked';
 
             return (
               <button
@@ -102,13 +113,12 @@ export default function DateTimePicker({
                 type="button"
                 className={cls}
                 onClick={() => handleTimeSelect(slot)}
-                disabled={isBooked}
-                title={isBooked ? 'Obsadené' : undefined}
+                disabled={isUnavailable}
+                title={isBooked ? 'Obsadené' : isPast ? 'Uplynulý čas' : undefined}
               >
                 {slot}
-                {isBooked && (
-                  <span className="date-picker__time-booked-label">obsadené</span>
-                )}
+                {isBooked && <span className="date-picker__time-booked-label">obsadené</span>}
+                {isPast && !isBooked && <span className="date-picker__time-booked-label">minulosť</span>}
               </button>
             );
           })

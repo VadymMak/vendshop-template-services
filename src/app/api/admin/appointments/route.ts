@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get('status'); // ALL | PENDING | CONFIRMED | COMPLETED | CANCELLED
   const date   = searchParams.get('date');   // YYYY-MM-DD
+  const all    = searchParams.get('all');    // "true" → include past appointments
 
   const where: Record<string, unknown> = { storeId: store.id };
 
@@ -22,11 +23,18 @@ export async function GET(req: NextRequest) {
     const next = new Date(d);
     next.setDate(next.getDate() + 1);
     where.date = { gte: d, lt: next };
+  } else if (!all) {
+    // Default: upcoming only (from start of today in Bratislava)
+    const todayStr = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Europe/Bratislava',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(new Date()).trim();
+    where.date = { gte: new Date(`${todayStr}T00:00:00`) };
   }
 
   const appointments = await db.appointment.findMany({
     where,
-    orderBy: [{ date: 'desc' }, { timeSlot: 'asc' }],
+    orderBy: [{ date: 'asc' }, { timeSlot: 'asc' }],
     take: 200,
     include: {
       service: { select: { nameKey: true } },

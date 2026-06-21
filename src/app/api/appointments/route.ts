@@ -19,6 +19,12 @@ export async function GET(req: NextRequest) {
 
   // ── Slots mode: return booked time strings ──────────────────────────────
   if (mode === 'slots' && date) {
+    const todayBratislava = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Europe/Bratislava',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(new Date()).trim();
+    if (date < todayBratislava) return NextResponse.json([]);
+
     const d    = new Date(date);
     const next = new Date(d);
     next.setDate(next.getDate() + 1);
@@ -88,6 +94,17 @@ export async function POST(req: NextRequest) {
     const dateObj  = new Date(dateStr);
     const nextDate = new Date(dateObj);
     nextDate.setDate(nextDate.getDate() + 1);
+
+    // Past datetime guard (Europe/Bratislava)
+    const nowBratislava = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Europe/Bratislava',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit',
+      hour12: false,
+    }).format(new Date()).trim().replace(' ', 'T');
+    if (`${dateStr}T${timeSlot}` <= nowBratislava) {
+      return NextResponse.json({ error: 'Cannot book a past time' }, { status: 400 });
+    }
 
     // Conflict check
     const conflictWhere: Record<string, unknown> = {
