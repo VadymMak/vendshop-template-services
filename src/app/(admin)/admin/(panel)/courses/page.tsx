@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAdminLocale } from '@/hooks/useAdminLocale';
 import { getAdminT } from '@/lib/admin-i18n';
+import AdminLoading from '@/components/admin/AdminLoading/AdminLoading';
 
 interface CourseTranslation {
   locale: string;
@@ -46,14 +47,19 @@ export default function AdminCoursesPage() {
   const t = getAdminT(locale);
 
   const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    const r = await fetch('/api/admin/courses');
-    if (r.ok) setCourses(await r.json() as Course[]);
+    try {
+      const r = await fetch('/api/admin/courses');
+      if (r.ok) setCourses(await r.json() as Course[]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -131,6 +137,8 @@ export default function AdminCoursesPage() {
     await fetch(`/api/admin/courses/${id}`, { method: 'DELETE' });
     await load();
   }
+
+  if (loading) return <AdminLoading rows={4} />;
 
   const isEditing = editId !== null || showAdd;
 

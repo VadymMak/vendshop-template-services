@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import AdminLoading from '@/components/admin/AdminLoading/AdminLoading';
 
 interface Master {
   id: string;
@@ -40,6 +41,8 @@ export default function MastersPage() {
     await load();
   }
 
+  if (loading) return <AdminLoading rows={3} />;
+
   return (
     <div className="admin-page">
       <div className="admin-page__header">
@@ -47,10 +50,7 @@ export default function MastersPage() {
         <Link href="/admin/masters/new" className="btn-primary btn-sm">+ Pridať majstra</Link>
       </div>
 
-      {loading ? (
-        <p style={{ color: 'var(--color-text-muted)', padding: '2rem' }}>Načítavam...</p>
-      ) : (
-        <div className="admin-services__list">
+      <div className="admin-services__list">
           {masters.length === 0 ? (
             <p style={{ color: 'var(--color-text-muted)', padding: '2rem' }}>
               Žiadni majstri. Pridajte prvého.
@@ -95,8 +95,7 @@ export default function MastersPage() {
               </div>
             </div>
           ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 }

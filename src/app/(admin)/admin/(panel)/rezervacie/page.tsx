@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAdminLocale } from '@/hooks/useAdminLocale';
 import { getAdminT } from '@/lib/admin-i18n';
 import styles from './rezervacie.module.css';
+import AdminLoading from '@/components/admin/AdminLoading/AdminLoading';
 
 type AppointmentStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
 
@@ -230,7 +231,7 @@ export default function RezervaciaPage() {
 
       {/* Cards */}
       {loading ? (
-        <div className={styles.loading}>{r.loading}</div>
+        <AdminLoading rows={4} />
       ) : (
         <div className={styles.grid}>
           {appointments.length === 0 && (

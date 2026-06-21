@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAdminLocale } from '@/hooks/useAdminLocale';
 import { getAdminT } from '@/lib/admin-i18n';
+import AdminLoading from '@/components/admin/AdminLoading/AdminLoading';
 
 interface Service {
   id: string;
@@ -21,14 +22,19 @@ export default function AdminServicesPage() {
   const t = getAdminT(locale);
 
   const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    const r = await fetch('/api/admin/services');
-    if (r.ok) setServices(await r.json() as Service[]);
+    try {
+      const r = await fetch('/api/admin/services');
+      if (r.ok) setServices(await r.json() as Service[]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -96,6 +102,8 @@ export default function AdminServicesPage() {
     await fetch(`/api/admin/services/${id}`, { method: 'DELETE' });
     await load();
   }
+
+  if (loading) return <AdminLoading rows={4} />;
 
   const isEditing = editId !== null || showAdd;
 

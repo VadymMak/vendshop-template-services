@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAdminLocale } from '@/hooks/useAdminLocale';
 import { getAdminT } from '@/lib/admin-i18n';
 import styles from './history.module.css';
+import AdminLoading from '@/components/admin/AdminLoading/AdminLoading';
 
 interface Master   { id: string; name: string }
 interface Service  { id: string; nameKey: string }
@@ -188,7 +189,7 @@ export default function HistoryPage() {
 
       {/* Table */}
       {loading ? (
-        <p className={styles.loadingText}>Načítavam históriu...</p>
+        <AdminLoading rows={5} />
       ) : appointments.length === 0 ? (
         <p className={styles.emptyText}>Žiadne záznamy pre vybraté filtre.</p>
       ) : (
