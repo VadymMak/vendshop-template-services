@@ -31,3 +31,4 @@ prompt-*.md
 PROJECT_REPORT.md
 .env.blob
 .claude/
+.env*
