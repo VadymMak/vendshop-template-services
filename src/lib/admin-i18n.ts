@@ -16,6 +16,7 @@ export interface AdminTranslations {
     tables: string;
     deliveryZones: string;
     courses: string;
+    history: string;
     theme: string;
     ai: string;
     settings: string;
@@ -158,6 +159,7 @@ const SK: AdminTranslations = {
     tables:       'Stoly',
     deliveryZones:'Doručovacie zóny',
     courses:      'Kurzy',
+    history:      'História',
     theme:        'Téma',
     ai:           'AI správa',
     settings:     'Nastavenia',
@@ -339,6 +341,7 @@ const EN: AdminTranslations = {
     tables:       'Tables',
     deliveryZones:'Delivery Zones',
     courses:      'Courses',
+    history:      'History',
     theme:        'Theme',
     ai:           'AI Manager',
     settings:     'Settings',

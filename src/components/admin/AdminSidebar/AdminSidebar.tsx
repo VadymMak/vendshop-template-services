@@ -248,6 +248,17 @@ const NAV_SERVICES_ALL: (NavItem & { show: boolean })[] = [
       </svg>
     ),
   },
+  {
+    href: '/admin/history',
+    labelKey: 'history',
+    show: true,
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" {...ico}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 3" />
+      </svg>
+    ),
+  },
 ];
 
 const NAV_SERVICES: NavItem[] = NAV_SERVICES_ALL.filter((item) => item.show);

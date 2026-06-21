@@ -122,11 +122,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Slot already booked' }, { status: 409 });
     }
 
-    // Derive duration from service if provided
-    let duration = 30;
+    // Derive duration + snapshot price from service
+    let duration       = 30;
+    let priceAtBooking: number | null = null;
     if (body.serviceId) {
       const svc = await db.service.findUnique({ where: { id: body.serviceId } });
-      if (svc?.duration) duration = svc.duration;
+      if (svc) { duration = svc.duration; priceAtBooking = svc.price; }
     }
 
     const appointment = await db.appointment.create({
@@ -137,6 +138,7 @@ export async function POST(req: NextRequest) {
         date:       dateObj,
         timeSlot,
         duration,
+        priceAtBooking,
         note:       body.notes ?? null,
         ...(body.serviceId ? { serviceId: body.serviceId } : {}),
         ...(body.masterId && body.masterId !== 'any' ? { masterId: body.masterId } : {}),

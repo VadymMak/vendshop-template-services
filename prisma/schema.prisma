@@ -490,6 +490,8 @@ model Appointment {
   emailReminderSent    Boolean @default(false)
   whatsappReminderSent Boolean @default(false)
 
+  priceAtBooking Float?
+
   paymentStatus PaymentStatus @default(UNPAID)
   paymentId     String?
   deposit       Float?
