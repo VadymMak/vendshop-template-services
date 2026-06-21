@@ -176,6 +176,8 @@ body::after {
 }
 .header__logo:hover .header__logo-span { color: var(--color-gold); }
 
+.header__logo-img { height: 40px; object-fit: contain; }
+
 .header__nav {
   display: flex;
   gap: 1.5rem;
@@ -299,6 +301,20 @@ body::after {
 @media (max-width: 900px) {
   .header__nav { display: none; }
   .header__mobile-btn { display: block; }
+}
+
+@media (max-width: 768px) {
+  /* Logo 68px centered — change the value here to tune size */
+  .header__logo-img { height: 68px; }
+  .header__inner { position: relative; }
+  .header__logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+  }
+  /* Hamburger stays right, above the logo */
+  .header__mobile-btn { margin-left: auto; position: relative; z-index: 2; }
 }
 
 /* ===== HERO ===== */
