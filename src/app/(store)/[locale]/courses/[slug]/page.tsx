@@ -23,7 +23,7 @@ export async function generateMetadata({
   return {
     title: t?.name ?? slug,
     description: t?.description ?? undefined,
-    openGraph: { images: course.previewUrl ? [course.previewUrl] : [] },
+    openGraph: { images: course.previewUrl ? [course.previewUrl] : ['/og-image.jpg'] },
   };
 }
 
