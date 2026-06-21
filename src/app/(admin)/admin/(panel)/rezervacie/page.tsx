@@ -8,17 +8,20 @@ import styles from './rezervacie.module.css';
 type AppointmentStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
 
 interface Appointment {
-  id: string;
-  guestName: string | null;
+  id:        string;
+  guestName:  string | null;
   guestPhone: string | null;
-  date: string;
-  timeSlot: string;
-  status: AppointmentStatus;
-  service: string | null;
-  master: string | null;
-  note: string | null;
-  createdAt: string;
+  date:       string;
+  timeSlot:   string;
+  status:     AppointmentStatus;
+  service:    string | null;
+  master:     string | null;
+  note:       string | null;
+  createdAt:  string;
 }
+
+interface Master  { id: string; name: string }
+interface Service { id: string; nameKey: string }
 
 const FILTER_KEYS: { value: string; tKey: keyof ReturnType<typeof getAdminT>['reservations'] }[] = [
   { value: 'ALL',       tKey: 'all' },
@@ -50,26 +53,56 @@ export default function RezervaciaPage() {
   const r = t.reservations;
 
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading]           = useState(true);
-  const [activeFilter, setActiveFilter] = useState('ALL');
-  const [dateFilter, setDateFilter]     = useState('');
-  const [busy, setBusy]                 = useState<Set<string>>(new Set());
+  const [masters,      setMasters]      = useState<Master[]>([]);
+  const [services,     setServices]     = useState<Service[]>([]);
+  const [loading,      setLoading]      = useState(true);
+  const [busy,         setBusy]         = useState<Set<string>>(new Set());
+
+  // Filters
+  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [masterId,     setMasterId]     = useState('');
+  const [serviceId,    setServiceId]    = useState('');
+  const [from,         setFrom]         = useState('');
+  const [to,           setTo]           = useState('');
+
+  // Load masters + services once
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/masters').then((r) => r.json() as Promise<{ masters: Master[] }>),
+      fetch('/api/services').then((r) => r.json() as Promise<{ services: Service[] }>),
+    ]).then(([m, s]) => {
+      setMasters(m.masters ?? []);
+      setServices(s.services ?? []);
+    }).catch(() => {});
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (activeFilter !== 'ALL') params.set('status', activeFilter);
-      if (dateFilter)             params.set('date', dateFilter);
-      const res = await fetch(`/api/admin/appointments?${params.toString()}`);
+      const p = new URLSearchParams({ scope: 'active' });
+      if (statusFilter !== 'ALL') p.set('status', statusFilter);
+      if (masterId)               p.set('masterId',  masterId);
+      if (serviceId)              p.set('serviceId', serviceId);
+      if (from)                   p.set('from', from);
+      if (to)                     p.set('to',   to);
+      const res  = await fetch(`/api/admin/appointments?${p.toString()}`);
       const data = (await res.json()) as Appointment[];
       setAppointments(data);
     } finally {
       setLoading(false);
     }
-  }, [activeFilter, dateFilter]);
+  }, [statusFilter, masterId, serviceId, from, to]);
 
   useEffect(() => { void load(); }, [load]);
+
+  const clearFilters = () => {
+    setMasterId('');
+    setServiceId('');
+    setFrom('');
+    setTo('');
+  };
+
+  const hasExtraFilters = masterId || serviceId || from || to;
 
   const updateStatus = async (id: string, status: AppointmentStatus) => {
     setBusy((prev) => new Set(prev).add(id));
@@ -111,24 +144,54 @@ export default function RezervaciaPage() {
       {/* Top bar */}
       <div className={styles.topBar}>
         <h1 className={styles.title}>{r.title}</h1>
-        <div className={styles.topRight}>
-          <input
-            type="date"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className={styles.datePicker}
-            aria-label={r.title}
-          />
-          {dateFilter && (
-            <button
-              type="button"
-              className={styles.clearDateBtn}
-              onClick={() => setDateFilter('')}
-            >
-              {r.clearDate}
-            </button>
-          )}
-        </div>
+        <span className={styles.countBadge}>{appointments.length}</span>
+      </div>
+
+      {/* Filter panel */}
+      <div className={styles.filterPanel}>
+        <select
+          value={masterId}
+          onChange={(e) => setMasterId(e.target.value)}
+          className={styles.filterSelect}
+        >
+          <option value="">Všetci majstri</option>
+          {masters.map((m) => (
+            <option key={m.id} value={m.id}>{m.name}</option>
+          ))}
+        </select>
+
+        <select
+          value={serviceId}
+          onChange={(e) => setServiceId(e.target.value)}
+          className={styles.filterSelect}
+        >
+          <option value="">Všetky služby</option>
+          {services.map((s) => (
+            <option key={s.id} value={s.id}>{s.nameKey}</option>
+          ))}
+        </select>
+
+        <input
+          type="date"
+          value={from}
+          onChange={(e) => setFrom(e.target.value)}
+          className={styles.datePicker}
+          title="Od"
+        />
+
+        <input
+          type="date"
+          value={to}
+          onChange={(e) => setTo(e.target.value)}
+          className={styles.datePicker}
+          title="Do"
+        />
+
+        {hasExtraFilters && (
+          <button type="button" className={styles.clearDateBtn} onClick={clearFilters}>
+            {r.clearDate}
+          </button>
+        )}
       </div>
 
       {/* Stats */}
@@ -151,14 +214,14 @@ export default function RezervaciaPage() {
         </div>
       </div>
 
-      {/* Filter tabs */}
+      {/* Status filter tabs */}
       <div className={styles.filters}>
         {FILTER_KEYS.map((f) => (
           <button
             key={f.value}
             type="button"
-            onClick={() => setActiveFilter(f.value)}
-            className={`${styles.filterBtn} ${activeFilter === f.value ? styles.filterActive : ''}`}
+            onClick={() => setStatusFilter(f.value)}
+            className={`${styles.filterBtn} ${statusFilter === f.value ? styles.filterActive : ''}`}
           >
             {r[f.tKey] as string}
           </button>
@@ -175,9 +238,9 @@ export default function RezervaciaPage() {
           )}
 
           {appointments.map((a) => {
-            const isBusy = busy.has(a.id);
+            const isBusy      = busy.has(a.id);
             const isCancelled = a.status === 'CANCELLED';
-            const waLink = a.guestPhone
+            const waLink      = a.guestPhone
               ? `https://wa.me/${a.guestPhone.replace(/\D/g, '')}?text=${encodeURIComponent(
                   `Dobrý deň, ${a.guestName ?? ''} — ohľadom Vašej rezervácie ${a.timeSlot} dňa ${fmtDate(a.date)}.`
                 )}`
@@ -213,12 +276,8 @@ export default function RezervaciaPage() {
                   <span className={`${styles.chip} ${styles.chipDate}`}>
                     📆 {fmtDate(a.date)} · {a.timeSlot}
                   </span>
-                  {a.service && (
-                    <span className={styles.chip}>✂️ {a.service}</span>
-                  )}
-                  {a.master && (
-                    <span className={styles.chip}>💈 {a.master}</span>
-                  )}
+                  {a.service && <span className={styles.chip}>✂️ {a.service}</span>}
+                  {a.master  && <span className={styles.chip}>💈 {a.master}</span>}
                 </div>
 
                 {/* Note */}
