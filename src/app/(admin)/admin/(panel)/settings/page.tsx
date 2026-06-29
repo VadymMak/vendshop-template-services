@@ -212,13 +212,13 @@ export default function AdminSettingsPage() {
             <>
               {/* ── Logo upload ─────────────────────────────────────── */}
               <div style={{
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid var(--admin-border)',
                 borderRadius: '12px',
                 padding: '1.25rem 1.5rem',
-                background: '#111',
+                background: 'var(--admin-bg-card)',
                 marginBottom: '1.5rem',
               }}>
-                <p style={{ color: '#888', fontSize: '0.78rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+                <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.78rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '1rem' }}>
                   {tr.settings.logoLabel}
                 </p>
                 {logoUrl ? (
@@ -227,9 +227,9 @@ export default function AdminSettingsPage() {
                     <img
                       src={logoUrl}
                       alt="Logo"
-                      style={{ height: '56px', objectFit: 'contain', background: '#1a1a1a', borderRadius: '8px', padding: '0.5rem' }}
+                      style={{ height: '56px', objectFit: 'contain', background: 'var(--admin-bg-subtle)', borderRadius: '8px', padding: '0.5rem' }}
                     />
-                    <label style={{ cursor: logoUploading ? 'wait' : 'pointer', color: '#B87333', fontSize: '0.875rem', textDecoration: 'underline' }}>
+                    <label style={{ cursor: logoUploading ? 'wait' : 'pointer', color: 'var(--admin-kate-bronze)', fontSize: '0.875rem', textDecoration: 'underline' }}>
                       {logoUploading ? tr.settings.uploading : tr.settings.changeLogo}
                       <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: 'none' }} disabled={logoUploading} />
                     </label>
@@ -241,7 +241,7 @@ export default function AdminSettingsPage() {
                         background: 'none',
                         border: '1px solid rgba(239,68,68,0.4)',
                         borderRadius: '6px',
-                        color: '#ef4444',
+                        color: 'var(--admin-error-text)',
                         fontSize: '0.8rem',
                         padding: '0.25rem 0.625rem',
                         cursor: logoUploading ? 'wait' : 'pointer',
@@ -255,11 +255,11 @@ export default function AdminSettingsPage() {
                   <label style={{
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem',
                     padding: '1.5rem', cursor: logoUploading ? 'wait' : 'pointer',
-                    border: '1px dashed rgba(255,255,255,0.12)', borderRadius: '8px', color: '#666',
+                    border: '1px dashed var(--admin-border-light)', borderRadius: '8px', color: 'var(--admin-text-muted)',
                   }}>
                     <span style={{ fontSize: '1.5rem', lineHeight: 1 }}>↑</span>
                     <span>{logoUploading ? tr.settings.uploading : tr.settings.uploadLogo}</span>
-                    <span style={{ fontSize: '0.75rem', color: '#444' }}>WebP / PNG / JPG · výstup 400×120 · max 5 MB</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-faint)' }}>WebP / PNG / JPG · výstup 400×120 · max 5 MB</span>
                     <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: 'none' }} disabled={logoUploading} />
                   </label>
                 )}
@@ -289,7 +289,7 @@ export default function AdminSettingsPage() {
 
               {/* ── Working hours editor ─────────────────────────────── */}
               <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
-                <p style={{ color: '#888', fontSize: '0.78rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
+                <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.78rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
                   {tr.settings.workingHoursLabel}
                 </p>
                 <WorkingHoursEditor value={hours} onChange={setHours} />
