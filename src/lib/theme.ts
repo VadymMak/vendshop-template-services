@@ -20,6 +20,9 @@ export interface ThemeConfig {
     successLight:  string;
     errorLight:    string;
     infoLight:     string;
+    surface?:      string;
+    bgAlt?:        string;
+    bgCard?:       string;
   };
   layout: {
     heroType:     'full-width' | 'split' | 'minimal';
@@ -51,6 +54,9 @@ export const DEFAULT_THEME: ThemeConfig = {
     successLight:  '#dcfce7',
     errorLight:    '#fef2f2',
     infoLight:     '#eff6ff',
+    surface:       '#ffffff',
+    bgAlt:         '#f8fafc',
+    bgCard:        '#ffffff',
   },
   layout: {
     heroType:     'full-width',
@@ -82,6 +88,9 @@ export const DARK_THEME: ThemeConfig = {
     successLight:  '#dcfce7',
     errorLight:    '#fef2f2',
     infoLight:     '#eff6ff',
+    surface:       '#1a1a1a',
+    bgAlt:         '#111111',
+    bgCard:        '#161616',
   },
   layout: {
     heroType:     'split',
@@ -141,6 +150,9 @@ export function themeToCssVars(theme: ThemeConfig): Record<string, string> {
     '--color-success-light':  theme.colors.successLight,
     '--color-error-light':    theme.colors.errorLight,
     '--color-info-light':     theme.colors.infoLight,
+    '--color-surface':        theme.colors.surface  ?? theme.colors.bgSubtle,
+    '--color-bg-alt':         theme.colors.bgAlt    ?? theme.colors.bgSubtle,
+    '--color-bg-card':        theme.colors.bgCard   ?? theme.colors.bg,
     // Border radius
     '--radius-xs': radius.xs,
     '--radius-sm': radius.sm,

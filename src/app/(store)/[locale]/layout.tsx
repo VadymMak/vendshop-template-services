@@ -8,7 +8,7 @@ import Header from '@/components/layout/Header/Header';
 import Footer from '@/components/layout/Footer/Footer';
 import CookieBanner from '@/components/ui/CookieBanner/CookieBanner';
 import { getStoreConfig } from '@/lib/store-config';
-import { themeToCssVars, DARK_THEME } from '@/lib/theme';
+import { themeToCssVars, DEFAULT_THEME } from '@/lib/theme';
 import { db } from '@/lib/db';
 import { VerticalProvider } from '@/lib/vertical-context';
 import { PresenceProvider } from '@/lib/presence-context';
@@ -107,8 +107,7 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
   const config = await getStoreConfig();
-  const theme = process.env.NEXT_PUBLIC_THEME ?? 'dark';
-  const cssVars = themeToCssVars(theme === 'dark' ? DARK_THEME : config.theme);
+  const cssVars = themeToCssVars(config.theme ?? DEFAULT_THEME);
 
   const storeSlug = process.env.STORE_SLUG ?? 'kate-barber';
   const store = locale === 'de'
@@ -120,7 +119,7 @@ export default async function LocaleLayout({
   const legalEnabled = legalConfig?.enabled ?? false;
 
   return (
-    <html lang={locale} data-vertical={config.vertical.vertical} data-theme={theme} className={`${playfair.variable} ${dmSans.variable}`}>
+    <html lang={locale} data-vertical={config.vertical.vertical} className={`${playfair.variable} ${dmSans.variable}`}>
       <head>
         <link rel="preconnect" href="https://conuflmgcnkfqjmncsth.public.blob.vercel-storage.com" />
         <link rel="dns-prefetch" href="https://conuflmgcnkfqjmncsth.public.blob.vercel-storage.com" />
