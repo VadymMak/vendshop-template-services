@@ -136,7 +136,7 @@ export default function HeroAdminPage() {
               <div style={{ marginBottom: '1rem' }}>
                 <p
                   style={{
-                    color: 'var(--color-text-muted)',
+                    color: 'var(--color-text-secondary)',
                     fontSize: '0.8rem',
                     marginBottom: '0.5rem',
                     textTransform: 'uppercase',
@@ -153,7 +153,7 @@ export default function HeroAdminPage() {
                     maxHeight: '260px',
                     objectFit: 'cover',
                     borderRadius: '8px',
-                    border: '1px solid var(--color-border)',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
                   }}
                 />
               </div>
@@ -163,7 +163,7 @@ export default function HeroAdminPage() {
               <div style={{ marginBottom: '1rem' }}>
                 <p
                   style={{
-                    color: 'var(--color-copper, #B87333)',
+                    color: 'var(--color-primary)',
                     fontSize: '0.8rem',
                     marginBottom: '0.5rem',
                     textTransform: 'uppercase',
@@ -180,7 +180,7 @@ export default function HeroAdminPage() {
                     maxHeight: '260px',
                     objectFit: 'cover',
                     borderRadius: '8px',
-                    border: '2px solid var(--color-copper, #B87333)',
+                    border: '2px solid var(--color-primary)',
                   }}
                 />
               </div>
@@ -191,12 +191,12 @@ export default function HeroAdminPage() {
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              style={{ color: 'var(--color-text-secondary, #b0a898)' }}
+              style={{ color: 'var(--color-text-secondary)' }}
             />
             <span
               style={{
                 fontSize: '0.75rem',
-                color: 'var(--color-text-muted)',
+                color: 'var(--color-text-secondary)',
                 marginTop: '0.35rem',
               }}
             >
