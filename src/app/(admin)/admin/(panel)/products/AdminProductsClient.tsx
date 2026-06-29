@@ -218,7 +218,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
 
       {formOpen && (
         <div className="admin-masters__form" style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>
+          <h2 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--color-text)' }}>
             {editing ? 'Upraviť produkt' : 'Nový produkt'}
           </h2>
 
@@ -248,8 +248,8 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
                 style={{
-                  background: 'var(--color-bg-card)',
-                  color: 'var(--color-text-primary)',
+                  background: 'var(--color-bg-subtle)',
+                  color: 'var(--color-text)',
                   border: '1px solid var(--color-border)',
                   borderRadius: 'var(--border-radius-md, 4px)',
                   padding: '0.5rem',
@@ -326,7 +326,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                   style={{
                     padding: '0.35rem 0.75rem',
                     borderRadius: 'var(--border-radius-md, 4px)',
-                    background: activeLocale === loc ? 'var(--color-copper, #B87333)' : 'var(--color-bg-card, rgba(0,0,0,0.4))',
+                    background: activeLocale === loc ? 'var(--color-copper, #B87333)' : 'var(--color-bg-subtle, rgba(0,0,0,0.4))',
                     color: activeLocale === loc ? '#fff' : 'var(--color-text-muted)',
                     border: '1px solid var(--color-border)',
                     cursor: 'pointer',
@@ -370,8 +370,8 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                 }
                 style={{
                   width: '100%',
-                  background: 'var(--color-bg-card)',
-                  color: 'var(--color-text-primary)',
+                  background: 'var(--color-bg-subtle)',
+                  color: 'var(--color-text)',
                   border: '1px solid var(--color-border)',
                   borderRadius: 'var(--border-radius-md, 4px)',
                   padding: '0.5rem',
@@ -428,7 +428,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                 alignItems: 'center',
                 gap: '1rem',
                 padding: '0.875rem 1rem',
-                background: 'var(--color-bg-card)',
+                background: 'var(--color-bg-subtle)',
                 borderRadius: 'var(--border-radius-lg, 8px)',
                 border: '1px solid var(--color-border)',
                 opacity: p.active ? 1 : 0.5,
@@ -442,7 +442,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                 />
               )}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontWeight: 600, color: 'var(--color-text-primary)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <p style={{ fontWeight: 600, color: 'var(--color-text)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {skName}
                 </p>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: '0.2rem 0 0' }}>
