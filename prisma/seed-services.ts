@@ -5,6 +5,7 @@ dotenv.config();
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
+import { DARK_THEME } from '../src/lib/theme';
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -31,8 +32,9 @@ async function main() {
         sat: { open: '09:00', close: '14:00' },
         sun: null,
       }),
+      themeConfig: DARK_THEME as any,
     },
-    update: { vertical: 'SERVICES' },
+    update: { vertical: 'SERVICES', themeConfig: DARK_THEME as any },
   });
 
   console.log(`Store: ${store.name} (${store.id})`);
