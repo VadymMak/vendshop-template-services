@@ -128,6 +128,7 @@ body::after {
   font-family: var(--font-display);
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
+  color: var(--color-text);
   margin-bottom: 1rem;
 }
 
@@ -620,6 +621,7 @@ body::after {
 .service-card__name {
   font-family: var(--font-display);
   font-size: 1.2rem;
+  color: var(--color-text);
   margin-bottom: 0.3rem;
 }
 
@@ -671,6 +673,7 @@ body::after {
   font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
+  color: var(--color-text);
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -770,6 +773,7 @@ body::after {
 .team-name {
   font-family: var(--font-display);
   font-size: 1.3rem;
+  color: var(--color-text);
   margin-top: 1rem;
 }
 
@@ -829,6 +833,7 @@ body::after {
 .testimonial-author {
   font-weight: 600;
   font-size: 0.9rem;
+  color: var(--color-text);
 }
 
 .testimonial-date {
@@ -1171,6 +1176,7 @@ body::after {
 .about__title {
   font-family: var(--font-display);
   font-size: 1.8rem;
+  color: var(--color-text);
   margin-bottom: 1.5rem;
 }
 
