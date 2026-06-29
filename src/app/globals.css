@@ -429,6 +429,16 @@ body::after {
   color: var(--color-text-muted);
 }
 
+.hero__instagram {
+  color: var(--color-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.hero__instagram:hover {
+  color: var(--color-primary);
+}
+
 .btn-primary {
   display: inline-flex;
   align-items: center;
