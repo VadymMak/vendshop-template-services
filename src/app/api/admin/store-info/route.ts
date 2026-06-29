@@ -27,10 +27,19 @@ export async function GET() {
       email: true,
       mapLat: true,
       mapLng: true,
+      metadata: true,
     },
   });
 
-  return NextResponse.json({ store });
+  const meta = (store?.metadata ?? {}) as Record<string, unknown>;
+  return NextResponse.json({
+    store: {
+      ...store,
+      instagram: (meta.instagram as string) ?? '',
+      facebook:  (meta.facebook  as string) ?? '',
+      whatsapp:  (meta.whatsapp  as string) ?? '',
+    },
+  });
 }
 
 export async function PUT(request: Request) {
@@ -58,9 +67,30 @@ export async function PUT(request: Request) {
     data[key] = body[key] ?? null;
   }
 
+  const socialKeys = ['instagram', 'facebook', 'whatsapp'] as const;
+  const socialUpdate: Record<string, unknown> = {};
+  for (const key of socialKeys) {
+    if (key in body) socialUpdate[key] = body[key] ?? '';
+  }
+
+  let metadataUpdate: Record<string, unknown> | undefined;
+  if (Object.keys(socialUpdate).length > 0) {
+    const existing = await db.store.findUnique({
+      where: { slug: STORE_SLUG },
+      select: { metadata: true },
+    });
+    metadataUpdate = {
+      ...((existing?.metadata as object) ?? {}),
+      ...socialUpdate,
+    };
+  }
+
   const store = await db.store.update({
     where: { slug: STORE_SLUG },
-    data,
+    data: {
+      ...data,
+      ...(metadataUpdate ? { metadata: metadataUpdate as Record<string, string | number | boolean | null> } : {}),
+    },
     select: { name: true, primaryMode: true },
   });
 

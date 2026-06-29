@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { WHATSAPP_LINKS, CONTACT } from '@/lib/constants';
+import { WHATSAPP_LINKS } from '@/lib/constants';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 import { BLUR_PLACEHOLDER } from '@/components/ui/BlurImage';
 
@@ -12,6 +12,9 @@ interface HeroConfig {
 
 interface HeroSectionProps {
   config?: HeroConfig | null;
+  city?: string;
+  openingHoursText?: string;
+  instagramUrl?: string;
 }
 
 const DEFAULTS = {
@@ -21,7 +24,7 @@ const DEFAULTS = {
   imageUrl: '/hero-barbershop.webp',
 };
 
-export default function HeroSection({ config }: HeroSectionProps) {
+export default function HeroSection({ config, city, openingHoursText, instagramUrl }: HeroSectionProps) {
   const title = config?.title || DEFAULTS.title;
   const subtitle = config?.subtitle || DEFAULTS.subtitle;
   const ctaText = config?.ctaText || DEFAULTS.ctaText;
@@ -70,11 +73,16 @@ export default function HeroSection({ config }: HeroSectionProps) {
           </div>
 
           <p className="hero__trust">
-            ⭐ Google 4.9 &nbsp;·&nbsp; 🕐 Po–Pia 09:00–19:00 &nbsp;·&nbsp; 📍 Trenčín
-            &nbsp;·&nbsp;{' '}
-            <a href={CONTACT.instagram} target="_blank" rel="noopener noreferrer" className="hero__instagram">
-              Instagram
-            </a>
+            ⭐ Google 4.9
+            {openingHoursText && <>&nbsp;·&nbsp; 🕐 {openingHoursText}</>}
+            {city && <>&nbsp;·&nbsp; 📍 {city}</>}
+            {instagramUrl && (
+              <>&nbsp;·&nbsp;{' '}
+                <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="hero__instagram">
+                  Instagram
+                </a>
+              </>
+            )}
           </p>
         </div>
 
