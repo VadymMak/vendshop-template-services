@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
     const blob = await put(`logos/${filename}`, processed, {
       access: 'public',
       contentType: 'image/webp',
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
     await db.store.update({

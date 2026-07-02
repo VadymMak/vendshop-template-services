@@ -29,6 +29,7 @@ async function saveToBlob(
     const blob = await put(blobPath, img.buffer, {
       access: 'public',
       contentType: img.contentType,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     });
     urls[suffix] = blob.url;
   }

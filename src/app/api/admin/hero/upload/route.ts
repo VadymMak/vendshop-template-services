@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
     const blob = await put(`hero/${STORE_SLUG}/${filename}`, processed, {
       access: 'public',
       contentType: 'image/webp',
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
     return NextResponse.json({ url: blob.url });

@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     const blob = await put(
       `products/${STORE_SLUG}/${purpose}/${timestamp}-${baseName}.${ext}`,
       uploadBuffer,
-      { access: 'public', contentType },
+      { access: 'public', contentType, token: process.env.BLOB_READ_WRITE_TOKEN },
     );
 
     return NextResponse.json({ url: blob.url });
