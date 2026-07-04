@@ -1,10 +1,13 @@
-import { WHATSAPP_LINKS } from '@/lib/constants';
 import WhatsAppIcon from './WhatsAppIcon';
 
-export default function WhatsAppButton() {
+interface WhatsAppButtonProps {
+  href?: string;
+}
+
+export default function WhatsAppButton({ href = '#' }: WhatsAppButtonProps) {
   return (
     <a
-      href={WHATSAPP_LINKS.general}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       title="WhatsApp"

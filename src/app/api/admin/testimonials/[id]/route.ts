@@ -62,8 +62,8 @@ export async function PATCH(
       locale: updated.locale,
       status: updated.status,
       adminReply: updated.adminReply,
-      customerName: updated.customer.name ?? 'Customer',
-      customerEmail: updated.customer.email,
+      customerName: updated.customer?.name ?? 'Customer',
+      customerEmail: updated.customer?.email,
       createdAt: updated.createdAt.toISOString(),
     });
   } catch (err) {

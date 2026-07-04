@@ -59,7 +59,7 @@ export default async function TestimonialsPage() {
             {testimonials.map((t) => (
               <TestimonialCard
                 key={t.id}
-                name={t.customer.name ?? 'Klient'}
+                name={t.customer?.name ?? 'Klient'}
                 content={t.text}
                 rating={t.rating}
                 createdAt={t.createdAt.toISOString()}

@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import { WHATSAPP_LINKS } from '@/lib/constants';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 
 const NAV_LINKS = [
@@ -13,7 +12,7 @@ const NAV_LINKS = [
   { href: '/sk/#kontakt',  label: 'Kontakt' },
 ];
 
-export default function Header({ logoUrl }: { logoUrl?: string }) {
+export default function Header({ logoUrl, whatsappBookingLink = '#' }: { logoUrl?: string; whatsappBookingLink?: string }) {
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -69,7 +68,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
             Rezervácia
           </a>
           <a
-            href={WHATSAPP_LINKS.booking}
+            href={whatsappBookingLink}
             target="_blank"
             rel="noopener noreferrer"
             className="header__btn-whatsapp"
@@ -107,7 +106,7 @@ export default function Header({ logoUrl }: { logoUrl?: string }) {
               Rezervácia
             </a>
             <a
-              href={WHATSAPP_LINKS.booking}
+              href={whatsappBookingLink}
               target="_blank"
               rel="noopener noreferrer"
               className="header__mobile-btn-wa"

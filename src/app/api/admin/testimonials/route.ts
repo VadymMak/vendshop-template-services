@@ -63,8 +63,8 @@ export async function GET(request: Request) {
       locale: t.locale,
       status: t.status,
       adminReply: t.adminReply,
-      customerName: t.customer.name ?? 'Customer',
-      customerEmail: t.customer.email,
+      customerName: t.customer?.name ?? 'Customer',
+      customerEmail: t.customer?.email,
       createdAt: t.createdAt.toISOString(),
     })),
     counts: {

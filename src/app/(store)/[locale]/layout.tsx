@@ -129,9 +129,9 @@ export default async function LocaleLayout({
           <CustomerProvider>
             <VerticalProvider config={config.vertical}>
               <PresenceProvider presence={config.presence}>
-                <Header logoUrl={config.logoUrl} />
+                <Header logoUrl={config.logoUrl} whatsappBookingLink={config.whatsappLinks.booking} />
                 <main>{children}</main>
-                <Footer locale={locale} legalEnabled={legalEnabled} />
+                <Footer config={config} locale={locale} legalEnabled={legalEnabled} />
                 <CookieBanner />
               </PresenceProvider>
             </VerticalProvider>

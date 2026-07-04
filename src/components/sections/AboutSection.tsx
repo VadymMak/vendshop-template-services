@@ -1,7 +1,15 @@
 import Image from 'next/image';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 
-export default function AboutSection() {
+interface AboutSectionProps {
+  storeName?: string;
+  founderName?: string;
+  city?: string;
+}
+
+export default function AboutSection({ storeName, founderName, city }: AboutSectionProps) {
+  const displayCity = city ?? 'nášho mesta';
+
   return (
     <section id="o-nas" className="about">
       <div className="about__grid">
@@ -9,7 +17,7 @@ export default function AboutSection() {
           <div className="about__image-wrap">
             <Image
               src="/about-barbershop.webp"
-              alt="Kate Barber Studio interiér"
+              alt={storeName ? `${storeName} interiér` : 'Barber studio interiér'}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="about__image"
@@ -26,9 +34,13 @@ export default function AboutSection() {
               moderný štýl
             </h3>
             <p className="about__text">
-              Kate Barber vznikol v roku 2018 z lásky k tradičnému holičstvu. Náš zakladateľ{' '}
-              <strong>Marco Kate Barber</strong> priniesol do Trenčína to najlepšie z talianskej
-              barberskej tradície.
+              {storeName ?? 'Naše štúdio'} vznikol v roku 2018 z lásky k tradičnému holičstvu.
+              {founderName && (
+                <> Náš zakladateľ <strong>{founderName}</strong> priniesol do {displayCity} to najlepšie z tradície klasického barberstva.</>
+              )}
+              {!founderName && (
+                <> Priniesli sme do {displayCity} to najlepšie z tradície klasického barberstva.</>
+              )}
             </p>
             <p className="about__text">
               Každý strih je pre nás umenie. Nerobíme rýchle strihy — venujeme sa každému klientovi

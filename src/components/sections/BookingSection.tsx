@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { SERVICE_OPTIONS, BARBERS, WHATSAPP_NUMBER } from '@/lib/constants';
+import { SERVICE_OPTIONS, BARBERS } from '@/lib/constants';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 import GoldDivider from '@/components/ui/GoldDivider';
 import DateTimePicker from '@/components/ui/DateTimePicker';
@@ -10,9 +10,10 @@ import ScrollReveal from '@/components/ui/ScrollReveal';
 
 interface BookingSectionProps {
   workingHours?: HoursMap;
+  whatsappNumber?: string;
 }
 
-export default function BookingSection({ workingHours }: BookingSectionProps) {
+export default function BookingSection({ workingHours, whatsappNumber }: BookingSectionProps) {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedSlots,  setBookedSlots]  = useState<string[]>([]);
@@ -128,11 +129,13 @@ export default function BookingSection({ workingHours }: BookingSectionProps) {
         `━━━━━━━━━━━━━━━━━━`,
       ].filter(Boolean).join('\n');
 
-      window.open(
-        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines)}`,
-        '_blank',
-        'noopener,noreferrer',
-      );
+      if (whatsappNumber) {
+        window.open(
+          `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines)}`,
+          '_blank',
+          'noopener,noreferrer',
+        );
+      }
 
       form.reset();
       setSelectedDate('');

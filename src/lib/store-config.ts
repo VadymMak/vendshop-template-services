@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { db } from '@/lib/db';
 import { DEFAULT_THEME, type ThemeConfig } from '@/lib/theme';
 import { getVerticalConfig, type VerticalConfig } from '@/lib/verticals';
@@ -6,16 +7,32 @@ const STORE_SLUG = process.env.STORE_SLUG ?? 'electromarket';
 
 export type StoreMode = 'PHYSICAL' | 'ONLINE' | 'HYBRID';
 
+/** Parsed working hours from JSON: { mon: {open, close} | null, ... } */
+export type DayHours = { open: string; close: string } | null;
+export type WorkingHours = Record<string, DayHours>;
+
+export interface WhatsAppLinks {
+  booking: string;
+  location: string;
+  general: string;
+}
+
 export interface StorePresence {
   primaryMode: StoreMode;
   hasPhysicalLocation: boolean;
   hasDelivery: boolean;
   hasPickup: boolean;
   address?: string;
+  postalCode?: string;
   city?: string;
-  openingHours?: string;
+  openingHours?: WorkingHours;
   phone?: string;
+  whatsapp?: string;
   email?: string;
+  founderName?: string;
+  instagram?: string;
+  facebook?: string;
+  googleRating?: number;
   mapCoords?: { lat: number; lng: number };
 }
 
@@ -27,10 +44,31 @@ export interface StoreConfig {
   theme: ThemeConfig;
   vertical: VerticalConfig;
   presence: StorePresence;
+  whatsappLinks: WhatsAppLinks;
 }
 
-/** Fetch merged store config (theme + vertical + presence). Server components only. */
-export async function getStoreConfig(): Promise<StoreConfig> {
+function buildWhatsAppLinks(number: string | undefined | null): WhatsAppLinks {
+  const num = (number ?? '').replace(/\D/g, '');
+  const base = num ? `https://wa.me/${num}` : '#';
+  return {
+    booking:  num ? `${base}?text=${encodeURIComponent('Dobrý deň, chcel by som si rezervovať termín.')}` : '#',
+    location: num ? `${base}?text=${encodeURIComponent('Dobrý deň, kde presne sa nachádzate?')}` : '#',
+    general:  num ? `${base}?text=${encodeURIComponent('Dobrý deň, mám otázku.')}` : '#',
+  };
+}
+
+function parseOpeningHours(raw: string | null | undefined): WorkingHours | undefined {
+  if (!raw) return undefined;
+  try {
+    return JSON.parse(raw) as WorkingHours;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Fetch merged store config (theme + vertical + presence). Server components only.
+ *  Wrapped in React cache() — deduplicated across layout + page in the same request. */
+export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
   const store = await db.store.findUniqueOrThrow({
     where: { slug: STORE_SLUG },
     select: {
@@ -41,11 +79,17 @@ export async function getStoreConfig(): Promise<StoreConfig> {
       themeConfig: true,
       primaryMode: true,
       address: true,
+      postalCode: true,
       city: true,
       openingHours: true,
       logoUrl: true,
       phone: true,
+      whatsappPhone: true,
       email: true,
+      founderName: true,
+      instagramUrl: true,
+      facebook: true,
+      googleRating: true,
       mapLat: true,
       mapLng: true,
     },
@@ -58,6 +102,7 @@ export async function getStoreConfig(): Promise<StoreConfig> {
   };
 
   const mode = store.primaryMode as StoreMode;
+  const whatsappNumber = store.whatsappPhone ?? store.phone;
 
   const presence: StorePresence = {
     primaryMode: mode,
@@ -65,10 +110,16 @@ export async function getStoreConfig(): Promise<StoreConfig> {
     hasDelivery: mode !== 'PHYSICAL',
     hasPickup: mode !== 'ONLINE',
     address: store.address ?? undefined,
+    postalCode: store.postalCode ?? undefined,
     city: store.city ?? undefined,
-    openingHours: store.openingHours ?? undefined,
+    openingHours: parseOpeningHours(store.openingHours),
     phone: store.phone ?? undefined,
+    whatsapp: store.whatsappPhone ?? undefined,
     email: store.email ?? undefined,
+    founderName: store.founderName ?? undefined,
+    instagram: store.instagramUrl ?? undefined,
+    facebook: store.facebook ?? undefined,
+    googleRating: store.googleRating ?? undefined,
     mapCoords:
       store.mapLat && store.mapLng
         ? { lat: store.mapLat, lng: store.mapLng }
@@ -83,5 +134,6 @@ export async function getStoreConfig(): Promise<StoreConfig> {
     theme,
     vertical: getVerticalConfig(store.vertical),
     presence,
+    whatsappLinks: buildWhatsAppLinks(whatsappNumber),
   };
-}
+});

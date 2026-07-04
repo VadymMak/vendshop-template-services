@@ -1,6 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 import { db } from '@/lib/db';
-import { WHATSAPP_NUMBER } from '@/lib/constants';
+import { getStoreConfig } from '@/lib/store-config';
 import type { Locale } from '@/i18n/routing';
 
 export const revalidate = 60;
@@ -40,6 +40,9 @@ export default async function DigitalProductsPage({
 
   const effectiveLocale = locale in PAGE_LABELS ? locale : FALLBACK_LOCALE;
   const labels = PAGE_LABELS[effectiveLocale];
+
+  const config = await getStoreConfig();
+  const whatsappNumber = config.presence.whatsapp ?? config.presence.phone ?? '';
 
   const store = await db.store.findUnique({
     where: { slug: STORE_SLUG },
@@ -100,7 +103,7 @@ export default async function DigitalProductsPage({
           {items.map((item) => {
             const symbol = CURRENCY_SYMBOLS[item.currency] ?? item.currency;
             const waMsg = (WA_MESSAGES[effectiveLocale] ?? WA_MESSAGES.sk)(item.name, item.price, item.currency);
-            const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waMsg)}`;
+            const waUrl = whatsappNumber ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMsg)}` : '#';
 
             return (
               <div

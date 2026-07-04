@@ -102,7 +102,7 @@ export async function POST(_req: NextRequest) {
     const avgRating = (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1);
     chunks.push({
       type: 'review',
-      content: `Hodnotenie ${store.name}: ${avgRating}/5 na základe ${reviews.length} recenzií. Posledné recenzie: ${reviews.slice(0, 5).map((r) => `"${r.text}" — ${r.customer.name ?? 'Zákazník'} (${r.rating}⭐)`).join('; ')}.`,
+      content: `Hodnotenie ${store.name}: ${avgRating}/5 na základe ${reviews.length} recenzií. Posledné recenzie: ${reviews.slice(0, 5).map((r) => `"${r.text}" — ${r.customer?.name ?? 'Zákazník'} (${r.rating}⭐)`).join('; ')}.`,
       metadata: { avgRating, totalReviews: reviews.length },
     });
   }

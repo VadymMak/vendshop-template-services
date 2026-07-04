@@ -210,7 +210,7 @@ async function executeTool(name: string, args: Record<string, unknown>, storeId:
       return {
         reviews: reviews.map((r) => ({
           id: r.id,
-          customer: r.customer.name,
+          customer: r.customer?.name,
           text: r.text,
           rating: r.rating,
           createdAt: r.createdAt,
@@ -263,7 +263,7 @@ async function executeTool(name: string, args: Record<string, unknown>, storeId:
       return {
         reviews: reviews.map((r) => ({
           id: r.id,
-          customer: r.customer.name,
+          customer: r.customer?.name,
           text: r.text,
           rating: r.rating,
           status: r.status,

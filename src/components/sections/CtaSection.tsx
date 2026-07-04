@@ -1,19 +1,23 @@
-import { WHATSAPP_LINKS, CONTACT } from '@/lib/constants';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 
-export default function CtaSection() {
+interface CtaSectionProps {
+  city?: string;
+  whatsappGeneralLink?: string;
+}
+
+export default function CtaSection({ city, whatsappGeneralLink = '#' }: CtaSectionProps) {
   return (
     <section className="cta-section">
       <ScrollReveal direction="up">
         <div className="cta-inner">
           <h2 className="cta-title">Ready for a Fresh Look?</h2>
           <p className="cta-subtitle">
-            Book your appointment today. Located in {CONTACT.city ?? 'the city centre'}.
+            Book your appointment today. Located in {city ?? 'the city centre'}.
           </p>
           <div className="cta-buttons">
             <a href="#booking" className="btn-primary">Book Now</a>
             <a
-              href={WHATSAPP_LINKS.general}
+              href={whatsappGeneralLink}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-outline"

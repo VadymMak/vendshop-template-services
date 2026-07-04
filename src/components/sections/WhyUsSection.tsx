@@ -1,4 +1,3 @@
-import { WHY_US_ITEMS } from '@/lib/constants';
 import type { WhyUsItem } from '@/lib/types';
 import GoldDivider from '@/components/ui/GoldDivider';
 import ScrollReveal from '@/components/ui/ScrollReveal';
@@ -62,7 +61,30 @@ function WhyUsCard({ item }: { item: WhyUsItem }) {
   );
 }
 
-export default function WhyUsSection() {
+interface WhyUsSectionProps {
+  city?: string;
+  googleRating?: number;
+  address?: string;
+}
+
+export default function WhyUsSection({ city, googleRating, address }: WhyUsSectionProps) {
+  const locationDesc = address
+    ? `Nájdeš nás na adrese ${address}, priamo v srdci ${city ?? 'mesta'}.`
+    : city
+      ? `Nájdeš nás v centre ${city}, priamo v srdci mesta.`
+      : 'Nájdeš nás priamo v srdci mesta.';
+
+  const ratingTitle = googleRating ? `${googleRating} na Google` : 'Výborné hodnotenie';
+
+  const items: WhyUsItem[] = [
+    { icon: 'scissors', title: 'Vieme, že si originál',   description: 'Nekopírujeme. Chceme vyzdvihnúť tvoju jedinečnosť.' },
+    { icon: 'location', title: city ? `Sme v ${city}` : 'Sme v centre mesta', description: locationDesc },
+    { icon: 'trend',    title: 'Sledujeme trendy',        description: 'Najnovšie strihy aj klasika v podaní profesionálnych barberov.' },
+    { icon: 'star',     title: 'Sme profesionáli',        description: 'Každý barber v tíme má minimálne 3 roky skúseností.' },
+    { icon: 'click',    title: 'Objednávka na 3 kliky',   description: 'WhatsApp alebo formulár — rezervácia za pár sekúnd.' },
+    { icon: 'medal',    title: ratingTitle,               description: 'Stovky spokojných klientov. Prečítaj si recenzie.' },
+  ];
+
   return (
     <section className="why-us">
       <ScrollReveal direction="up" className="section-header">
@@ -72,7 +94,7 @@ export default function WhyUsSection() {
       </ScrollReveal>
 
       <div className="why-us__grid">
-        {WHY_US_ITEMS.map((item, i) => (
+        {items.map((item, i) => (
           <ScrollReveal key={item.icon} direction="up" delay={i * 100}>
             <WhyUsCard item={item} />
           </ScrollReveal>

@@ -19,11 +19,20 @@ model Store {
   // ── Store Presence ──
   primaryMode  StoreMode @default(ONLINE)
   address      String?
+  postalCode   String?
   city         String?
   openingHours String?
   logoUrl      String?
+  aboutImage   String?
+  ogImageUrl   String?
   phone        String?
+  whatsappPhone String?
   email        String?
+  founderName  String?
+  instagramUrl String?
+  facebook     String?
+  googleRating Float?
+  galleryLayout String?
   mapLat       Float?
   mapLng       Float?
 
@@ -394,16 +403,17 @@ model GalleryImage {
 model Testimonial {
   id     String @id @default(cuid())
 
-  text   String
-  rating Int    @default(5)
+  text       String
+  rating     Int    @default(5)
+  authorName String?
 
   status        TestimonialStatus @default(PENDING)
   locale        String?
   adminReply    String?
   adminReplyAt  DateTime?
 
-  customerId String
-  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
 
   storeId String
   store   Store @relation(fields: [storeId], references: [id])

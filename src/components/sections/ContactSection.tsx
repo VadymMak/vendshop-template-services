@@ -1,12 +1,8 @@
 import { Fragment } from 'react';
-import { CONTACT, HOURS, WHATSAPP_LINKS } from '@/lib/constants';
 import GoldDivider from '@/components/ui/GoldDivider';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 import ScrollReveal from '@/components/ui/ScrollReveal';
-
-// ─── Working hours types & helpers ───────────────────────────────────────
-type DayHours = { open: string; close: string } | null;
-type WorkingHours = Record<string, DayHours>;
+import type { WorkingHours, DayHours } from '@/lib/store-config';
 
 const DAYS_SK: Record<string, string> = {
   mon: 'Pondelok',
@@ -64,7 +60,8 @@ interface ContactSectionProps {
   email?: string | null;
   mapLat?: number | null;
   mapLng?: number | null;
-  workingHours?: unknown;
+  workingHours?: WorkingHours;
+  whatsappLocationLink?: string;
 }
 
 export default function ContactSection({
@@ -75,24 +72,16 @@ export default function ContactSection({
   mapLat,
   mapLng,
   workingHours,
+  whatsappLocationLink,
 }: ContactSectionProps) {
-  // Contact values — DB first, constants as fallback
-  const displayAddress = address ?? CONTACT.address;
-  const displayCity    = city    ?? CONTACT.city;
-  const displayPhone   = phone   ?? CONTACT.phone;
-  const displayEmail   = email   ?? CONTACT.email;
+  const phoneHref = phone ? `tel:${phone.replace(/\s/g, '')}` : undefined;
+  const emailHref = email ? `mailto:${email}` : undefined;
 
-  const phoneHref = displayPhone ? `tel:${displayPhone.replace(/\s/g, '')}` : CONTACT.phoneHref;
-  const emailHref = displayEmail ? `mailto:${displayEmail}`                  : CONTACT.emailHref;
+  const mapSrc = mapLat && mapLng
+    ? `https://maps.google.com/maps?q=${mapLat},${mapLng}&z=15&output=embed`
+    : undefined;
 
-  // Map embed — construct from lat/lng if available
-  const mapSrc =
-    mapLat && mapLng
-      ? `https://maps.google.com/maps?q=${mapLat},${mapLng}&z=15&output=embed`
-      : CONTACT.mapSrc;
-
-  // Hours — DB first, static HOURS as fallback
-  const hoursData = formatHours(workingHours as WorkingHours);
+  const hoursData = formatHours(workingHours);
 
   return (
     <section id="kontakt" className="contact">
@@ -105,66 +94,69 @@ export default function ContactSection({
       <div className="contact-grid">
         <ScrollReveal direction="left" delay={100}>
           <div className="contact-info">
-            <div>
-              <p className="contact-item-label">Adresa</p>
-              <p className="contact-item-value contact-item-value--pre">
-                {displayCity ? `${displayAddress}\n${displayCity}` : displayAddress}
-              </p>
-            </div>
-
-            <div>
-              <p className="contact-item-label">Kontakt</p>
-              <p className="contact-item-value">
-                <a href={phoneHref} className="contact-link">{displayPhone}</a>
-                <br />
-                <a href={emailHref} className="contact-link">{displayEmail}</a>
-              </p>
-            </div>
-
-            <div>
-              <p className="contact-item-label">Otváracie hodiny</p>
-              <div className="contact-hours-grid">
-                {hoursData.length > 0
-                  ? hoursData.map((row, idx) => (
-                      <Fragment key={idx}>
-                        <span className="contact-hours-day">{row.label}</span>
-                        <span className="contact-hours-time"
-                          style={{ fontWeight: row.hours === 'Zatvorené' ? 400 : undefined }}>
-                          {row.hours}
-                        </span>
-                      </Fragment>
-                    ))
-                  : HOURS.map((row) => (
-                      <Fragment key={row.day}>
-                        <span className="contact-hours-day">{row.day}</span>
-                        <span className="contact-hours-time">{row.time}</span>
-                      </Fragment>
-                    ))}
+            {address && (
+              <div>
+                <p className="contact-item-label">Adresa</p>
+                <p className="contact-item-value contact-item-value--pre">
+                  {city ? `${address}\n${city}` : address}
+                </p>
               </div>
-            </div>
+            )}
 
-            <a
-              href={WHATSAPP_LINKS.location}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-wa-btn"
-            >
-              <WhatsAppIcon size={18} />
-              Napíšte nám
-            </a>
+            {(phone || email) && (
+              <div>
+                <p className="contact-item-label">Kontakt</p>
+                <p className="contact-item-value">
+                  {phone && phoneHref && <a href={phoneHref} className="contact-link">{phone}</a>}
+                  {phone && email && <br />}
+                  {email && emailHref && <a href={emailHref} className="contact-link">{email}</a>}
+                </p>
+              </div>
+            )}
+
+            {hoursData.length > 0 && (
+              <div>
+                <p className="contact-item-label">Otváracie hodiny</p>
+                <div className="contact-hours-grid">
+                  {hoursData.map((row, idx) => (
+                    <Fragment key={idx}>
+                      <span className="contact-hours-day">{row.label}</span>
+                      <span className="contact-hours-time"
+                        style={{ fontWeight: row.hours === 'Zatvorené' ? 400 : undefined }}>
+                        {row.hours}
+                      </span>
+                    </Fragment>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {whatsappLocationLink && whatsappLocationLink !== '#' && (
+              <a
+                href={whatsappLocationLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-wa-btn"
+              >
+                <WhatsAppIcon size={18} />
+                Napíšte nám
+              </a>
+            )}
           </div>
         </ScrollReveal>
 
-        <ScrollReveal direction="right" delay={200}>
-          <iframe
-            src={mapSrc}
-            className="contact-map"
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title={`Mapa ${displayCity ?? 'Kate Barber Studio'}`}
-          />
-        </ScrollReveal>
+        {mapSrc && (
+          <ScrollReveal direction="right" delay={200}>
+            <iframe
+              src={mapSrc}
+              className="contact-map"
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title={`Mapa ${city ?? 'studio'}`}
+            />
+          </ScrollReveal>
+        )}
       </div>
     </section>
   );

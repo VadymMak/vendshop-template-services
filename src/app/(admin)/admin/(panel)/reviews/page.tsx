@@ -30,8 +30,8 @@ export default async function AdminReviewsPage() {
     locale: t.locale,
     status: t.status as 'PENDING' | 'APPROVED' | 'REJECTED',
     adminReply: t.adminReply,
-    customerName: t.customer.name ?? 'Customer',
-    customerEmail: t.customer.email,
+    customerName: t.customer?.name ?? 'Customer',
+    customerEmail: t.customer?.email ?? '',
     createdAt: t.createdAt.toISOString(),
   }));
 
