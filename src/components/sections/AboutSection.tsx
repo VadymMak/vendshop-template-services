@@ -34,9 +34,9 @@ export default function AboutSection({ storeName, founderName, city }: AboutSect
               moderný štýl
             </h3>
             <p className="about__text">
-              {storeName ?? 'Naše štúdio'} vznikol v roku 2018 z lásky k tradičnému holičstvu.
+              {storeName ?? 'Naše štúdio'} vzniklo v roku 2018 z lásky k tradičnému holičstvu.
               {founderName && (
-                <> Náš zakladateľ <strong>{founderName}</strong> priniesol do {displayCity} to najlepšie z tradície klasického barberstva.</>
+                <> Naša zakladateľka <strong>{founderName}</strong> priniesla do {displayCity} to najlepšie z tradície klasického barberstva.</>
               )}
               {!founderName && (
                 <> Priniesli sme do {displayCity} to najlepšie z tradície klasického barberstva.</>

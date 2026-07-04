@@ -22,7 +22,7 @@ interface HeroSectionProps {
 
 const DEFAULTS = {
   title: 'Umenie klasického holičstva',
-  subtitle: 'Prémiový barber studio pre ženy aj mužov.',
+  subtitle: 'Prémiový barber studio pre mužov.',
   ctaText: 'Rezervovať termín',
   imageUrl: '/hero-barbershop.webp',
 };
