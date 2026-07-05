@@ -178,7 +178,7 @@
     "wholesale": "Veľkoobchodné podmienky",
     "deliveryEU": "Rýchle doručenie po celej EÚ",
     "deliveryB2B": "Hromadné objednávky a individuálna dodávka",
-    "aboutDescServices": "Profesionálna barbershop a vlasový salón v centre Trenčína. Pánske strihy, bradenie a styling na najvyššej úrovni.",
+    "aboutDescServices": "Profesionálna barbershop a vlasový salón. Pánske strihy, bradenie a styling na najvyššej úrovni.",
     "servicesNavTitle": "Navigácia",
     "servicesHoursTitle": "Pracovná doba",
     "servicesClosed": "Zatvorené",
@@ -186,7 +186,18 @@
     "servicesTeam": "Tím",
     "servicesGallery": "Galéria",
     "servicesBookNow": "Rezervovať",
-    "servicesAdmin": "Admin"
+    "servicesAdmin": "Admin",
+    "servicesTagline": "Prémiový barber studio v {city}.",
+    "allRightsReserved": "© {year} {name}. Všetky práva vyhradené.",
+    "privacyPolicy": "Ochrana súkromia",
+    "termsOfService": "Obchodné podmienky",
+    "navServices": "Služby & Ceny",
+    "navGallery": "Galéria",
+    "navTeam": "Náš tím",
+    "navReviews": "Recenzie",
+    "navAbout": "O nás",
+    "navBooking": "Rezervácia",
+    "contactTitle": "Kontakt"
   },
   "tags": {
     "popularQueries": "Obľúbené vyhľadávania:"
@@ -363,7 +374,16 @@
     "todaysSpecial": "DENNÉ ŠPECIÁL",
     "orderNow": "Objednať",
     "googleRating": "4.8 na Google",
-    "openUntil": "Otvorené do 23:00"
+    "openUntil": "Otvorené do 23:00",
+    "chipCut": "✂ Strih",
+    "chipBeard": "🧔 Brada",
+    "chipShave": "💈 Holenie",
+    "chipCourses": "🎓 Kurzy",
+    "priceFrom": "Strih od",
+    "priceBeardFrom": "Brada od",
+    "defaultTitle": "Umenie klasického holičstva",
+    "defaultSubtitle": "Prémiový barber studio pre mužov.",
+    "defaultCta": "Rezervovať termín"
   },
   "menuCategories": {
     "tagline": "— NAŠE MENU —",
@@ -526,7 +546,21 @@
     "submit": "Odoslať recenziu",
     "errorTextShort": "Recenzia musí mať aspoň 20 znakov",
     "successTitle": "Ďakujeme!",
-    "successPending": "Vaša recenzia bola odoslaná a čaká na overenie."
+    "successPending": "Vaša recenzia bola odoslaná a čaká na overenie.",
+    "writeReviewFor": "Zanechajte recenziu",
+    "submitStoreNote": "Podeľte sa o vašu skúsenosť s {storeName}",
+    "submitVerify": "Overíme, že ste skutočný klient {storeName}.",
+    "submitPlaceholder": "Opíšte vašu skúsenosť v {storeName}... (min. 20 znakov)",
+    "loading": "Načítava sa...",
+    "loginRequired": "Prihlásenie je potrebné",
+    "loginNote": "Recenziu môžu zanechať iba registrovaní klienti.",
+    "writingAs": "Píšete ako:",
+    "cancel": "Zrušiť",
+    "submitting": "Odosiela sa...",
+    "thankYou": "Ďakujeme, {name}!",
+    "pendingApproval": "Vaša recenzia bude zverejnená po schválení administrátorom.",
+    "errorSubmit": "Chyba pri odosielaní. Skúste znova.",
+    "backLabel": "← Späť na recenzie"
   },
   "auth": {
     "login": "Prihlásiť sa",
@@ -563,17 +597,29 @@
     "from": "od"
   },
   "booking": {
-    "title": "Rezervujte si termín",
-    "selectService": "Vyberte službu",
-    "selectMaster": "Vyberte barbera",
-    "selectDate": "Vyberte dátum",
-    "selectTime": "Vyberte čas",
-    "yourName": "Vaše meno",
-    "yourPhone": "Telefónne číslo",
-    "note": "Poznámka (nepovinné)",
-    "submit": "Rezervovať",
-    "whatsappFallback": "Alebo cez WhatsApp",
-    "confirmation": "Rezervácia potvrdená! Ozveme sa vám."
+    "sectionLabel": "Rezervácia",
+    "sectionTitle": "Zarezervujte si termín",
+    "sectionSubtitle": "Vyplňte formulár — uložíme termín a otvoríme WhatsApp s potvrdením.",
+    "serviceLabel": "Služba",
+    "servicePlaceholder": "Vyberte službu...",
+    "barberLabel": "Barber",
+    "barberAny": "Bez preferencie",
+    "dateTimeLabel": "Vyberte deň a čas",
+    "nameLabel": "Meno",
+    "namePlaceholder": "Vaše meno",
+    "phoneLabel": "Telefón",
+    "phonePlaceholder": "+421 9XX XXX XXX",
+    "noteLabel": "Poznámka (nepovinné)",
+    "notePlaceholder": "Špeciálne požiadavky alebo poznámky...",
+    "submitBtn": "Odoslať cez WhatsApp",
+    "submitting": "Ukladám...",
+    "footNote": "Termín sa uloží do systému. Po kliknutí sa otvorí WhatsApp s potvrdením. Odpovedáme do 30 minút.",
+    "errorSelectTime": "Vyberte deň a čas rezervácie.",
+    "errorFillName": "Vyplňte meno a telefón.",
+    "errorSlotTaken": "Tento termín bol medzičasom obsadený. Vyberte iný čas.",
+    "errorSave": "Chyba pri ukladaní. Skúste znovu.",
+    "errorNetwork": "Sieťová chyba. Skúste znovu.",
+    "waMessage": "📅 *Rezervácia*\n━━━━━━━━━━━━━━━━━━\n👤 {name}  📞 {phone}\n📆 {date}  🕐 {time}"
   },
   "team": {
     "title": "Naši majstri"
@@ -598,5 +644,66 @@
     "privacyLink": "zásadách ochrany súkromia",
     "reject": "Odmietnuť",
     "acceptAll": "Prijať všetko"
+  },
+  "days": {
+    "mon": "Pondelok",
+    "tue": "Utorok",
+    "wed": "Streda",
+    "thu": "Štvrtok",
+    "fri": "Piatok",
+    "sat": "Sobota",
+    "sun": "Nedeľa",
+    "closed": "Zatvorené"
+  },
+  "contact": {
+    "sectionLabel": "Kontakt",
+    "sectionTitle": "Kde nás nájdete",
+    "addressLabel": "Adresa",
+    "contactLabel": "Kontakt",
+    "openingHoursLabel": "Otváracie hodiny",
+    "writeToUs": "Napíšte nám",
+    "mapTitle": "Mapa {city}"
+  },
+  "about": {
+    "label": "O nás",
+    "title": "Tradícia stretáva moderný štýl",
+    "text1": "{name} vzniklo v roku 2018 z lásky k tradičnému holičstvu.",
+    "text1Founder": "Naša zakladateľka {founderName} priniesla do {city} to najlepšie z tradície klasického barberstva.",
+    "text1NoFounder": "Priniesli sme do {city} to najlepšie z tradície klasického barberstva.",
+    "text2Pre": "Každý strih je pre nás umenie. Nerobíme rýchle strihy — venujeme sa každému klientovi individuálne, pretože veríme, že",
+    "text2Em": "každý muž si zaslúži cítiť sa výnimočne",
+    "text3": "Náš shop je miesto, kde sa zastavíte, oddýchnete si a odídete ako nový človek. Espresso na nás.",
+    "imageAlt": "interiér",
+    "cityFallback": "nášho mesta"
+  },
+  "whyUs": {
+    "sectionLabel": "Prečo my",
+    "sectionTitle": "Čo nás robí výnimočnými",
+    "item1Title": "Vieme, že si originál",
+    "item1Desc": "Nekopírujeme. Chceme vyzdvihnúť tvoju jedinečnosť.",
+    "item2TitleWithCity": "Sme v {city}",
+    "item2TitleNoCity": "Sme v centre mesta",
+    "item2DescWithAddress": "Nájdeš nás na adrese {address}, priamo v srdci {city}.",
+    "item2DescWithCity": "Nájdeš nás v centre {city}, priamo v srdci mesta.",
+    "item2DescNoCity": "Nájdeš nás priamo v srdci mesta.",
+    "item3Title": "Sledujeme trendy",
+    "item3Desc": "Najnovšie strihy aj klasika v podaní profesionálnych barberov.",
+    "item4Title": "Sme profesionáli",
+    "item4Desc": "Každý barber v tíme má minimálne 3 roky skúseností.",
+    "item5Title": "Objednávka na 3 kliky",
+    "item5Desc": "WhatsApp alebo formulár — rezervácia za pár sekúnd.",
+    "item6TitleWithRating": "{rating} na Google",
+    "item6TitleNoRating": "Výborné hodnotenie",
+    "item6Desc": "Stovky spokojných klientov. Prečítaj si recenzie."
+  },
+  "stats": {
+    "yearsLabel": "Rokov skúseností",
+    "clientsLabel": "Spokojných klientov",
+    "barbersLabel": "Profesionálni barberi",
+    "googleLabel": "Google hodnotenie"
+  },
+  "seo": {
+    "description": "Profesionálny barbershop a kaderníctvo v {city}. Pánske strihanie, úprava brady a styling.",
+    "ogLocale": "sk_SK"
   }
 }

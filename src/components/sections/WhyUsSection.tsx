@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import type { WhyUsItem } from '@/lib/types';
 import GoldDivider from '@/components/ui/GoldDivider';
 import ScrollReveal from '@/components/ui/ScrollReveal';
@@ -67,29 +68,34 @@ interface WhyUsSectionProps {
   address?: string;
 }
 
-export default function WhyUsSection({ city, googleRating, address }: WhyUsSectionProps) {
-  const locationDesc = address
-    ? `Nájdeš nás na adrese ${address}, priamo v srdci ${city ?? 'mesta'}.`
-    : city
-      ? `Nájdeš nás v centre ${city}, priamo v srdci mesta.`
-      : 'Nájdeš nás priamo v srdci mesta.';
+export default async function WhyUsSection({ city, googleRating, address }: WhyUsSectionProps) {
+  const t = await getTranslations('whyUs');
 
-  const ratingTitle = googleRating ? `${googleRating} na Google` : 'Výborné hodnotenie';
+  const item2Title = city ? t('item2TitleWithCity', { city }) : t('item2TitleNoCity');
+  const item2Desc = address
+    ? t('item2DescWithAddress', { address, city: city ?? '' })
+    : city
+      ? t('item2DescWithCity', { city })
+      : t('item2DescNoCity');
+
+  const item6Title = googleRating
+    ? t('item6TitleWithRating', { rating: googleRating })
+    : t('item6TitleNoRating');
 
   const items: WhyUsItem[] = [
-    { icon: 'scissors', title: 'Vieme, že si originál',   description: 'Nekopírujeme. Chceme vyzdvihnúť tvoju jedinečnosť.' },
-    { icon: 'location', title: city ? `Sme v ${city}` : 'Sme v centre mesta', description: locationDesc },
-    { icon: 'trend',    title: 'Sledujeme trendy',        description: 'Najnovšie strihy aj klasika v podaní profesionálnych barberov.' },
-    { icon: 'star',     title: 'Sme profesionáli',        description: 'Každý barber v tíme má minimálne 3 roky skúseností.' },
-    { icon: 'click',    title: 'Objednávka na 3 kliky',   description: 'WhatsApp alebo formulár — rezervácia za pár sekúnd.' },
-    { icon: 'medal',    title: ratingTitle,               description: 'Stovky spokojných klientov. Prečítaj si recenzie.' },
+    { icon: 'scissors', title: t('item1Title'), description: t('item1Desc') },
+    { icon: 'location', title: item2Title,       description: item2Desc },
+    { icon: 'trend',    title: t('item3Title'),  description: t('item3Desc') },
+    { icon: 'star',     title: t('item4Title'),  description: t('item4Desc') },
+    { icon: 'click',    title: t('item5Title'),  description: t('item5Desc') },
+    { icon: 'medal',    title: item6Title,        description: t('item6Desc') },
   ];
 
   return (
     <section className="why-us">
       <ScrollReveal direction="up" className="section-header">
-        <p className="section-label">Prečo my</p>
-        <h2 className="section-title">Čo nás robí výnimočnými</h2>
+        <p className="section-label">{t('sectionLabel')}</p>
+        <h2 className="section-title">{t('sectionTitle')}</h2>
         <GoldDivider />
       </ScrollReveal>
 

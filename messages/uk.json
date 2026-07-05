@@ -178,7 +178,7 @@
     "wholesale": "Умови опту",
     "deliveryEU": "Швидка доставка по ЄС",
     "deliveryB2B": "Оптові замовлення та індивідуальна доставка",
-    "aboutDescServices": "Професійний барбершоп та перукарня у центрі Тренчина. Чоловічі стрижки, догляд за бородою та стайлінг найвищого рівня.",
+    "aboutDescServices": "Професійний барбершоп та перукарня. Чоловічі стрижки, догляд за бородою та стайлінг найвищого рівня.",
     "servicesNavTitle": "Навігація",
     "servicesHoursTitle": "Години роботи",
     "servicesClosed": "Зачинено",
@@ -186,7 +186,18 @@
     "servicesTeam": "Команда",
     "servicesGallery": "Галерея",
     "servicesBookNow": "Записатися",
-    "servicesAdmin": "Адмін"
+    "servicesAdmin": "Адмін",
+    "servicesTagline": "Преміум барбершоп у {city}.",
+    "allRightsReserved": "© {year} {name}. Всі права захищені.",
+    "privacyPolicy": "Політика конфіденційності",
+    "termsOfService": "Умови використання",
+    "navServices": "Послуги & Ціни",
+    "navGallery": "Галерея",
+    "navTeam": "Наша команда",
+    "navReviews": "Відгуки",
+    "navAbout": "Про нас",
+    "navBooking": "Записатися",
+    "contactTitle": "Контакт"
   },
   "tags": {
     "popularQueries": "Популярні запити:"
@@ -363,7 +374,16 @@
     "todaysSpecial": "СТРАВА ДНЯ",
     "orderNow": "Замовити",
     "googleRating": "4.8 у Google",
-    "openUntil": "Відчинено до 23:00"
+    "openUntil": "Відчинено до 23:00",
+    "chipCut": "✂ Стрижка",
+    "chipBeard": "🧔 Борода",
+    "chipShave": "💈 Гоління",
+    "chipCourses": "🎓 Курси",
+    "priceFrom": "Стрижка від",
+    "priceBeardFrom": "Борода від",
+    "defaultTitle": "Мистецтво класичного барберства",
+    "defaultSubtitle": "Преміум барбершоп для чоловіків.",
+    "defaultCta": "Записатися"
   },
   "menuCategories": {
     "tagline": "— НАШЕ МЕНЮ —",
@@ -526,7 +546,21 @@
     "submit": "Надіслати відгук",
     "errorTextShort": "Відгук має бути мінімум 20 символів",
     "successTitle": "Дякуємо!",
-    "successPending": "Ваш відгук надіслано та очікує перевірки."
+    "successPending": "Ваш відгук надіслано та очікує перевірки.",
+    "writeReviewFor": "Залишити відгук",
+    "submitStoreNote": "Поділіться своїм досвідом з {storeName}",
+    "submitVerify": "Ми підтвердимо, що ви справжній клієнт {storeName}.",
+    "submitPlaceholder": "Опишіть свій досвід у {storeName}... (мін. 20 символів)",
+    "loading": "Завантаження...",
+    "loginRequired": "Потрібен вхід",
+    "loginNote": "Відгуки можуть залишати лише зареєстровані клієнти.",
+    "writingAs": "Ви пишете як:",
+    "cancel": "Скасувати",
+    "submitting": "Надсилається...",
+    "thankYou": "Дякуємо, {name}!",
+    "pendingApproval": "Ваш відгук буде опублікований після схвалення адміністратором.",
+    "errorSubmit": "Помилка при надсиланні. Спробуйте ще раз.",
+    "backLabel": "← Назад до відгуків"
   },
   "auth": {
     "login": "Увійти",
@@ -563,17 +597,29 @@
     "from": "від"
   },
   "booking": {
-    "title": "Запис на прийом",
-    "selectService": "Оберіть послугу",
-    "selectMaster": "Оберіть майстра",
-    "selectDate": "Оберіть дату",
-    "selectTime": "Оберіть час",
-    "yourName": "Ваше ім'я",
-    "yourPhone": "Номер телефону",
-    "note": "Примітка (необов'язково)",
-    "submit": "Записатися",
-    "whatsappFallback": "Або через WhatsApp",
-    "confirmation": "Запис підтверджено! Ми зв'яжемося з вами."
+    "sectionLabel": "Запис",
+    "sectionTitle": "Запишіться на прийом",
+    "sectionSubtitle": "Заповніть форму — збережемо запис і відкриємо WhatsApp для підтвердження.",
+    "serviceLabel": "Послуга",
+    "servicePlaceholder": "Оберіть послугу...",
+    "barberLabel": "Барбер",
+    "barberAny": "Без уподобань",
+    "dateTimeLabel": "Оберіть день і час",
+    "nameLabel": "Ім'я",
+    "namePlaceholder": "Ваше ім'я",
+    "phoneLabel": "Телефон",
+    "phonePlaceholder": "+380 9X XXX XX XX",
+    "noteLabel": "Примітка (необов'язково)",
+    "notePlaceholder": "Особливі побажання або примітки...",
+    "submitBtn": "Надіслати через WhatsApp",
+    "submitting": "Зберігаю...",
+    "footNote": "Запис збережеться в системі. Після кліку відкриється WhatsApp з підтвердженням. Відповідаємо протягом 30 хвилин.",
+    "errorSelectTime": "Будь ласка, оберіть день і час.",
+    "errorFillName": "Будь ласка, заповніть ім'я та телефон.",
+    "errorSlotTaken": "Цей час щойно зайнятий. Оберіть інший час.",
+    "errorSave": "Помилка збереження. Спробуйте ще раз.",
+    "errorNetwork": "Помилка мережі. Спробуйте ще раз.",
+    "waMessage": "📅 *Запис*\n━━━━━━━━━━━━━━━━━━\n👤 {name}  📞 {phone}\n📆 {date}  🕐 {time}"
   },
   "team": {
     "title": "Наші майстри"
@@ -598,5 +644,66 @@
     "privacyLink": "політиці конфіденційності",
     "reject": "Відхилити",
     "acceptAll": "Прийняти все"
+  },
+  "days": {
+    "mon": "Понеділок",
+    "tue": "Вівторок",
+    "wed": "Середа",
+    "thu": "Четвер",
+    "fri": "П'ятниця",
+    "sat": "Субота",
+    "sun": "Неділя",
+    "closed": "Зачинено"
+  },
+  "contact": {
+    "sectionLabel": "Контакт",
+    "sectionTitle": "Де нас знайти",
+    "addressLabel": "Адреса",
+    "contactLabel": "Контакт",
+    "openingHoursLabel": "Години роботи",
+    "writeToUs": "Написати нам",
+    "mapTitle": "Карта {city}"
+  },
+  "about": {
+    "label": "Про нас",
+    "title": "Традиція зустрічає сучасний стиль",
+    "text1": "{name} було засновано у 2018 році з любові до традиційного барберства.",
+    "text1Founder": "Наша засновниця {founderName} принесла до {city} найкраще з традиції класичного барберства.",
+    "text1NoFounder": "Ми принесли до {city} найкраще з традиції класичного барберства.",
+    "text2Pre": "Кожна стрижка — це для нас мистецтво. Ми не робимо швидких стрижок — ми приділяємо кожному клієнту індивідуальну увагу, тому що вважаємо, що",
+    "text2Em": "кожен чоловік заслуговує почуватися особливим",
+    "text3": "Наш салон — це місце, де ви зупиняєтесь, відпочиваєте та виходите оновленою людиною. Еспресо за наш рахунок.",
+    "imageAlt": "інтер'єр",
+    "cityFallback": "нашого міста"
+  },
+  "whyUs": {
+    "sectionLabel": "Чому ми",
+    "sectionTitle": "Що робить нас виключними",
+    "item1Title": "Ви оригінальні",
+    "item1Desc": "Ми не копіюємо. Хочемо підкреслити вашу унікальність.",
+    "item2TitleWithCity": "Ми в {city}",
+    "item2TitleNoCity": "Ми в центрі міста",
+    "item2DescWithAddress": "Знайдіть нас за адресою {address}, в самому серці {city}.",
+    "item2DescWithCity": "Знайдіть нас у центрі {city}, в самому серці міста.",
+    "item2DescNoCity": "Знайдіть нас прямо в серці міста.",
+    "item3Title": "Ми стежимо за трендами",
+    "item3Desc": "Найновіші стрижки і класика від професійних барберів.",
+    "item4Title": "Ми — професіонали",
+    "item4Desc": "Кожен барбер у команді має мінімум 3 роки досвіду.",
+    "item5Title": "Бронювання за 3 кліки",
+    "item5Desc": "WhatsApp або форма — бронювання за кілька секунд.",
+    "item6TitleWithRating": "{rating} у Google",
+    "item6TitleNoRating": "Відмінна оцінка",
+    "item6Desc": "Сотні задоволених клієнтів. Читайте відгуки."
+  },
+  "stats": {
+    "yearsLabel": "Років досвіду",
+    "clientsLabel": "Задоволених клієнтів",
+    "barbersLabel": "Професійні барбери",
+    "googleLabel": "Рейтинг Google"
+  },
+  "seo": {
+    "description": "Професійний барбершоп та перукарня в {city}. Чоловічі стрижки, догляд за бородою та стайлінг.",
+    "ogLocale": "uk_UA"
   }
 }

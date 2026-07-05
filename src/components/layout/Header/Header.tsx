@@ -2,17 +2,22 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 
-const NAV_LINKS = [
-  { href: '/sk/#sluzby',   label: 'Služby' },
-  { href: '/sk/#galeria',  label: 'Galéria' },
-  { href: '/sk/#tim',      label: 'Tím' },
-  { href: '/sk/#recenzie', label: 'Recenzie' },
-  { href: '/sk/#kontakt',  label: 'Kontakt' },
-];
-
 export default function Header({ logoUrl, whatsappBookingLink = '#' }: { logoUrl?: string; whatsappBookingLink?: string }) {
+  const locale = useLocale();
+  const tHeader = useTranslations('Header');
+  const tTestimonials = useTranslations('testimonials');
+
+  const navLinks = [
+    { href: `/${locale}/#sluzby`,   label: tHeader('servicesServices') },
+    { href: `/${locale}/#galeria`,  label: tHeader('servicesGallery') },
+    { href: `/${locale}/#tim`,      label: tHeader('servicesTeam') },
+    { href: `/${locale}/#recenzie`, label: tTestimonials('pageTitle') },
+    { href: `/${locale}/#kontakt`,  label: tHeader('servicesContact') },
+  ];
+
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,7 +54,7 @@ export default function Header({ logoUrl, whatsappBookingLink = '#' }: { logoUrl
   return (
     <header className={headerClass}>
       <div className="header__inner">
-        <Link href="/sk" className="header__logo">
+        <Link href={`/${locale}`} className="header__logo">
           {logoUrl ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={logoUrl} alt="Logo" className="header__logo-img" />
@@ -59,12 +64,12 @@ export default function Header({ logoUrl, whatsappBookingLink = '#' }: { logoUrl
         </Link>
 
         <nav className="header__nav">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <a key={link.href} href={link.href} className="header__nav-link">
               {link.label}
             </a>
           ))}
-          <a href="/sk/#rezervacia" className="header__btn-reserve">
+          <a href={`/${locale}/#rezervacia`} className="header__btn-reserve">
             Rezervácia
           </a>
           <a
@@ -88,7 +93,7 @@ export default function Header({ logoUrl, whatsappBookingLink = '#' }: { logoUrl
 
         {menuOpen && (
           <nav className="header__mobile-nav">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -99,7 +104,7 @@ export default function Header({ logoUrl, whatsappBookingLink = '#' }: { logoUrl
               </a>
             ))}
             <a
-              href="/sk/#rezervacia"
+              href={`/${locale}/#rezervacia`}
               className="header__mobile-btn-reserve"
               onClick={() => setMenuOpen(false)}
             >

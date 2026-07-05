@@ -178,7 +178,7 @@
     "wholesale": "Großhandelsbedingungen",
     "deliveryEU": "Schneller EU-weiter Versand",
     "deliveryB2B": "Großbestellungen & individuelle Lieferung",
-    "aboutDescServices": "Professioneller Barbershop und Friseursalon im Herzen von Trenčín. Herrenhaarschnitte, Bartpflege und Styling auf höchstem Niveau.",
+    "aboutDescServices": "Professioneller Barbershop und Friseursalon. Herrenhaarschnitte, Bartpflege und Styling auf höchstem Niveau.",
     "servicesNavTitle": "Navigation",
     "servicesHoursTitle": "Öffnungszeiten",
     "servicesClosed": "Geschlossen",
@@ -186,7 +186,18 @@
     "servicesTeam": "Team",
     "servicesGallery": "Galerie",
     "servicesBookNow": "Jetzt buchen",
-    "servicesAdmin": "Admin"
+    "servicesAdmin": "Admin",
+    "servicesTagline": "Premium-Barbershop in {city}.",
+    "allRightsReserved": "© {year} {name}. Alle Rechte vorbehalten.",
+    "privacyPolicy": "Datenschutzerklärung",
+    "termsOfService": "Impressum",
+    "navServices": "Leistungen & Preise",
+    "navGallery": "Galerie",
+    "navTeam": "Unser Team",
+    "navReviews": "Bewertungen",
+    "navAbout": "Über uns",
+    "navBooking": "Termin buchen",
+    "contactTitle": "Kontakt"
   },
   "tags": {
     "popularQueries": "Beliebte Suchanfragen:"
@@ -363,7 +374,16 @@
     "todaysSpecial": "TAGESGERICHT",
     "orderNow": "Jetzt bestellen",
     "googleRating": "4.8 bei Google",
-    "openUntil": "Geöffnet bis 23:00"
+    "openUntil": "Geöffnet bis 23:00",
+    "chipCut": "✂ Haarschnitt",
+    "chipBeard": "🧔 Bart",
+    "chipShave": "💈 Rasur",
+    "chipCourses": "🎓 Kurse",
+    "priceFrom": "Schnitt ab",
+    "priceBeardFrom": "Bart ab",
+    "defaultTitle": "Die Kunst des klassischen Barbierens",
+    "defaultSubtitle": "Premium-Barbershop für Männer.",
+    "defaultCta": "Termin buchen"
   },
   "menuCategories": {
     "tagline": "— UNSERE SPEISEKARTE —",
@@ -526,7 +546,21 @@
     "submit": "Bewertung absenden",
     "errorTextShort": "Bewertung muss mindestens 20 Zeichen lang sein",
     "successTitle": "Vielen Dank!",
-    "successPending": "Ihre Bewertung wurde eingereicht und wird geprüft."
+    "successPending": "Ihre Bewertung wurde eingereicht und wird geprüft.",
+    "writeReviewFor": "Bewertung hinterlassen",
+    "submitStoreNote": "Teilen Sie Ihre Erfahrung mit {storeName}",
+    "submitVerify": "Wir bestätigen, dass Sie ein echter Kunde von {storeName} sind.",
+    "submitPlaceholder": "Beschreiben Sie Ihre Erfahrung mit {storeName}... (mind. 20 Zeichen)",
+    "loading": "Lädt...",
+    "loginRequired": "Anmeldung erforderlich",
+    "loginNote": "Bewertungen können nur registrierte Kunden hinterlassen.",
+    "writingAs": "Sie schreiben als:",
+    "cancel": "Abbrechen",
+    "submitting": "Wird gesendet...",
+    "thankYou": "Danke, {name}!",
+    "pendingApproval": "Ihre Bewertung wird nach Genehmigung des Administrators veröffentlicht.",
+    "errorSubmit": "Fehler beim Senden. Bitte versuchen Sie es erneut.",
+    "backLabel": "← Zurück zu Bewertungen"
   },
   "auth": {
     "login": "Anmelden",
@@ -563,17 +597,29 @@
     "from": "ab"
   },
   "booking": {
-    "title": "Termin buchen",
-    "selectService": "Leistung wählen",
-    "selectMaster": "Barber wählen",
-    "selectDate": "Datum wählen",
-    "selectTime": "Uhrzeit wählen",
-    "yourName": "Ihr Name",
-    "yourPhone": "Telefonnummer",
-    "note": "Anmerkung (optional)",
-    "submit": "Termin buchen",
-    "whatsappFallback": "Oder per WhatsApp buchen",
-    "confirmation": "Termin bestätigt! Wir melden uns bald."
+    "sectionLabel": "Reservierung",
+    "sectionTitle": "Termin buchen",
+    "sectionSubtitle": "Füllen Sie das Formular aus — wir speichern den Termin und öffnen WhatsApp zur Bestätigung.",
+    "serviceLabel": "Dienstleistung",
+    "servicePlaceholder": "Dienstleistung wählen...",
+    "barberLabel": "Barber",
+    "barberAny": "Keine Präferenz",
+    "dateTimeLabel": "Tag und Uhrzeit wählen",
+    "nameLabel": "Name",
+    "namePlaceholder": "Ihr Name",
+    "phoneLabel": "Telefon",
+    "phonePlaceholder": "+49 1XX XXX XXXX",
+    "noteLabel": "Notiz (optional)",
+    "notePlaceholder": "Besondere Wünsche oder Anmerkungen...",
+    "submitBtn": "Per WhatsApp senden",
+    "submitting": "Speichert...",
+    "footNote": "Der Termin wird im System gespeichert. Nach dem Klick öffnet sich WhatsApp mit einer Bestätigung. Wir antworten innerhalb von 30 Minuten.",
+    "errorSelectTime": "Bitte Tag und Uhrzeit auswählen.",
+    "errorFillName": "Bitte Name und Telefon ausfüllen.",
+    "errorSlotTaken": "Dieser Termin wurde inzwischen vergeben. Bitte wählen Sie eine andere Zeit.",
+    "errorSave": "Fehler beim Speichern. Bitte erneut versuchen.",
+    "errorNetwork": "Netzwerkfehler. Bitte erneut versuchen.",
+    "waMessage": "📅 *Reservierung*\n━━━━━━━━━━━━━━━━━━\n👤 {name}  📞 {phone}\n📆 {date}  🕐 {time}"
   },
   "team": {
     "title": "Unsere Meister"
@@ -598,5 +644,66 @@
     "privacyLink": "Datenschutzerklärung",
     "reject": "Ablehnen",
     "acceptAll": "Alle akzeptieren"
+  },
+  "days": {
+    "mon": "Montag",
+    "tue": "Dienstag",
+    "wed": "Mittwoch",
+    "thu": "Donnerstag",
+    "fri": "Freitag",
+    "sat": "Samstag",
+    "sun": "Sonntag",
+    "closed": "Geschlossen"
+  },
+  "contact": {
+    "sectionLabel": "Kontakt",
+    "sectionTitle": "So finden Sie uns",
+    "addressLabel": "Adresse",
+    "contactLabel": "Kontakt",
+    "openingHoursLabel": "Öffnungszeiten",
+    "writeToUs": "Schreiben Sie uns",
+    "mapTitle": "Karte {city}"
+  },
+  "about": {
+    "label": "Über uns",
+    "title": "Tradition trifft modernen Stil",
+    "text1": "{name} wurde 2018 aus Leidenschaft für das traditionelle Barbierhandwerk gegründet.",
+    "text1Founder": "Unsere Gründerin {founderName} brachte das Beste der klassischen Barbertradition nach {city}.",
+    "text1NoFounder": "Wir haben das Beste der klassischen Barbertradition nach {city} gebracht.",
+    "text2Pre": "Jeder Haarschnitt ist für uns Kunst. Wir machen keine schnellen Schnitte — wir widmen uns jedem Kunden individuell, denn wir glauben, dass",
+    "text2Em": "jeder Mann es verdient, sich außergewöhnlich zu fühlen",
+    "text3": "Unser Studio ist ein Ort, wo Sie innehalten, entspannen und als neuer Mensch gehen. Espresso geht auf uns.",
+    "imageAlt": "Innenraum",
+    "cityFallback": "unserer Stadt"
+  },
+  "whyUs": {
+    "sectionLabel": "Warum wir",
+    "sectionTitle": "Was uns auszeichnet",
+    "item1Title": "Sie sind einzigartig",
+    "item1Desc": "Wir kopieren niemanden. Wir möchten Ihre Einzigartigkeit hervorheben.",
+    "item2TitleWithCity": "Wir sind in {city}",
+    "item2TitleNoCity": "Wir sind im Stadtzentrum",
+    "item2DescWithAddress": "Sie finden uns in {address}, mitten im Herzen von {city}.",
+    "item2DescWithCity": "Sie finden uns im Zentrum von {city}, mitten im Herzen der Stadt.",
+    "item2DescNoCity": "Sie finden uns direkt im Herzen der Stadt.",
+    "item3Title": "Wir folgen den Trends",
+    "item3Desc": "Modernste Schnitte und Klassiker von professionellen Barbern.",
+    "item4Title": "Wir sind Profis",
+    "item4Desc": "Jeder Barber im Team hat mindestens 3 Jahre Erfahrung.",
+    "item5Title": "Buchung in 3 Klicks",
+    "item5Desc": "WhatsApp oder Formular — Buchung in wenigen Sekunden.",
+    "item6TitleWithRating": "{rating} bei Google",
+    "item6TitleNoRating": "Hervorragende Bewertung",
+    "item6Desc": "Hunderte zufriedene Kunden. Lesen Sie unsere Bewertungen."
+  },
+  "stats": {
+    "yearsLabel": "Jahre Erfahrung",
+    "clientsLabel": "Zufriedene Kunden",
+    "barbersLabel": "Professionelle Barber",
+    "googleLabel": "Google-Bewertung"
+  },
+  "seo": {
+    "description": "Professioneller Barbershop und Friseursalon in {city}. Herrenhaarschnitte, Bartpflege und Styling.",
+    "ogLocale": "de_DE"
   }
 }

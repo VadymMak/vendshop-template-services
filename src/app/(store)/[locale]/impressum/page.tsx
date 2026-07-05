@@ -10,7 +10,7 @@ const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Impressum',
-    robots: { index: false, follow: false },
+    robots: { index: true, follow: true },
   };
 }
 
@@ -28,13 +28,14 @@ export default async function ImpressumPage({
     : null;
   if (!legal?.enabled) notFound();
 
+  // TODO: per client, generate via eRecht24.de
   return (
     <main className={styles.page}>
       <div className={styles.container}>
         <h1 className={styles.title}>Impressum</h1>
 
         <section className={styles.section}>
-          <h2 className={styles.heading}>Angaben gemäß § 5 TMG</h2>
+          <h2 className={styles.heading}>Angaben gemäß § 5 DDG</h2>
           <p>
             <strong>{legal.companyName}</strong>
             <br />
@@ -63,7 +64,7 @@ export default async function ImpressumPage({
           <p>
             Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit,
             Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
-            Als Diensteanbieter sind wir gemäß § 7 Abs.&nbsp;1 TMG für eigene Inhalte auf diesen
+            Als Diensteanbieter sind wir gemäß § 7 Abs.&nbsp;1 DDG für eigene Inhalte auf diesen
             Seiten nach den allgemeinen Gesetzen verantwortlich.
           </p>
           <h3 className={styles.subheading}>Haftung für Links</h3>

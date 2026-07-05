@@ -195,7 +195,7 @@ export default function AdminAiPage() {
   const [aiActive,       setAiActive]       = useState(true);
   const [tone,           setTone]           = useState<Tone>('friendly');
   const [assistantName,  setAssistantName]  = useState('Kate AI');
-  const [greeting,       setGreeting]       = useState('Dobrý deň! Som AI asistent Kate Barber Studio. Čím môžem pomôcť?');
+  const [greeting,       setGreeting]       = useState('');
   const [priorities,     setPriorities]     = useState<PriorityItem[]>(DEFAULT_PRIORITIES);
 
   useEffect(() => {

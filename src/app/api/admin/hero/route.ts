@@ -48,8 +48,8 @@ export async function PATCH(req: NextRequest) {
     where: { storeId: store.id },
     create: {
       storeId: store.id,
-      title: (data.title as string) ?? 'Kate Barber Studio',
-      subtitle: (data.subtitle as string) ?? 'Prémiový barber studio v Trenčíne',
+      title: (data.title as string) ?? '',
+      subtitle: (data.subtitle as string) ?? '',
       ctaText: (data.ctaText as string) ?? 'Rezervovať termín',
       imageUrl: (data.imageUrl as string | null) ?? null,
     },

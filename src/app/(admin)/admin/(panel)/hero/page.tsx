@@ -11,8 +11,8 @@ interface HeroConfig {
 }
 
 const DEFAULTS: HeroConfig = {
-  title: 'Kate Barber Studio',
-  subtitle: 'Prémiový barber studio v Trenčíne',
+  title: '',
+  subtitle: '',
   ctaText: 'Rezervovať termín',
   imageUrl: null,
 };
@@ -109,7 +109,7 @@ export default function HeroAdminPage() {
             <input
               value={form.title}
               onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
-              placeholder="Kate Barber Studio"
+              placeholder=""
             />
           </div>
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
@@ -117,7 +117,7 @@ export default function HeroAdminPage() {
             <input
               value={form.subtitle}
               onChange={(e) => setForm((p) => ({ ...p, subtitle: e.target.value }))}
-              placeholder="Prémiový barber studio v Trenčíne"
+              placeholder=""
             />
           </div>
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>

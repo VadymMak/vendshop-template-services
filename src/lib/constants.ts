@@ -32,7 +32,7 @@ export const STATIC_MASTERS: MasterItem[] = [
 ];
 
 export const STATIC_TESTIMONIALS: StaticTestimonial[] = [
-  { id: 't1', name: 'Tomáš K.',   text: 'Najlepší barber v Trenčíne. Kate vie presne čo chcete ešte predtým, ako to poviete.',  rating: 5 },
+  { id: 't1', name: 'Tomáš K.',   text: 'Najlepší barber štúdio. Kate vie presne čo chcete ešte predtým, ako to poviete.',  rating: 5 },
   { id: 't2', name: 'Martin P.',  text: 'Skvelá atmosféra, profesionálny prístup. Chodím sem každé 3 týždne.',                 rating: 5 },
   { id: 't3', name: 'Lukáš D.',   text: 'Lucia odviedla fantastickú prácu s mojou bradou. Rozhodne odporúčam!',                rating: 5 },
   { id: 't4', name: 'Miroslav S.', text: 'Kvalita za férovú cenu. Studio vyzerá skvele a personál je veľmi príjemný.',         rating: 5 },
@@ -43,7 +43,7 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
   { src: '/gallery/gallery-2-haircut.webp', alt: 'Presný strih' },
   { src: '/gallery/gallery-3-beard.webp',   alt: 'Briadkový styling' },
   { src: '/gallery/gallery-4-result.webp',  alt: 'Výsledok - perfektný strih' },
-  { src: '/gallery/gallery-5-studio.webp',  alt: 'Kate Barber Studio interiér' },
+  { src: '/gallery/gallery-5-studio.webp',  alt: 'Barber Studio interiér' },
 ];
 
 // Display data for sections (served as fallback when DB is not seeded)
@@ -65,7 +65,7 @@ export const TEAM: TeamMember[] = [
 ];
 
 export const TESTIMONIALS: Testimonial[] = [
-  { stars: 5, text: '"Najlepší barber shop v Trenčíne. Kate presne vie, čo chcem, aj keď to neviem vysvetliť. Atmosféra je skvelá, vždy odchádzam spokojný."', author: 'Peter N.',   date: 'Google recenzia · marec 2026'  },
+  { stars: 5, text: '"Najlepší barber shop v meste. Kate presne vie, čo chcem, aj keď to neviem vysvetliť. Atmosféra je skvelá, vždy odchádzam spokojný."', author: 'Peter N.',   date: 'Google recenzia · marec 2026'  },
   { stars: 5, text: '"Chodím sem s malým synom — obaja odchádzame ako noví ľudia. Balík Otec + Syn je geniálny nápad. Veľký palec hore!"',                     author: 'Marek K.',   date: 'Google recenzia · február 2026' },
   { stars: 5, text: '"Klasické holenie tu je zážitok. Horúci uterák, voňavá pena, a výsledok dokonalý. Odporúčam každému."',                                   author: 'Jakub V.',   date: 'Google recenzia · január 2026'  },
 ];

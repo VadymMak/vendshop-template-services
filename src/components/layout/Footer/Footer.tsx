@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import type { StoreConfig, WorkingHours, DayHours } from '@/lib/store-config';
 
 interface FooterProps {
@@ -6,39 +7,54 @@ interface FooterProps {
   legalEnabled?: boolean;
 }
 
-const DAYS_SK: Record<string, string> = {
-  mon: 'Pondelok', tue: 'Utorok', wed: 'Streda',
-  thu: 'Štvrtok', fri: 'Piatok', sat: 'Sobota', sun: 'Nedeľa',
-};
 const DAY_ORDER = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
-function formatFooterHours(wh: WorkingHours): { label: string; hours: string }[] {
+function formatFooterHours(
+  wh: WorkingHours,
+  dayNames: Record<string, string>,
+  closedLabel: string,
+): { label: string; hours: string }[] {
   const result: { label: string; hours: string }[] = [];
   let i = 0;
   while (i < DAY_ORDER.length) {
     const day = DAY_ORDER[i];
     const h = wh[day] as DayHours;
-    if (!h) { result.push({ label: DAYS_SK[day] ?? day, hours: 'Zatvorené' }); i++; continue; }
+    if (!h) { result.push({ label: dayNames[day] ?? day, hours: closedLabel }); i++; continue; }
     let j = i + 1;
     while (j < DAY_ORDER.length) {
       const next = wh[DAY_ORDER[j]] as DayHours;
       if (next && next.open === h.open && next.close === h.close) j++; else break;
     }
-    const label = j - i > 1 ? `${DAYS_SK[day]} – ${DAYS_SK[DAY_ORDER[j - 1]]}` : DAYS_SK[day] ?? day;
+    const label = j - i > 1
+      ? `${dayNames[day]} – ${dayNames[DAY_ORDER[j - 1]]}`
+      : (dayNames[day] ?? day);
     result.push({ label, hours: `${h.open} – ${h.close}` });
     i = j;
   }
   return result;
 }
 
-export default function Footer({ config, locale, legalEnabled }: FooterProps) {
+export default async function Footer({ config, locale, legalEnabled }: FooterProps) {
   const { name, presence, whatsappLinks } = config;
   const currentYear = new Date().getFullYear();
   const showLegal = locale === 'de' && legalEnabled;
 
+  const [tFooter, tDays] = await Promise.all([
+    getTranslations('footer'),
+    getTranslations('days'),
+  ]);
+
+  const dayNames: Record<string, string> = {
+    mon: tDays('mon'), tue: tDays('tue'), wed: tDays('wed'),
+    thu: tDays('thu'), fri: tDays('fri'), sat: tDays('sat'), sun: tDays('sun'),
+  };
+  const closedLabel = tDays('closed');
+
   const phoneHref = presence.phone ? `tel:${presence.phone.replace(/\s/g, '')}` : undefined;
   const emailHref = presence.email ? `mailto:${presence.email}` : undefined;
-  const hoursRows = presence.openingHours ? formatFooterHours(presence.openingHours) : [];
+  const hoursRows = presence.openingHours
+    ? formatFooterHours(presence.openingHours, dayNames, closedLabel)
+    : [];
   const fullAddress = [
     presence.address,
     [presence.postalCode, presence.city].filter(Boolean).join(' '),
@@ -52,7 +68,9 @@ export default function Footer({ config, locale, legalEnabled }: FooterProps) {
         <div className="footer__brand">
           <p className="footer__logo">{name}</p>
           {presence.city && (
-            <p className="footer__tagline">Prémiový barber studio v {presence.city}.</p>
+            <p className="footer__tagline">
+              {tFooter('servicesTagline', { city: presence.city })}
+            </p>
           )}
           <div className="footer__socials">
             {presence.instagram && (
@@ -79,26 +97,28 @@ export default function Footer({ config, locale, legalEnabled }: FooterProps) {
 
         {/* Col 2 — Navigation */}
         <div className="footer__col">
-          <h4 className="footer__heading">Navigácia</h4>
+          <h4 className="footer__heading">{tFooter('servicesNavTitle')}</h4>
           <ul className="footer__links">
-            <li><a href="#sluzby">Služby &amp; Ceny</a></li>
-            <li><a href="#galeria">Galéria</a></li>
-            <li><a href="#tim">Náš tím</a></li>
-            <li><a href="#recenzie">Recenzie</a></li>
-            <li><a href="#o-nas">O nás</a></li>
-            <li><a href="#rezervacia">Rezervácia</a></li>
+            <li><a href="#sluzby">{tFooter('navServices')}</a></li>
+            <li><a href="#galeria">{tFooter('navGallery')}</a></li>
+            <li><a href="#tim">{tFooter('navTeam')}</a></li>
+            <li><a href="#recenzie">{tFooter('navReviews')}</a></li>
+            <li><a href="#o-nas">{tFooter('navAbout')}</a></li>
+            <li><a href="#rezervacia">{tFooter('navBooking')}</a></li>
           </ul>
         </div>
 
         {/* Col 3 — Hours */}
         <div className="footer__col">
-          <h4 className="footer__heading">Otváracie hodiny</h4>
+          <h4 className="footer__heading">{tFooter('servicesHoursTitle')}</h4>
           {hoursRows.length > 0 ? (
             <ul className="footer__hours">
               {hoursRows.map((row) => (
                 <li key={row.label}>
                   <span>{row.label}</span>
-                  <span className={row.hours === 'Zatvorené' ? 'footer__closed' : undefined}>{row.hours}</span>
+                  <span className={row.hours === closedLabel ? 'footer__closed' : undefined}>
+                    {row.hours}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -109,7 +129,7 @@ export default function Footer({ config, locale, legalEnabled }: FooterProps) {
 
         {/* Col 4 — Contact */}
         <div className="footer__col">
-          <h4 className="footer__heading">Kontakt</h4>
+          <h4 className="footer__heading">{tFooter('contactTitle')}</h4>
           <ul className="footer__contact">
             {fullAddress && (
               <li>
@@ -136,17 +156,17 @@ export default function Footer({ config, locale, legalEnabled }: FooterProps) {
 
       {/* Bottom bar */}
       <div className="footer__bottom">
-        <p>© {currentYear} {name}. Všetky práva vyhradené.</p>
+        <p>{tFooter('allRightsReserved', { year: currentYear, name })}</p>
         <p className="footer__bottom-links">
-          <a href="#">Ochrana súkromia</a>
+          <a href="#">{tFooter('privacyPolicy')}</a>
           <span>·</span>
-          <a href="#">Obchodné podmienky</a>
+          <a href="#">{tFooter('termsOfService')}</a>
           {showLegal && (
             <>
               <span>·</span>
-              <a href="/de/impressum">Impressum</a>
+              <a href={`/${locale}/impressum`}>Impressum</a>
               <span>·</span>
-              <a href="/de/datenschutz">Datenschutz</a>
+              <a href={`/${locale}/datenschutz`}>Datenschutz</a>
             </>
           )}
         </p>

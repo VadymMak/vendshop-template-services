@@ -178,7 +178,7 @@
     "wholesale": "Warunki hurtowe",
     "deliveryEU": "Szybka wysyłka w całej UE",
     "deliveryB2B": "Zamówienia hurtowe i indywidualna dostawa",
-    "aboutDescServices": "Profesjonalny barbershop i salon fryzjerski w centrum Trenčína. Strzyżenie męskie, pielęgnacja brody i stylizacja na najwyższym poziomie.",
+    "aboutDescServices": "Profesjonalny barbershop i salon fryzjerski. Strzyżenia męskie, pielęgnacja brody i stylizacja na najwyższym poziomie.",
     "servicesNavTitle": "Nawigacja",
     "servicesHoursTitle": "Godziny pracy",
     "servicesClosed": "Zamknięte",
@@ -186,7 +186,18 @@
     "servicesTeam": "Zespół",
     "servicesGallery": "Galeria",
     "servicesBookNow": "Zarezerwuj",
-    "servicesAdmin": "Admin"
+    "servicesAdmin": "Admin",
+    "servicesTagline": "Premium barbershop w {city}.",
+    "allRightsReserved": "© {year} {name}. Wszelkie prawa zastrzeżone.",
+    "privacyPolicy": "Polityka prywatności",
+    "termsOfService": "Warunki korzystania",
+    "navServices": "Usługi & Cennik",
+    "navGallery": "Galeria",
+    "navTeam": "Nasz zespół",
+    "navReviews": "Opinie",
+    "navAbout": "O nas",
+    "navBooking": "Zarezerwuj",
+    "contactTitle": "Kontakt"
   },
   "tags": {
     "popularQueries": "Popularne wyszukiwania:"
@@ -363,7 +374,16 @@
     "todaysSpecial": "DZISIEJSZA SPECJALNOŚĆ",
     "orderNow": "Zamów teraz",
     "googleRating": "4.8 na Google",
-    "openUntil": "Otwarte do 23:00"
+    "openUntil": "Otwarte do 23:00",
+    "chipCut": "✂ Strzyżenie",
+    "chipBeard": "🧔 Broda",
+    "chipShave": "💈 Golenie",
+    "chipCourses": "🎓 Kursy",
+    "priceFrom": "Strzyżenie od",
+    "priceBeardFrom": "Broda od",
+    "defaultTitle": "Sztuka klasycznego barberstwa",
+    "defaultSubtitle": "Premium barbershop dla mężczyzn.",
+    "defaultCta": "Umów wizytę"
   },
   "menuCategories": {
     "tagline": "— NASZE MENU —",
@@ -526,7 +546,21 @@
     "submit": "Wyślij opinię",
     "errorTextShort": "Opinia musi mieć co najmniej 20 znaków",
     "successTitle": "Dziękujemy!",
-    "successPending": "Twoja opinia została wysłana i oczekuje na weryfikację."
+    "successPending": "Twoja opinia została wysłana i oczekuje na weryfikację.",
+    "writeReviewFor": "Napisz opinię",
+    "submitStoreNote": "Podziel się swoim doświadczeniem z {storeName}",
+    "submitVerify": "Sprawdzimy, czy jesteś prawdziwym klientem {storeName}.",
+    "submitPlaceholder": "Opisz swoje doświadczenie w {storeName}... (min. 20 znaków)",
+    "loading": "Ładowanie...",
+    "loginRequired": "Wymagane logowanie",
+    "loginNote": "Opinie mogą zostawiać tylko zarejestrowani klienci.",
+    "writingAs": "Piszesz jako:",
+    "cancel": "Anuluj",
+    "submitting": "Wysyłanie...",
+    "thankYou": "Dziękujemy, {name}!",
+    "pendingApproval": "Twoja opinia zostanie opublikowana po zatwierdzeniu przez administratora.",
+    "errorSubmit": "Błąd podczas wysyłania. Spróbuj ponownie.",
+    "backLabel": "← Powrót do opinii"
   },
   "auth": {
     "login": "Zaloguj się",
@@ -563,17 +597,29 @@
     "from": "od"
   },
   "booking": {
-    "title": "Zarezerwuj wizytę",
-    "selectService": "Wybierz usługę",
-    "selectMaster": "Wybierz mistrza",
-    "selectDate": "Wybierz datę",
-    "selectTime": "Wybierz godzinę",
-    "yourName": "Twoje imię",
-    "yourPhone": "Numer telefonu",
-    "note": "Uwaga (opcjonalnie)",
-    "submit": "Zarezerwuj",
-    "whatsappFallback": "Lub zarezerwuj przez WhatsApp",
-    "confirmation": "Wizyta potwierdzona! Skontaktujemy się wkrótce."
+    "sectionLabel": "Rezerwacja",
+    "sectionTitle": "Zarezerwuj wizytę",
+    "sectionSubtitle": "Wypełnij formularz — zapiszemy termin i otworzymy WhatsApp z potwierdzeniem.",
+    "serviceLabel": "Usługa",
+    "servicePlaceholder": "Wybierz usługę...",
+    "barberLabel": "Barber",
+    "barberAny": "Bez preferencji",
+    "dateTimeLabel": "Wybierz dzień i godzinę",
+    "nameLabel": "Imię",
+    "namePlaceholder": "Twoje imię",
+    "phoneLabel": "Telefon",
+    "phonePlaceholder": "+48 5XX XXX XXX",
+    "noteLabel": "Notatka (opcjonalnie)",
+    "notePlaceholder": "Specjalne życzenia lub uwagi...",
+    "submitBtn": "Wyślij przez WhatsApp",
+    "submitting": "Zapisuję...",
+    "footNote": "Termin zostanie zapisany w systemie. Po kliknięciu otworzy się WhatsApp z potwierdzeniem. Odpowiadamy w ciągu 30 minut.",
+    "errorSelectTime": "Proszę wybrać dzień i godzinę.",
+    "errorFillName": "Proszę podać imię i telefon.",
+    "errorSlotTaken": "Ten termin właśnie zajęto. Proszę wybrać inny czas.",
+    "errorSave": "Błąd zapisu. Spróbuj ponownie.",
+    "errorNetwork": "Błąd sieci. Spróbuj ponownie.",
+    "waMessage": "📅 *Rezerwacja*\n━━━━━━━━━━━━━━━━━━\n👤 {name}  📞 {phone}\n📆 {date}  🕐 {time}"
   },
   "team": {
     "title": "Nasi mistrzowie"
@@ -598,5 +644,66 @@
     "privacyLink": "polityce prywatności",
     "reject": "Odrzuć",
     "acceptAll": "Zaakceptuj wszystko"
+  },
+  "days": {
+    "mon": "Poniedziałek",
+    "tue": "Wtorek",
+    "wed": "Środa",
+    "thu": "Czwartek",
+    "fri": "Piątek",
+    "sat": "Sobota",
+    "sun": "Niedziela",
+    "closed": "Zamknięte"
+  },
+  "contact": {
+    "sectionLabel": "Kontakt",
+    "sectionTitle": "Jak nas znaleźć",
+    "addressLabel": "Adres",
+    "contactLabel": "Kontakt",
+    "openingHoursLabel": "Godziny otwarcia",
+    "writeToUs": "Napisz do nas",
+    "mapTitle": "Mapa {city}"
+  },
+  "about": {
+    "label": "O nas",
+    "title": "Tradycja spotyka nowoczesny styl",
+    "text1": "{name} powstało w 2018 roku z miłości do tradycyjnego barberstwa.",
+    "text1Founder": "Nasza założycielka {founderName} przywiozła do {city} to, co najlepsze w tradycji klasycznego barberstwa.",
+    "text1NoFounder": "Przynieśliśmy do {city} to, co najlepsze w tradycji klasycznego barberstwa.",
+    "text2Pre": "Każde cięcie to dla nas sztuka. Nie robimy szybkich strzyżeń — poświęcamy indywidualną uwagę każdemu klientowi, bo wierzymy, że",
+    "text2Em": "każdy mężczyzna zasługuje na wyjątkowe uczucie",
+    "text3": "Nasz salon to miejsce, gdzie się zatrzymasz, odpoczniez i wyjdziesz jako nowy człowiek. Espresso na nasz koszt.",
+    "imageAlt": "wnętrze",
+    "cityFallback": "naszego miasta"
+  },
+  "whyUs": {
+    "sectionLabel": "Dlaczego my",
+    "sectionTitle": "Co nas wyróżnia",
+    "item1Title": "Wiesz, że jesteś oryginalny",
+    "item1Desc": "Nie kopiujemy. Chcemy podkreślić Twoją wyjątkowość.",
+    "item2TitleWithCity": "Jesteśmy w {city}",
+    "item2TitleNoCity": "Jesteśmy w centrum miasta",
+    "item2DescWithAddress": "Znajdziesz nas pod adresem {address}, w samym sercu {city}.",
+    "item2DescWithCity": "Znajdziesz nas w centrum {city}, w samym sercu miasta.",
+    "item2DescNoCity": "Znajdziesz nas w samym sercu miasta.",
+    "item3Title": "Śledzimy trendy",
+    "item3Desc": "Najnowsze strzyżenia i klasyka w wykonaniu profesjonalnych barberów.",
+    "item4Title": "Jesteśmy profesjonalistami",
+    "item4Desc": "Każdy barber w zespole ma co najmniej 3 lata doświadczenia.",
+    "item5Title": "Rezerwacja w 3 kliknięcia",
+    "item5Desc": "WhatsApp lub formularz — rezerwacja w kilka sekund.",
+    "item6TitleWithRating": "{rating} w Google",
+    "item6TitleNoRating": "Doskonała ocena",
+    "item6Desc": "Setki zadowolonych klientów. Przeczytaj nasze recenzje."
+  },
+  "stats": {
+    "yearsLabel": "Lat doświadczenia",
+    "clientsLabel": "Zadowolonych klientów",
+    "barbersLabel": "Profesjonalni barberzy",
+    "googleLabel": "Ocena Google"
+  },
+  "seo": {
+    "description": "Profesjonalny barbershop i salon fryzjerski w {city}. Strzyżenia męskie, pielęgnacja brody i stylizacja.",
+    "ogLocale": "pl_PL"
   }
 }

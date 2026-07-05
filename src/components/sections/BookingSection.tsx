@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { SERVICE_OPTIONS, BARBERS } from '@/lib/constants';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 import GoldDivider from '@/components/ui/GoldDivider';
@@ -14,6 +15,8 @@ interface BookingSectionProps {
 }
 
 export default function BookingSection({ workingHours, whatsappNumber }: BookingSectionProps) {
+  const t = useTranslations('booking');
+
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedSlots,  setBookedSlots]  = useState<string[]>([]);
@@ -76,11 +79,11 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
     const note    = String(data.get('note')    ?? '').trim();
 
     if (!selectedDate || !selectedTime) {
-      setSubmitError('Vyberte deň a čas rezervácie.');
+      setSubmitError(t('errorSelectTime'));
       return;
     }
     if (!name || !phone) {
-      setSubmitError('Vyplňte meno a telefón.');
+      setSubmitError(t('errorFillName'));
       return;
     }
 
@@ -104,13 +107,13 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
         // Slot taken — reload fresh data
         await fetchSlots(selectedDate);
         setSelectedTime('');
-        setSubmitError('Tento termín bol medzičasom obsadený. Vyberte iný čas.');
+        setSubmitError(t('errorSlotTaken'));
         setSubmitting(false);
         return;
       }
 
       if (!res.ok) {
-        setSubmitError('Chyba pri ukladaní. Skúste znovu.');
+        setSubmitError(t('errorSave'));
         setSubmitting(false);
         return;
       }
@@ -118,20 +121,19 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
       // Optimistically mark slot as booked
       setBookedSlots((prev) => [...prev, selectedTime]);
 
-      const lines = [
-        `📅 *Rezervácia — Kate Barber Studio*`,
-        `━━━━━━━━━━━━━━━━━━`,
-        `👤 ${name}  📞 ${phone}`,
-        service ? `✂️ ${service}` : '',
-        barber  ? `💈 ${barber}` : '',
-        `📆 ${selectedDate}  🕐 ${selectedTime}`,
-        note    ? `💬 ${note}` : '',
-        `━━━━━━━━━━━━━━━━━━`,
+      const serviceLine = service ? `✂️ ${service}` : '';
+      const barberLine  = barber  ? `💈 ${barber}`  : '';
+      const noteLine    = note    ? `💬 ${note}`    : '';
+      const waMsg = [
+        t('waMessage', { name, phone, date: selectedDate, time: selectedTime }),
+        serviceLine,
+        barberLine,
+        noteLine,
       ].filter(Boolean).join('\n');
 
       if (whatsappNumber) {
         window.open(
-          `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines)}`,
+          `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMsg)}`,
           '_blank',
           'noopener,noreferrer',
         );
@@ -141,7 +143,7 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
       setSelectedDate('');
       setSelectedTime('');
     } catch {
-      setSubmitError('Sieťová chyba. Skúste znovu.');
+      setSubmitError(t('errorNetwork'));
     } finally {
       setSubmitting(false);
     }
@@ -150,11 +152,11 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
   return (
     <section id="rezervacia" className="booking">
       <ScrollReveal direction="up" className="section-header">
-        <p className="section-label">Rezervácia</p>
-        <h2 className="section-title">Zarezervujte si termín</h2>
+        <p className="section-label">{t('sectionLabel')}</p>
+        <h2 className="section-title">{t('sectionTitle')}</h2>
         <GoldDivider />
         <p className="section-subtitle">
-          Vyplňte formulár — uložíme termín a otvoríme WhatsApp s potvrdením.
+          {t('sectionSubtitle')}
         </p>
       </ScrollReveal>
 
@@ -164,22 +166,22 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
 
             <div className="booking__form-row">
               <div>
-                <label className="booking__label">Služba</label>
+                <label className="booking__label">{t('serviceLabel')}</label>
                 <select name="service" required className="booking__select">
-                  <option value="">Vyberte službu...</option>
+                  <option value="">{t('servicePlaceholder')}</option>
                   {SERVICE_OPTIONS.map((opt) => (
                     <option key={opt} value={opt}>{opt}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="booking__label">Barber</label>
+                <label className="booking__label">{t('barberLabel')}</label>
                 <select
                   name="barber"
                   className="booking__select"
                   onChange={handleBarberChange}
                 >
-                  <option value="">Bez preferencie</option>
+                  <option value="">{t('barberAny')}</option>
                   {BARBERS.map((barber) => (
                     <option key={barber} value={barber}>{barber}</option>
                   ))}
@@ -188,7 +190,7 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
             </div>
 
             <div>
-              <label className="booking__label">Vyberte deň a čas</label>
+              <label className="booking__label">{t('dateTimeLabel')}</label>
               <div className="booking__picker-wrap">
                 <DateTimePicker
                   onSelect={handleDateTimeSelect}
@@ -202,21 +204,21 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
 
             <div className="booking__form-row">
               <div>
-                <label className="booking__label">Meno</label>
+                <label className="booking__label">{t('nameLabel')}</label>
                 <input
                   type="text"
                   name="name"
-                  placeholder="Vaše meno"
+                  placeholder={t('namePlaceholder')}
                   required
                   className="booking__input"
                 />
               </div>
               <div>
-                <label className="booking__label">Telefón</label>
+                <label className="booking__label">{t('phoneLabel')}</label>
                 <input
                   type="tel"
                   name="phone"
-                  placeholder="+421 9XX XXX XXX"
+                  placeholder={t('phonePlaceholder')}
                   required
                   className="booking__input"
                 />
@@ -224,10 +226,10 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
             </div>
 
             <div>
-              <label className="booking__label">Poznámka (nepovinné)</label>
+              <label className="booking__label">{t('noteLabel')}</label>
               <textarea
                 name="note"
-                placeholder="Špeciálne požiadavky alebo poznámky..."
+                placeholder={t('notePlaceholder')}
                 className="booking__textarea"
               />
             </div>
@@ -245,13 +247,13 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
                 disabled={submitting || loadingSlots}
               >
                 <WhatsAppIcon size={18} />
-                {submitting ? 'Ukladám...' : 'Odoslať cez WhatsApp'}
+                {submitting ? t('submitting') : t('submitBtn')}
               </button>
             </div>
           </form>
 
           <p className="booking__note">
-            Termín sa uloží do systému. Po kliknutí sa otvorí WhatsApp s potvrdením. Odpovedáme do 30 minút.
+            {t('footNote')}
           </p>
         </div>
       </ScrollReveal>

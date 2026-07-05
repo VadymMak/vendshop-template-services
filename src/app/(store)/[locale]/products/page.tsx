@@ -80,7 +80,7 @@ export default async function DigitalProductsPage({
     <section style={{ padding: 'var(--spacing-lg, 4rem) var(--spacing-sm, 1rem)', maxWidth: '1100px', margin: '0 auto' }}>
       <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-md, 2rem)' }}>
         <p style={{ color: 'var(--color-copper, #B87333)', fontSize: 'var(--font-size-sm, 0.875rem)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
-          Kate Barber Studio
+          {config.name}
         </p>
         <h1 style={{ color: 'var(--color-text-primary)', fontSize: 'var(--font-size-2xl, 2rem)', marginBottom: '0.5rem' }}>
           {labels.title}

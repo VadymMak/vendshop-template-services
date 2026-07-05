@@ -1,21 +1,17 @@
 import { Fragment } from 'react';
+import { getTranslations } from 'next-intl/server';
 import GoldDivider from '@/components/ui/GoldDivider';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 import ScrollReveal from '@/components/ui/ScrollReveal';
-import type { WorkingHours, DayHours } from '@/lib/store-config';
+import type { WorkingHours } from '@/lib/store-config';
 
-const DAYS_SK: Record<string, string> = {
-  mon: 'Pondelok',
-  tue: 'Utorok',
-  wed: 'Streda',
-  thu: 'Štvrtok',
-  fri: 'Piatok',
-  sat: 'Sobota',
-  sun: 'Nedeľa',
-};
 const DAY_ORDER = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
-function formatHours(wh: WorkingHours | null | undefined): { label: string; hours: string }[] {
+function formatHours(
+  wh: WorkingHours | null | undefined,
+  dayNames: Record<string, string>,
+  closedLabel: string,
+): { label: string; hours: string }[] {
   if (!wh || typeof wh !== 'object') return [];
 
   const result: { label: string; hours: string }[] = [];
@@ -26,12 +22,11 @@ function formatHours(wh: WorkingHours | null | undefined): { label: string; hour
     const hours = wh[day];
 
     if (!hours) {
-      result.push({ label: DAYS_SK[day] ?? day, hours: 'Zatvorené' });
+      result.push({ label: dayNames[day] ?? day, hours: closedLabel });
       i++;
       continue;
     }
 
-    // Find consecutive days with identical hours
     let j = i + 1;
     while (
       j < DAY_ORDER.length &&
@@ -42,8 +37,8 @@ function formatHours(wh: WorkingHours | null | undefined): { label: string; hour
 
     const label =
       j - i > 1
-        ? `${DAYS_SK[day]} – ${DAYS_SK[DAY_ORDER[j - 1]]}`
-        : DAYS_SK[day] ?? day;
+        ? `${dayNames[day]} – ${dayNames[DAY_ORDER[j - 1]]}`
+        : dayNames[day] ?? day;
 
     result.push({ label, hours: `${hours.open} – ${hours.close}` });
     i = j;
@@ -52,7 +47,6 @@ function formatHours(wh: WorkingHours | null | undefined): { label: string; hour
   return result;
 }
 
-// ─── Props ────────────────────────────────────────────────────────────────
 interface ContactSectionProps {
   address?: string | null;
   city?: string | null;
@@ -64,7 +58,7 @@ interface ContactSectionProps {
   whatsappLocationLink?: string;
 }
 
-export default function ContactSection({
+export default async function ContactSection({
   address,
   city,
   phone,
@@ -74,6 +68,20 @@ export default function ContactSection({
   workingHours,
   whatsappLocationLink,
 }: ContactSectionProps) {
+  const tContact = await getTranslations('contact');
+  const tDays = await getTranslations('days');
+
+  const dayNames: Record<string, string> = {
+    mon: tDays('mon'),
+    tue: tDays('tue'),
+    wed: tDays('wed'),
+    thu: tDays('thu'),
+    fri: tDays('fri'),
+    sat: tDays('sat'),
+    sun: tDays('sun'),
+  };
+  const closedLabel = tDays('closed');
+
   const phoneHref = phone ? `tel:${phone.replace(/\s/g, '')}` : undefined;
   const emailHref = email ? `mailto:${email}` : undefined;
 
@@ -81,13 +89,13 @@ export default function ContactSection({
     ? `https://maps.google.com/maps?q=${mapLat},${mapLng}&z=15&output=embed`
     : undefined;
 
-  const hoursData = formatHours(workingHours);
+  const hoursData = formatHours(workingHours, dayNames, closedLabel);
 
   return (
     <section id="kontakt" className="contact">
       <ScrollReveal direction="up" className="section-header">
-        <p className="section-label">Kontakt</p>
-        <h2 className="section-title">Kde nás nájdete</h2>
+        <p className="section-label">{tContact('sectionLabel')}</p>
+        <h2 className="section-title">{tContact('sectionTitle')}</h2>
         <GoldDivider />
       </ScrollReveal>
 
@@ -96,7 +104,7 @@ export default function ContactSection({
           <div className="contact-info">
             {address && (
               <div>
-                <p className="contact-item-label">Adresa</p>
+                <p className="contact-item-label">{tContact('addressLabel')}</p>
                 <p className="contact-item-value contact-item-value--pre">
                   {city ? `${address}\n${city}` : address}
                 </p>
@@ -105,7 +113,7 @@ export default function ContactSection({
 
             {(phone || email) && (
               <div>
-                <p className="contact-item-label">Kontakt</p>
+                <p className="contact-item-label">{tContact('contactLabel')}</p>
                 <p className="contact-item-value">
                   {phone && phoneHref && <a href={phoneHref} className="contact-link">{phone}</a>}
                   {phone && email && <br />}
@@ -116,13 +124,15 @@ export default function ContactSection({
 
             {hoursData.length > 0 && (
               <div>
-                <p className="contact-item-label">Otváracie hodiny</p>
+                <p className="contact-item-label">{tContact('openingHoursLabel')}</p>
                 <div className="contact-hours-grid">
                   {hoursData.map((row, idx) => (
                     <Fragment key={idx}>
                       <span className="contact-hours-day">{row.label}</span>
-                      <span className="contact-hours-time"
-                        style={{ fontWeight: row.hours === 'Zatvorené' ? 400 : undefined }}>
+                      <span
+                        className="contact-hours-time"
+                        style={{ fontWeight: row.hours === closedLabel ? 400 : undefined }}
+                      >
                         {row.hours}
                       </span>
                     </Fragment>
@@ -139,7 +149,7 @@ export default function ContactSection({
                 className="contact-wa-btn"
               >
                 <WhatsAppIcon size={18} />
-                Napíšte nám
+                {tContact('writeToUs')}
               </a>
             )}
           </div>
@@ -153,7 +163,7 @@ export default function ContactSection({
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title={`Mapa ${city ?? 'studio'}`}
+              title={tContact('mapTitle', { city: city ?? '' })}
             />
           </ScrollReveal>
         )}

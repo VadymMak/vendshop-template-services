@@ -284,7 +284,7 @@ export default function AdminSettingsPage() {
                 <input className={styles.input} value={store.address} onChange={(e) => sStore('address', e.target.value)} placeholder="Hlavná ulica 15" />
               </Field>
               <Field label="Mesto">
-                <input className={styles.input} value={store.city} onChange={(e) => sStore('city', e.target.value)} placeholder="Trenčín" />
+                <input className={styles.input} value={store.city} onChange={(e) => sStore('city', e.target.value)} placeholder="..." />
               </Field>
 
               {/* ── Working hours editor ─────────────────────────────── */}

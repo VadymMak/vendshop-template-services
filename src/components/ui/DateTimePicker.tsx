@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 type DayKey = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
 export type HoursMap = Record<DayKey, { open: string; close: string } | null>;
@@ -64,6 +65,8 @@ export default function DateTimePicker({
   loading = false,
   workingHours,
 }: DateTimePickerProps) {
+  const t = useTranslations('days');
+
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() + i);
@@ -140,7 +143,7 @@ export default function DateTimePicker({
             <div key={i} className="date-picker__skeleton" />
           ))
         ) : timeSlots.length === 0 ? (
-          <p className="date-picker__closed">Zatvorené</p>
+          <p className="date-picker__closed">{t('closed')}</p>
         ) : (
           timeSlots.map((slot) => {
             const isBooked      = bookedSlots.includes(slot);

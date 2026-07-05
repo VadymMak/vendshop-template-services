@@ -178,7 +178,7 @@
     "wholesale": "Wholesale Terms",
     "deliveryEU": "Fast EU-wide shipping",
     "deliveryB2B": "Bulk orders & custom delivery",
-    "aboutDescServices": "Professional barbershop and hair salon in the heart of Trenčín. Men's haircuts, beard grooming, and styling at the highest level.",
+    "aboutDescServices": "Professional barbershop and hair salon. Men's haircuts, beard grooming and styling at the highest level.",
     "servicesNavTitle": "Navigation",
     "servicesHoursTitle": "Working Hours",
     "servicesClosed": "Closed",
@@ -186,7 +186,18 @@
     "servicesTeam": "Team",
     "servicesGallery": "Gallery",
     "servicesBookNow": "Book Now",
-    "servicesAdmin": "Admin"
+    "servicesAdmin": "Admin",
+    "servicesTagline": "Premium barber studio in {city}.",
+    "allRightsReserved": "© {year} {name}. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "navServices": "Services & Pricing",
+    "navGallery": "Gallery",
+    "navTeam": "Our Team",
+    "navReviews": "Reviews",
+    "navAbout": "About Us",
+    "navBooking": "Book Now",
+    "contactTitle": "Contact"
   },
   "tags": {
     "popularQueries": "Popular searches:"
@@ -363,7 +374,16 @@
     "todaysSpecial": "TODAY'S SPECIAL",
     "orderNow": "Order Now",
     "googleRating": "4.8 on Google",
-    "openUntil": "Open until 23:00"
+    "openUntil": "Open until 23:00",
+    "chipCut": "✂ Cut",
+    "chipBeard": "🧔 Beard",
+    "chipShave": "💈 Shave",
+    "chipCourses": "🎓 Courses",
+    "priceFrom": "Cut from",
+    "priceBeardFrom": "Beard from",
+    "defaultTitle": "The Art of Classic Barbering",
+    "defaultSubtitle": "Premium barber studio for men.",
+    "defaultCta": "Book Appointment"
   },
   "menuCategories": {
     "tagline": "— OUR MENU —",
@@ -526,7 +546,21 @@
     "submit": "Submit Review",
     "errorTextShort": "Review must be at least 20 characters",
     "successTitle": "Thank You!",
-    "successPending": "Your review has been submitted and is pending moderation."
+    "successPending": "Your review has been submitted and is pending moderation.",
+    "writeReviewFor": "Leave a Review",
+    "submitStoreNote": "Share your experience with {storeName}",
+    "submitVerify": "We'll verify you're a real client of {storeName}.",
+    "submitPlaceholder": "Describe your experience at {storeName}... (min. 20 characters)",
+    "loading": "Loading...",
+    "loginRequired": "Login required",
+    "loginNote": "Only registered clients can leave reviews.",
+    "writingAs": "Writing as:",
+    "cancel": "Cancel",
+    "submitting": "Sending...",
+    "thankYou": "Thank you, {name}!",
+    "pendingApproval": "Your review will be published after admin approval.",
+    "errorSubmit": "Error submitting. Please try again.",
+    "backLabel": "← Back to Reviews"
   },
   "auth": {
     "login": "Sign In",
@@ -563,17 +597,29 @@
     "from": "from"
   },
   "booking": {
-    "title": "Book Your Appointment",
-    "selectService": "Choose Service",
-    "selectMaster": "Choose Master",
-    "selectDate": "Select Date",
-    "selectTime": "Select Time",
-    "yourName": "Your Name",
-    "yourPhone": "Phone Number",
-    "note": "Note (optional)",
-    "submit": "Book Appointment",
-    "whatsappFallback": "Or book via WhatsApp",
-    "confirmation": "Appointment confirmed! We will contact you shortly."
+    "sectionLabel": "Booking",
+    "sectionTitle": "Book your appointment",
+    "sectionSubtitle": "Fill in the form — we'll save the appointment and open WhatsApp for confirmation.",
+    "serviceLabel": "Service",
+    "servicePlaceholder": "Select a service...",
+    "barberLabel": "Barber",
+    "barberAny": "No preference",
+    "dateTimeLabel": "Select day and time",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "+44 7XXX XXX XXX",
+    "noteLabel": "Note (optional)",
+    "notePlaceholder": "Special requests or notes...",
+    "submitBtn": "Send via WhatsApp",
+    "submitting": "Saving...",
+    "footNote": "The appointment is saved in the system. After clicking, WhatsApp opens with a confirmation. We reply within 30 minutes.",
+    "errorSelectTime": "Please select a day and time.",
+    "errorFillName": "Please fill in your name and phone.",
+    "errorSlotTaken": "This slot was just taken. Please choose another time.",
+    "errorSave": "Error saving. Please try again.",
+    "errorNetwork": "Network error. Please try again.",
+    "waMessage": "📅 *Booking*\n━━━━━━━━━━━━━━━━━━\n👤 {name}  📞 {phone}\n📆 {date}  🕐 {time}"
   },
   "team": {
     "title": "Our Masters"
@@ -598,5 +644,66 @@
     "privacyLink": "Privacy Policy",
     "reject": "Reject",
     "acceptAll": "Accept all"
+  },
+  "days": {
+    "mon": "Monday",
+    "tue": "Tuesday",
+    "wed": "Wednesday",
+    "thu": "Thursday",
+    "fri": "Friday",
+    "sat": "Saturday",
+    "sun": "Sunday",
+    "closed": "Closed"
+  },
+  "contact": {
+    "sectionLabel": "Contact",
+    "sectionTitle": "Find Us",
+    "addressLabel": "Address",
+    "contactLabel": "Contact",
+    "openingHoursLabel": "Opening Hours",
+    "writeToUs": "Message Us",
+    "mapTitle": "Map {city}"
+  },
+  "about": {
+    "label": "About Us",
+    "title": "Tradition Meets Modern Style",
+    "text1": "{name} was founded in 2018 out of a love for traditional barbering.",
+    "text1Founder": "Our founder {founderName} brought the best of classic barbering tradition to {city}.",
+    "text1NoFounder": "We brought the best of classic barbering tradition to {city}.",
+    "text2Pre": "Every haircut is art to us. We don't do quick cuts — we give each client individual attention, because we believe that",
+    "text2Em": "every man deserves to feel exceptional",
+    "text3": "Our studio is a place where you stop, relax, and leave as a new person. Espresso is on us.",
+    "imageAlt": "interior",
+    "cityFallback": "our city"
+  },
+  "whyUs": {
+    "sectionLabel": "Why us",
+    "sectionTitle": "What makes us exceptional",
+    "item1Title": "You are original",
+    "item1Desc": "We don't copy. We want to highlight your uniqueness.",
+    "item2TitleWithCity": "We're in {city}",
+    "item2TitleNoCity": "We're in the city center",
+    "item2DescWithAddress": "Find us at {address}, right in the heart of {city}.",
+    "item2DescWithCity": "Find us in the center of {city}, right in the heart of the city.",
+    "item2DescNoCity": "Find us right in the heart of the city.",
+    "item3Title": "We follow trends",
+    "item3Desc": "Latest cuts and classics from professional barbers.",
+    "item4Title": "We are professionals",
+    "item4Desc": "Every barber on the team has at least 3 years of experience.",
+    "item5Title": "Book in 3 clicks",
+    "item5Desc": "WhatsApp or form — booking in seconds.",
+    "item6TitleWithRating": "{rating} on Google",
+    "item6TitleNoRating": "Excellent rating",
+    "item6Desc": "Hundreds of satisfied clients. Read our reviews."
+  },
+  "stats": {
+    "yearsLabel": "Years Experience",
+    "clientsLabel": "Happy Clients",
+    "barbersLabel": "Professional Barbers",
+    "googleLabel": "Google Rating"
+  },
+  "seo": {
+    "description": "Professional barbershop and hair salon in {city}. Men's haircuts, beard grooming and styling.",
+    "ogLocale": "en_US"
   }
 }

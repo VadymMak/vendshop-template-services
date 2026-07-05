@@ -10,7 +10,7 @@ interface AboutSectionProps {
 
 export default async function AboutSection({ storeName, founderName, city }: AboutSectionProps) {
   const tAbout = await getTranslations('about');
-  const displayCity = city ?? 'nášho mesta';
+  const displayCity = city ?? tAbout('cityFallback');
 
   return (
     <section id="o-nas" className="about">

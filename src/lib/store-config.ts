@@ -51,9 +51,9 @@ function buildWhatsAppLinks(number: string | undefined | null): WhatsAppLinks {
   const num = (number ?? '').replace(/\D/g, '');
   const base = num ? `https://wa.me/${num}` : '#';
   return {
-    booking:  num ? `${base}?text=${encodeURIComponent('Dobrý deň, chcel by som si rezervovať termín.')}` : '#',
-    location: num ? `${base}?text=${encodeURIComponent('Dobrý deň, kde presne sa nachádzate?')}` : '#',
-    general:  num ? `${base}?text=${encodeURIComponent('Dobrý deň, mám otázku.')}` : '#',
+    booking:  num ? base : '#',
+    location: num ? base : '#',
+    general:  num ? base : '#',
   };
 }
 
