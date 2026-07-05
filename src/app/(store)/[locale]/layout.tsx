@@ -146,10 +146,13 @@ export default async function LocaleLayout({
     : null;
   const legalEnabled = legalConfig?.enabled ?? false;
 
-  const addressCountry = locale === 'de' ? 'DE' : 'SK';
+  const localeCountryMap: Record<string, string> = {
+    sk: 'SK', cs: 'CZ', de: 'DE', uk: 'UA', en: 'GB', pl: 'PL', ru: 'RU',
+  };
+  const addressCountry = localeCountryMap[locale] ?? 'SK';
   const jsonLdRaw: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'HairSalon',
+    '@type': config.vertical.schemaType,
     name: config.name,
     description: seoDescription,
     url: `${baseUrl}/${locale}`,

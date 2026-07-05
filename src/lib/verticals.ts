@@ -5,6 +5,7 @@ import type { Vertical } from '@prisma/client';
 export interface VerticalConfig {
   vertical: string;
   label: string;
+  schemaType: string;
 
   product: {
     metadataFields: MetadataField[];
@@ -92,6 +93,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
   ECOMMERCE: {
     vertical: 'ECOMMERCE',
     label: 'E-Commerce',
+    schemaType: 'Store',
     product: {
       metadataFields: [
         { key: 'sku',        label: 'SKU',            type: 'text',   required: true },
@@ -138,6 +140,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
   FOOD_MARKET: {
     vertical: 'FOOD_MARKET',
     label: 'Food Market',
+    schemaType: 'GroceryStore',
     product: {
       metadataFields: [
         { key: 'sku',         label: 'SKU',               type: 'text' },
@@ -185,6 +188,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
   RESTAURANT: {
     vertical: 'RESTAURANT',
     label: 'Restaurant',
+    schemaType: 'Restaurant',
     product: {
       metadataFields: [
         { key: 'portionSize', label: 'Portion (g/ml)',  type: 'text',   required: true, group: 'Menu' },
@@ -233,6 +237,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
   SHOE_MARKET: {
     vertical: 'SHOE_MARKET',
     label: 'Shoe Market',
+    schemaType: 'ClothingStore',
     product: {
       metadataFields: [
         { key: 'brand',    label: 'Brand',    type: 'text',   required: true },
@@ -278,6 +283,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
   B2B: {
     vertical: 'B2B',
     label: 'B2B Wholesale',
+    schemaType: 'LocalBusiness',
     product: {
       metadataFields: [
         { key: 'sku',            label: 'SKU',                type: 'text',   required: true },
@@ -327,6 +333,7 @@ export const VERTICAL_CONFIGS: Record<Vertical, VerticalConfig> = {
   SERVICES: {
     vertical: 'SERVICES',
     label: 'Services / Barbershop',
+    schemaType: 'HairSalon',
     product: {
       metadataFields: [],
       showBrand: false,
