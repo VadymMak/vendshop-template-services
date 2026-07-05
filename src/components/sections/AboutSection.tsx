@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 
 interface AboutSectionProps {
@@ -7,7 +8,8 @@ interface AboutSectionProps {
   city?: string;
 }
 
-export default function AboutSection({ storeName, founderName, city }: AboutSectionProps) {
+export default async function AboutSection({ storeName, founderName, city }: AboutSectionProps) {
+  const tAbout = await getTranslations('about');
   const displayCity = city ?? 'nášho mesta';
 
   return (
@@ -17,7 +19,7 @@ export default function AboutSection({ storeName, founderName, city }: AboutSect
           <div className="about__image-wrap">
             <Image
               src="/about-barbershop.webp"
-              alt={storeName ? `${storeName} interiér` : 'Barber studio interiér'}
+              alt={storeName ? `${storeName} — ${tAbout('imageAlt')}` : tAbout('imageAlt')}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="about__image"
@@ -27,29 +29,26 @@ export default function AboutSection({ storeName, founderName, city }: AboutSect
 
         <ScrollReveal direction="right" delay={150}>
           <div>
-            <p className="about__label">O nás</p>
+            <p className="about__label">{tAbout('label')}</p>
             <h3 className="about__title">
-              Tradícia stretáva
+              {tAbout('title').split(' ').slice(0, 2).join(' ')}
               <br />
-              moderný štýl
+              {tAbout('title').split(' ').slice(2).join(' ')}
             </h3>
             <p className="about__text">
-              {storeName ?? 'Naše štúdio'} vzniklo v roku 2018 z lásky k tradičnému holičstvu.
+              {tAbout('text1', { name: storeName ?? '' })}
               {founderName && (
-                <> Naša zakladateľka <strong>{founderName}</strong> priniesla do {displayCity} to najlepšie z tradície klasického barberstva.</>
+                <> {tAbout('text1Founder', { founderName, city: displayCity })}</>
               )}
               {!founderName && (
-                <> Priniesli sme do {displayCity} to najlepšie z tradície klasického barberstva.</>
+                <> {tAbout('text1NoFounder', { city: displayCity })}</>
               )}
             </p>
             <p className="about__text">
-              Každý strih je pre nás umenie. Nerobíme rýchle strihy — venujeme sa každému klientovi
-              individuálne, pretože veríme, že{' '}
-              <strong>každý muž si zaslúži cítiť sa výnimočne</strong>.
+              {tAbout('text2Pre')} <strong>{tAbout('text2Em')}</strong>.
             </p>
             <p className="about__text">
-              Náš shop je miesto, kde sa zastavíte, oddýchnete si a odídete ako nový človek.
-              Espresso na nás.
+              {tAbout('text3')}
             </p>
           </div>
         </ScrollReveal>

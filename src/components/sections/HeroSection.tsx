@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 import { formatHoursDisplay } from '@/lib/formatHours';
 import type { WorkingHours } from '@/lib/store-config';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
@@ -20,14 +21,7 @@ interface HeroSectionProps {
   instagram?: string;
 }
 
-const DEFAULTS = {
-  title: 'Umenie klasického holičstva',
-  subtitle: 'Prémiový barber studio pre mužov.',
-  ctaText: 'Rezervovať termín',
-  imageUrl: '/hero-barbershop.webp',
-};
-
-export default function HeroSection({
+export default async function HeroSection({
   config,
   city,
   googleRating,
@@ -35,10 +29,12 @@ export default function HeroSection({
   whatsappBookingLink,
   instagram,
 }: HeroSectionProps) {
-  const title    = config?.title    || DEFAULTS.title;
-  const subtitle = config?.subtitle || DEFAULTS.subtitle;
-  const ctaText  = config?.ctaText  || DEFAULTS.ctaText;
-  const imageSrc = config?.imageUrl || DEFAULTS.imageUrl;
+  const tHero = await getTranslations('hero');
+
+  const title    = config?.title    || tHero('defaultTitle');
+  const subtitle = config?.subtitle || tHero('defaultSubtitle');
+  const ctaText  = config?.ctaText  || tHero('defaultCta');
+  const imageSrc = config?.imageUrl || '/hero-barbershop.webp';
 
   const hoursText   = formatHoursDisplay(openingHours);
   const ratingLabel = googleRating ? `⭐ Google ${googleRating}` : null;
@@ -46,7 +42,6 @@ export default function HeroSection({
   return (
     <section className="hero">
       <div className="hero__inner">
-        {/* LEFT — text */}
         <div className="hero__content">
           <p className="hero__tagline">
             <span className="hero__tagline-line" />
@@ -57,17 +52,15 @@ export default function HeroSection({
 
           <p className="hero__subtitle">{subtitle}</p>
 
-          {/* Service chips */}
           <div className="hero__chips">
-            <span className="hero__chip">✂ Strih</span>
-            <span className="hero__chip">🧔 Brada</span>
-            <span className="hero__chip">💈 Holenie</span>
-            <span className="hero__chip">🎓 Kurzy</span>
+            <span className="hero__chip">{tHero('chipCut')}</span>
+            <span className="hero__chip">{tHero('chipBeard')}</span>
+            <span className="hero__chip">{tHero('chipShave')}</span>
+            <span className="hero__chip">{tHero('chipCourses')}</span>
           </div>
 
-          {/* Price anchor */}
           <p className="hero__price-anchor">
-            Strih od <strong>€15</strong> · Brada od <strong>€10</strong>
+            {tHero('priceFrom')} <strong>€15</strong> · {tHero('priceBeardFrom')} <strong>€10</strong>
           </p>
 
           <div className="hero__buttons">
@@ -108,7 +101,6 @@ export default function HeroSection({
           </p>
         </div>
 
-        {/* RIGHT — image */}
         <div className="hero__image-wrap">
           <Image
             src={imageSrc}
