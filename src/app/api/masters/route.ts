@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+import { getStoreSlug } from '@/lib/store-slug';
 
 export async function GET() {
   try {
+    const STORE_SLUG = getStoreSlug();
     const store = await db.store.findUnique({ where: { slug: STORE_SLUG } });
     if (!store) return NextResponse.json({ masters: [] });
 

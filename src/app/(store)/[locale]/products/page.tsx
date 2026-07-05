@@ -5,7 +5,7 @@ import type { Locale } from '@/i18n/routing';
 
 export const revalidate = 60;
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 const FALLBACK_LOCALE = 'sk';
 
 const CURRENCY_SYMBOLS: Record<string, string> = {

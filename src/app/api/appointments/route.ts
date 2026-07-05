@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { db } from '@/lib/db';
-
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+import { getStoreSlug } from '@/lib/store-slug';
 
 // ─── GET ───────────────────────────────────────────────────────────────────
 // ?date=2026-06-22&status=PENDING → { appointments: [] }
@@ -12,6 +11,7 @@ export async function GET(req: NextRequest) {
   const date   = searchParams.get('date');
   const status = searchParams.get('status');
 
+  const STORE_SLUG = getStoreSlug();
   const store = await db.store.findUnique({ where: { slug: STORE_SLUG } });
   if (!store) return NextResponse.json({ appointments: [] });
 
@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    const STORE_SLUG = getStoreSlug();
     const store = await db.store.findUnique({ where: { slug: STORE_SLUG } });
     if (!store) return NextResponse.json({ error: 'Store not found' }, { status: 404 });
 
@@ -118,7 +119,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    revalidatePath('/sk');
+    revalidatePath('/');
     return NextResponse.json({ appointment }, { status: 201 });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';

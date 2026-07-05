@@ -26,6 +26,9 @@ export default function HeroAdminPage() {
   const [uploading, setUploading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
+  const [ogGenerating, setOgGenerating] = useState(false);
+  const [ogUrl, setOgUrl] = useState<string | null>(null);
+  const [ogError, setOgError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -91,6 +94,25 @@ export default function HeroAdminPage() {
       setError(d.error ?? 'Chyba pri ukladaní');
     }
     setSaving(false);
+  }
+
+  async function handleGenerateOg() {
+    setOgGenerating(true);
+    setOgError('');
+    setOgUrl(null);
+    try {
+      const res = await fetch('/api/admin/og', { method: 'POST' });
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok || !data.url) {
+        setOgError(data.error ?? 'Chyba pri generovaní OG obrázka');
+      } else {
+        setOgUrl(data.url);
+      }
+    } catch {
+      setOgError('Sieťová chyba');
+    } finally {
+      setOgGenerating(false);
+    }
   }
 
   if (loading) return <AdminLoading rows={3} />;
@@ -233,6 +255,40 @@ export default function HeroAdminPage() {
           </button>
         </div>
       </form>
+
+      {/* OG Image Generator */}
+      <div style={{ marginTop: '2rem', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}>
+        <h2 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: 'var(--color-text-primary)' }}>
+          OG Image (1200 × 630)
+        </h2>
+        <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginBottom: '1rem' }}>
+          Vygeneruje branded obrázok zo mena obchodu, mesta a služieb. Nahrá na Blob s unikátnou URL (žiadny cache problém na sociálnych sieťach).
+        </p>
+
+        {ogUrl && (
+          <div style={{ marginBottom: '1rem' }}>
+            <img
+              src={ogUrl}
+              alt="OG preview"
+              style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', border: '1px solid var(--color-primary)' }}
+            />
+            <p style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', marginTop: '0.4rem', wordBreak: 'break-all' }}>{ogUrl}</p>
+          </div>
+        )}
+
+        {ogError && (
+          <p style={{ color: 'var(--color-error, #ef4444)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>{ogError}</p>
+        )}
+
+        <button
+          type="button"
+          className="btn-primary btn-sm"
+          onClick={handleGenerateOg}
+          disabled={ogGenerating}
+        >
+          {ogGenerating ? 'Generujem...' : 'Generovať OG obrázok'}
+        </button>
+      </div>
     </div>
   );
 }

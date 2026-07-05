@@ -4,7 +4,7 @@ import TestimonialCard from '@/components/ui/TestimonialCard';
 
 async function getTestimonials() {
   try {
-    const storeSlug = process.env.STORE_SLUG ?? 'kate-barber';
+    const storeSlug = process.env.STORE_SLUG ?? '';
     const store = await db.store.findUnique({ where: { slug: storeSlug } });
     if (!store) {
       console.error('[testimonials] Store not found:', storeSlug);

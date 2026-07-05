@@ -42,6 +42,7 @@ export async function generateMetadata({
   const tSeo = await getTranslations('seo');
 
   const seoDescription = tSeo('description', { city: config.presence.city ?? '' });
+  const ogImageUrl = config.ogImageUrl ?? `${baseUrl}/og-image.jpg`;
   const ogLocale = tSeo('ogLocale');
   const alternateLocale = routing.locales
     .filter((l) => l !== locale)
@@ -83,14 +84,14 @@ export async function generateMetadata({
       locale: ogLocale,
       alternateLocale,
       images: [
-        { url: '/og-image.jpg', width: 1200, height: 630, alt: config.name },
+        { url: ogImageUrl, width: 1200, height: 630, alt: config.name },
       ],
     },
     twitter: {
       card: 'summary_large_image',
       title: config.name,
       description: seoDescription,
-      images: ['/og-image.jpg'],
+      images: [ogImageUrl],
     },
     robots: {
       index: true,
@@ -137,7 +138,7 @@ export default async function LocaleLayout({
   const tSeo = await getTranslations('seo');
   const seoDescription = tSeo('description', { city: config.presence.city ?? '' });
 
-  const storeSlug = process.env.STORE_SLUG ?? 'kate-barber';
+  const storeSlug = process.env.STORE_SLUG ?? '';
   const store = locale === 'de'
     ? await db.store.findUnique({ where: { slug: storeSlug } })
     : null;

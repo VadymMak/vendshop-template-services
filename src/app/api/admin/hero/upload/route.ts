@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       .webp({ quality: 85 })
       .toBuffer();
 
-    const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+    const STORE_SLUG = process.env.STORE_SLUG ?? '';
     const filename = `hero-${Date.now()}.webp`;
 
     const blob = await put(`hero/${STORE_SLUG}/${filename}`, processed, {

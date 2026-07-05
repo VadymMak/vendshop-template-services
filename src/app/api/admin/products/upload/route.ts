@@ -6,7 +6,7 @@ import sharp from 'sharp';
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'application/pdf'];
 const MAX_BYTES = 20 * 1024 * 1024;
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 async function checkAdmin(): Promise<boolean> {
   const c = await cookies();

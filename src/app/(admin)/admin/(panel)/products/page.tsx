@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import AdminDigitalProductsClient from './AdminProductsClient';
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 export default async function AdminProductsPage() {
   const store = await db.store.findUnique({

@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import Image from 'next/image';
 import CourseAccessClient from './CourseAccessClient';
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 export async function generateMetadata({
   params,

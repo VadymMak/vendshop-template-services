@@ -10,7 +10,7 @@ import {
   type ImageVariant,
 } from '@/lib/image-utils';
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 const PURPOSE_VARIANTS: Record<string, ImageVariant[]> = {
   gallery: GALLERY_VARIANTS,

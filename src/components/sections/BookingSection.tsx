@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { SERVICE_OPTIONS, BARBERS } from '@/lib/constants';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 import GoldDivider from '@/components/ui/GoldDivider';
 import DateTimePicker from '@/components/ui/DateTimePicker';
@@ -24,17 +23,37 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
   const [submitting,   setSubmitting]   = useState(false);
   const [submitError,  setSubmitError]  = useState('');
 
-  // Track current date for barber-change reload
+  const [services,          setServices]          = useState<{ id: string; nameKey: string; duration: number; price: number }[]>([]);
+  const [masters,           setMasters]           = useState<{ id: string; name: string; role: string }[]>([]);
+  const [selectedServiceId, setSelectedServiceId] = useState('');
+  const [selectedMasterId,  setSelectedMasterId]  = useState('');
+  const [dataLoading,       setDataLoading]       = useState(true);
+
+  // Track current date for master-change reload
   const currentDateRef = useRef<string>(new Date().toISOString().split('T')[0]);
 
-  const fetchSlots = useCallback(async (date: string) => {
+  // Load services and masters in parallel on mount
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/services').then(r => r.ok ? r.json() : { services: [] }),
+      fetch('/api/masters').then(r => r.ok ? r.json() : { masters: [] }),
+    ]).then(([svcData, mstData]) => {
+      setServices((svcData as { services: typeof services }).services ?? []);
+      setMasters((mstData as { masters: typeof masters }).masters ?? []);
+      setDataLoading(false);
+    }).catch(() => setDataLoading(false));
+  }, []);
+
+  const fetchSlots = useCallback(async (date: string, masterId?: string, serviceId?: string) => {
     currentDateRef.current = date;
-    setBookedSlots([]);       // clear stale data immediately
+    setBookedSlots([]);
     setLoadingSlots(true);
     try {
-      const res  = await fetch(`/api/availability?date=${date}`);
+      const params = new URLSearchParams({ date });
+      if (masterId)  params.set('masterId',  masterId);
+      if (serviceId) params.set('serviceId', serviceId);
+      const res  = await fetch(`/api/availability?${params.toString()}`);
       const data = (await res.json()) as { slots: { time: string; available: boolean }[] };
-      // Extract unavailable slots to reuse existing DateTimePicker bookedSlots interface
       const booked = (data.slots ?? []).filter((s) => !s.available).map((s) => s.time);
       setBookedSlots(booked);
     } catch {
@@ -53,13 +72,8 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
 
   const handleDayChange = useCallback((date: string) => {
     setSelectedTime('');
-    void fetchSlots(date);
-  }, [fetchSlots]);
-
-  const handleBarberChange = useCallback(() => {
-    // Reload slots when barber changes to get fresh data
-    if (currentDateRef.current) void fetchSlots(currentDateRef.current);
-  }, [fetchSlots]);
+    void fetchSlots(date, selectedMasterId, selectedServiceId);
+  }, [fetchSlots, selectedMasterId, selectedServiceId]);
 
   const handleDateTimeSelect = (date: string, time: string) => {
     setSelectedDate(date);
@@ -72,11 +86,9 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    const name    = String(data.get('name')    ?? '').trim();
-    const phone   = String(data.get('phone')   ?? '').trim();
-    const service = String(data.get('service') ?? '').trim();
-    const barber  = String(data.get('barber')  ?? '').trim();
-    const note    = String(data.get('note')    ?? '').trim();
+    const name  = String(data.get('name')  ?? '').trim();
+    const phone = String(data.get('phone') ?? '').trim();
+    const note  = String(data.get('note')  ?? '').trim();
 
     if (!selectedDate || !selectedTime) {
       setSubmitError(t('errorSelectTime'));
@@ -100,12 +112,13 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
           date:        selectedDate,
           time:        selectedTime,
           notes:       note || null,
+          serviceId:   selectedServiceId || null,
+          masterId:    selectedMasterId  || null,
         }),
       });
 
       if (res.status === 409) {
-        // Slot taken — reload fresh data
-        await fetchSlots(selectedDate);
+        await fetchSlots(selectedDate, selectedMasterId, selectedServiceId);
         setSelectedTime('');
         setSubmitError(t('errorSlotTaken'));
         setSubmitting(false);
@@ -121,9 +134,11 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
       // Optimistically mark slot as booked
       setBookedSlots((prev) => [...prev, selectedTime]);
 
-      const serviceLine = service ? `✂️ ${service}` : '';
-      const barberLine  = barber  ? `💈 ${barber}`  : '';
-      const noteLine    = note    ? `💬 ${note}`    : '';
+      const selectedService = services.find(s => s.id === selectedServiceId);
+      const selectedMaster  = masters.find(m => m.id === selectedMasterId);
+      const serviceLine = selectedService ? `✂️ ${selectedService.nameKey}` : '';
+      const barberLine  = selectedMaster  ? `💈 ${selectedMaster.name}`     : '';
+      const noteLine    = note            ? `💬 ${note}`                     : '';
       const waMsg = [
         t('waMessage', { name, phone, date: selectedDate, time: selectedTime }),
         serviceLine,
@@ -142,6 +157,8 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
       form.reset();
       setSelectedDate('');
       setSelectedTime('');
+      setSelectedServiceId('');
+      setSelectedMasterId('');
     } catch {
       setSubmitError(t('errorNetwork'));
     } finally {
@@ -167,10 +184,18 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
             <div className="booking__form-row">
               <div>
                 <label className="booking__label">{t('serviceLabel')}</label>
-                <select name="service" required className="booking__select">
-                  <option value="">{t('servicePlaceholder')}</option>
-                  {SERVICE_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
+                <select
+                  name="service"
+                  required
+                  className="booking__select"
+                  onChange={(e) => {
+                    setSelectedServiceId(e.target.value);
+                    if (selectedDate) void fetchSlots(selectedDate, selectedMasterId, e.target.value);
+                  }}
+                >
+                  <option value="">{dataLoading ? t('loading') : t('servicePlaceholder')}</option>
+                  {services.map((svc) => (
+                    <option key={svc.id} value={svc.id}>{svc.nameKey}</option>
                   ))}
                 </select>
               </div>
@@ -179,11 +204,15 @@ export default function BookingSection({ workingHours, whatsappNumber }: Booking
                 <select
                   name="barber"
                   className="booking__select"
-                  onChange={handleBarberChange}
+                  onChange={(e) => {
+                    const masterId = e.target.value;
+                    setSelectedMasterId(masterId);
+                    if (selectedDate) void fetchSlots(selectedDate, masterId, selectedServiceId);
+                  }}
                 >
-                  <option value="">{t('barberAny')}</option>
-                  {BARBERS.map((barber) => (
-                    <option key={barber} value={barber}>{barber}</option>
+                  <option value="">{dataLoading ? t('loading') : t('barberAny')}</option>
+                  {masters.map((m) => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
                   ))}
                 </select>
               </div>

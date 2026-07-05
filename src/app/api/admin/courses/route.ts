@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { verifyAdminToken, getAdminSecret, ADMIN_COOKIE } from '@/lib/adminAuth';
 import { cookies } from 'next/headers';
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 async function auth() {
   const cookieStore = await cookies();

@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 import { db } from '@/lib/db';
 
 export async function GET() {
-  const storeSlug = process.env.STORE_SLUG ?? 'kate-barber';
+  const storeSlug = process.env.STORE_SLUG ?? '';
   const store = await db.store.findUnique({ where: { slug: storeSlug } });
   if (!store) return NextResponse.json({ total: 0, breakdown: {}, lastUpdated: null });
 
@@ -24,7 +24,7 @@ export async function GET() {
 }
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 async function getEmbedding(text: string): Promise<number[]> {
   const res = await openai.embeddings.create({

@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { db } from '@/lib/db';
 import { getBaseUrl } from '@/lib/url';
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 // POST /api/stripe/checkout-session
 // Body: { courseId: string, customerEmail?: string, locale?: string }

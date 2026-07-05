@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { DEFAULT_THEME, type ThemeConfig } from '@/lib/theme';
 import { getVerticalConfig, type VerticalConfig } from '@/lib/verticals';
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'electromarket';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 export type StoreMode = 'PHYSICAL' | 'ONLINE' | 'HYBRID';
 
@@ -41,6 +41,7 @@ export interface StoreConfig {
   name: string;
   slug: string;
   logoUrl?: string;
+  ogImageUrl?: string;
   theme: ThemeConfig;
   vertical: VerticalConfig;
   presence: StorePresence;
@@ -83,6 +84,7 @@ export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
       city: true,
       openingHours: true,
       logoUrl: true,
+      ogImageUrl: true,
       phone: true,
       whatsappPhone: true,
       email: true,
@@ -131,6 +133,7 @@ export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
     name: store.name,
     slug: store.slug,
     logoUrl: store.logoUrl ?? undefined,
+    ogImageUrl: store.ogImageUrl ?? undefined,
     theme,
     vertical: getVerticalConfig(store.vertical),
     presence,

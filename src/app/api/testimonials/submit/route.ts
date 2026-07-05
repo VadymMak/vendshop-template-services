@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Hodnotenie musí byť 1–5' }, { status: 400 });
     }
 
-    const slug = storeSlug ?? process.env.STORE_SLUG ?? 'kate-barber';
+    const slug = storeSlug ?? process.env.STORE_SLUG ?? '';
     const store = await db.store.findUnique({ where: { slug } });
     if (!store) return NextResponse.json({ error: 'Store not found' }, { status: 404 });
 

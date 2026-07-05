@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { BUSINESS_START, BUSINESS_END, SLOT_INTERVAL } from '@/lib/constants';
+import { getStoreSlug } from '@/lib/store-slug';
 import type { TimeSlot } from '@/lib/types';
 
 function parseTime(t: string): number {
@@ -67,6 +68,18 @@ export async function GET(req: Request) {
     status: { notIn: ['CANCELLED'] },
   };
   if (masterId) bookedWhere.masterId = masterId;
+
+  // Scope to this store's appointments only
+  try {
+    const storeSlug = getStoreSlug();
+    const store = await db.store.findUnique({
+      where: { slug: storeSlug },
+      select: { id: true },
+    });
+    if (store) bookedWhere.storeId = store.id;
+  } catch {
+    // STORE_SLUG not set — skip scoping (dev fallback)
+  }
 
   const booked = await db.appointment.findMany({
     where: bookedWhere,

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { db } from '@/lib/db';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 async function getEmbedding(text: string): Promise<number[]> {
   const res = await openai.embeddings.create({ model: 'text-embedding-3-small', input: text });

@@ -5,7 +5,7 @@ import styles from '../legal.module.css';
 
 export const revalidate = 300;
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

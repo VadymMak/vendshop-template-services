@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { verifyCustomerToken, CUSTOMER_COOKIE } from '@/lib/customerAuth';
 import { cookies } from 'next/headers';
 
-const STORE_SLUG = process.env.STORE_SLUG ?? 'kate-barber';
+const STORE_SLUG = process.env.STORE_SLUG ?? '';
 const FALLBACK_LOCALE = 'sk';
 
 // GET /api/digital-products
