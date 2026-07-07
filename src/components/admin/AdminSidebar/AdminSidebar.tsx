@@ -6,8 +6,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import StoreLogo from '@/components/ui/StoreLogo';
 import { FLAGS } from '@/lib/feature-flags';
-import { useAdminLocale } from '@/hooks/useAdminLocale';
-import { getAdminT } from '@/lib/admin-i18n';
+import { useAdminT } from '@/lib/admin-locale-ctx';
 import type { AdminTranslations, AdminLocale } from '@/lib/admin-i18n';
 import styles from './AdminSidebar.module.css';
 
@@ -375,8 +374,7 @@ function LogoutIcon() {
 export default function AdminSidebar({ storeName, vertical }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { locale, changeLocale } = useAdminLocale();
-  const t = getAdminT(locale);
+  const { locale, changeLocale, t } = useAdminT();
 
   const verticalNav = vertical === 'RESTAURANT'
     ? NAV_RESTAURANT
@@ -431,6 +429,8 @@ export default function AdminSidebar({ storeName, vertical }: AdminSidebarProps)
           <option value="cs">🇨🇿 CS</option>
           <option value="de">🇩🇪 DE</option>
           <option value="uk">🇺🇦 UK</option>
+          <option value="ru">🇷🇺 RU</option>
+          <option value="pl">🇵🇱 PL</option>
         </select>
 
         <button type="button" className={styles.logout} onClick={handleLogout}>

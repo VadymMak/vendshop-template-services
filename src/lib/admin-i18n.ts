@@ -1,4 +1,4 @@
-export type AdminLocale = 'sk' | 'en' | 'uk' | 'cs' | 'de';
+export type AdminLocale = 'sk' | 'en' | 'uk' | 'cs' | 'de' | 'ru' | 'pl';
 
 export interface AdminTranslations {
   nav: {
@@ -523,6 +523,8 @@ export const ADMIN_TRANSLATIONS: Record<AdminLocale, AdminTranslations> = {
   cs: SK,
   de: EN,
   uk: SK,
+  ru: EN,
+  pl: EN,
 };
 
 export function getAdminT(locale: AdminLocale): AdminTranslations {
