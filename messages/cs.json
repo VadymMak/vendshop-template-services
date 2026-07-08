@@ -623,7 +623,9 @@
     "waMessage": "📅 *Rezervace*\n━━━━━━━━━━━━━━━━━━\n👤 {name}  📞 {phone}\n📆 {date}  🕐 {time}"
   },
   "team": {
-    "title": "Naši mistři"
+    "label": "Náš tým",
+    "title": "Naši mistři",
+    "subtitle": "Každý z nás přináší jedinečný styl a roky zkušeností."
   },
   "gallery": {
     "title": "Naše práce"

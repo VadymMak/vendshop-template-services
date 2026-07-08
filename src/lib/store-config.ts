@@ -42,6 +42,8 @@ export interface StoreConfig {
   slug: string;
   logoUrl?: string;
   ogImageUrl?: string;
+  aboutImage?: string | null;
+  description?: string | null;
   theme: ThemeConfig;
   vertical: VerticalConfig;
   presence: StorePresence;
@@ -85,6 +87,8 @@ export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
       openingHours: true,
       logoUrl: true,
       ogImageUrl: true,
+      aboutImage: true,
+      description: true,
       phone: true,
       whatsappPhone: true,
       email: true,
@@ -134,6 +138,8 @@ export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
     slug: store.slug,
     logoUrl: store.logoUrl ?? undefined,
     ogImageUrl: store.ogImageUrl ?? undefined,
+    aboutImage: store.aboutImage ?? null,
+    description: store.description ?? null,
     theme,
     vertical: getVerticalConfig(store.vertical),
     presence,

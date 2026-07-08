@@ -1,37 +1,57 @@
 import Image from 'next/image';
-import { TEAM } from '@/lib/constants';
+import { getTranslations } from 'next-intl/server';
 import GoldDivider from '@/components/ui/GoldDivider';
 import ScrollReveal from '@/components/ui/ScrollReveal';
-import { BLUR_PLACEHOLDER } from '@/components/ui/BlurImage';
 
-export default function TeamSection() {
+interface Master {
+  id: string;
+  name: string;
+  role: string;
+  bio?: string | null;
+  photo?: string | null;
+}
+
+interface TeamSectionProps {
+  masters: Master[];
+}
+
+export default async function TeamSection({ masters }: TeamSectionProps) {
+  const t = await getTranslations('team');
+
+  if (!masters.length) return null;
+
   return (
     <section id="tim" className="team">
       <ScrollReveal direction="up" className="section-header">
-        <p className="section-label">Náš tím</p>
-        <h2 className="section-title">Majstri svojho remesla</h2>
+        <p className="section-label">{t('label')}</p>
+        <h2 className="section-title">{t('title')}</h2>
         <GoldDivider />
-        <p className="section-subtitle">Každý z nás prináša unikátny štýl a roky skúseností.</p>
+        <p className="section-subtitle">{t('subtitle')}</p>
       </ScrollReveal>
 
       <div className="team-grid">
-        {TEAM.map((member, i) => (
-          <ScrollReveal key={member.name} direction="up" delay={i * 120}>
+        {masters.map((member, i) => (
+          <ScrollReveal key={member.id} direction="up" delay={i * 120}>
             <div className="team-card">
               <div className="team-photo-container">
-                <Image
-                  src={member.photo}
-                  alt={member.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="team-photo"
-                  placeholder="blur"
-                  blurDataURL={BLUR_PLACEHOLDER}
-                />
+                {member.photo ? (
+                  <Image
+                    src={member.photo}
+                    alt={member.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="team-photo"
+                    unoptimized={member.photo.startsWith('http')}
+                  />
+                ) : (
+                  <div className="team-photo-placeholder" aria-label={member.name}>
+                    {member.name.split(' ').map((n) => n[0]).join('')}
+                  </div>
+                )}
               </div>
               <h3 className="team-name">{member.name}</h3>
               <p className="team-role">{member.role}</p>
-              <p className="team-exp">{member.experience}</p>
+              {member.bio && <p className="team-exp">{member.bio}</p>}
             </div>
           </ScrollReveal>
         ))}

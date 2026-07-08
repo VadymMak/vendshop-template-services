@@ -623,7 +623,9 @@
     "waMessage": "📅 *Reservierung*\n━━━━━━━━━━━━━━━━━━\n👤 {name}  📞 {phone}\n📆 {date}  🕐 {time}"
   },
   "team": {
-    "title": "Unsere Meister"
+    "label": "Unser Team",
+    "title": "Unsere Meister",
+    "subtitle": "Jeder von uns bringt einen einzigartigen Stil und jahrelange Erfahrung mit."
   },
   "gallery": {
     "title": "Unsere Arbeit"

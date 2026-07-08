@@ -29,7 +29,7 @@ export default async function HomePage({
   const config = await getStoreConfig();
   const { presence, whatsappLinks } = config;
 
-  const [heroConfig, galleryImages, dbTestimonials] = await Promise.all([
+  const [heroConfig, galleryImages, dbTestimonials, dbMasters] = await Promise.all([
     db.heroConfig.findUnique({ where: { storeId: config.id } }),
     db.galleryImage.findMany({
       where: { storeId: config.id, active: true },
@@ -41,6 +41,11 @@ export default async function HomePage({
       orderBy: { createdAt: 'desc' },
       take: 3,
       include: { customer: { select: { name: true } } },
+    }),
+    db.serviceMaster.findMany({
+      where: { storeId: config.id, active: true },
+      orderBy: { sortOrder: 'asc' },
+      select: { id: true, name: true, role: true, bio: true, photo: true },
     }),
   ]);
 
@@ -59,7 +64,7 @@ export default async function HomePage({
       <ServicesSection />
       <WhyUsSection city={presence.city} googleRating={presence.googleRating} address={presence.address} />
       <GallerySection images={galleryImages} />
-      <TeamSection />
+      <TeamSection masters={dbMasters} />
       <TestimonialsSection testimonials={dbTestimonials.map((t) => ({
         id: t.id,
         name: t.customer?.name ?? 'Klient',
@@ -77,6 +82,8 @@ export default async function HomePage({
         storeName={config.name}
         founderName={presence.founderName}
         city={presence.city}
+        aboutImage={config.aboutImage}
+        description={config.description}
       />
       <ContactSection
         address={presence.address}

@@ -31,17 +31,21 @@ export default function GallerySection({ images }: GallerySectionProps) {
         <div className="gallery-grid">
           {items.map((image, index) => (
             <div key={image.id} className="gallery-item">
-              <Image
-                src={image.url}
-                alt={image.alt}
-                fill
-                sizes="(max-width: 768px) 50vw, 33vw"
-                className="gallery-img"
-                priority={index === 0}
-                unoptimized={image.url.startsWith('http')}
-                placeholder="blur"
-                blurDataURL={BLUR_PLACEHOLDER}
-              />
+              {image.url ? (
+                <Image
+                  src={image.url}
+                  alt={image.alt}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                  className="gallery-img"
+                  priority={index === 0}
+                  unoptimized={image.url.startsWith('http')}
+                  placeholder="blur"
+                  blurDataURL={BLUR_PLACEHOLDER}
+                />
+              ) : (
+                <div className="gallery-img-placeholder" />
+              )}
               <div className="gallery-overlay" />
             </div>
           ))}
