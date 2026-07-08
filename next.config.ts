@@ -5,6 +5,7 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  serverExternalPackages: ['sharp'],
   experimental: {
     optimizePackageImports: ['zustand', 'zod'],
   },
@@ -18,6 +19,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: '*.blob.vercel-storage.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ui-avatars.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
     ],
   },

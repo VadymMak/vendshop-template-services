@@ -34,7 +34,7 @@ export default async function HeroSection({
   const title    = config?.title    || tHero('defaultTitle');
   const subtitle = config?.subtitle || tHero('defaultSubtitle');
   const ctaText  = config?.ctaText  || tHero('defaultCta');
-  const imageSrc = config?.imageUrl || '/hero-barbershop.webp';
+  const imageSrc = config?.imageUrl || null;
 
   const hoursText   = formatHoursDisplay(openingHours);
   const ratingLabel = googleRating ? `⭐ Google ${googleRating}` : null;
@@ -102,20 +102,26 @@ export default async function HeroSection({
         </div>
 
         <div className="hero__image-wrap">
-          <Image
-            src={imageSrc}
-            alt={`${title} interior`}
-            fill
-            className="hero__image"
-            priority
-            fetchPriority="high"
-            sizes="(max-width: 768px) 100vw, 42vw"
-            quality={85}
-            unoptimized={imageSrc.startsWith('http')}
-            placeholder="blur"
-            blurDataURL={BLUR_PLACEHOLDER}
-          />
-          <div className="hero__overlay" />
+          {imageSrc ? (
+            <>
+              <Image
+                src={imageSrc}
+                alt={`${title} interior`}
+                fill
+                className="hero__image"
+                priority
+                fetchPriority="high"
+                sizes="(max-width: 768px) 100vw, 42vw"
+                quality={85}
+                unoptimized={imageSrc.startsWith('http')}
+                placeholder="blur"
+                blurDataURL={BLUR_PLACEHOLDER}
+              />
+              <div className="hero__overlay" />
+            </>
+          ) : (
+            <div className="hero__image-placeholder" />
+          )}
         </div>
       </div>
     </section>

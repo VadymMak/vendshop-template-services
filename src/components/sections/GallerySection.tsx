@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { GALLERY_IMAGES } from '@/lib/constants';
 import GoldDivider from '@/components/ui/GoldDivider';
 import ScrollReveal from '@/components/ui/ScrollReveal';
@@ -12,41 +13,47 @@ interface GalleryImage {
 
 interface GallerySectionProps {
   images?: GalleryImage[];
+  layout?: string;
 }
 
-export default function GallerySection({ images }: GallerySectionProps) {
+export default function GallerySection({ images, layout }: GallerySectionProps) {
+  const t = useTranslations('gallery');
   const items = images && images.length > 0
     ? images
     : GALLERY_IMAGES.map((g, i) => ({ id: String(i), url: g.src, alt: g.alt }));
 
+  const gridClass = `gallery-grid gallery-grid--${layout || 'grid-3'}`;
+
   return (
     <section id="galeria" className="gallery">
       <ScrollReveal direction="up" className="section-header">
-        <p className="section-label">Naša práca</p>
-        <h2 className="section-title">Galéria</h2>
+        <p className="section-label">{t('title')}</p>
+        <h2 className="section-title">{t('subtitle')}</h2>
         <GoldDivider />
       </ScrollReveal>
 
       <ScrollReveal direction="up" delay={150}>
-        <div className="gallery-grid">
+        <div className={gridClass}>
           {items.map((image, index) => (
             <div key={image.id} className="gallery-item">
               {image.url ? (
-                <Image
-                  src={image.url}
-                  alt={image.alt}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                  className="gallery-img"
-                  priority={index === 0}
-                  unoptimized={image.url.startsWith('http')}
-                  placeholder="blur"
-                  blurDataURL={BLUR_PLACEHOLDER}
-                />
+                <>
+                  <Image
+                    src={image.url}
+                    alt={image.alt}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className="gallery-img"
+                    priority={index === 0}
+                    unoptimized={image.url.startsWith('http')}
+                    placeholder="blur"
+                    blurDataURL={BLUR_PLACEHOLDER}
+                  />
+                  <div className="gallery-overlay" />
+                </>
               ) : (
-                <div className="gallery-img-placeholder" />
+                <div className="gallery-img-placeholder" aria-label={image.alt} />
               )}
-              <div className="gallery-overlay" />
             </div>
           ))}
         </div>

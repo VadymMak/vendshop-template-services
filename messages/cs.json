@@ -588,12 +588,16 @@
   },
   "services": {
     "title": "Naše služby",
+    "subtitle": "Co pro vás připravíme",
+    "description": "Od klasického střihu po kompletní grooming — postaráme se o vás od hlavy po bradu.",
     "haircut": "Pánský střih",
     "beard": "Úprava vousů",
     "hairBeard": "Střih + vousy",
     "styling": "Styling",
     "bookNow": "Rezervovat",
+    "bookCta": "Rezervovat",
     "duration": "{min} min",
+    "minutes": "min",
     "from": "od"
   },
   "booking": {
@@ -628,7 +632,9 @@
     "subtitle": "Každý z nás přináší jedinečný styl a roky zkušeností."
   },
   "gallery": {
-    "title": "Naše práce"
+    "title": "Naše práce",
+    "subtitle": "Galerie",
+    "viewMore": "Zobrazit více"
   },
   "courses": {
     "title": "Učte se od mistrů",

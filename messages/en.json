@@ -588,12 +588,16 @@
   },
   "services": {
     "title": "Our Services",
+    "subtitle": "What we offer",
+    "description": "From classic haircuts to full grooming — we take care of your look from head to beard.",
     "haircut": "Haircut",
     "beard": "Beard Trim",
     "hairBeard": "Hair + Beard",
     "styling": "Styling",
     "bookNow": "Book Now",
+    "bookCta": "Book",
     "duration": "{min} min",
+    "minutes": "min",
     "from": "from"
   },
   "booking": {
@@ -628,7 +632,9 @@
     "subtitle": "Each of us brings a unique style and years of experience."
   },
   "gallery": {
-    "title": "Our Work"
+    "title": "Our Work",
+    "subtitle": "Gallery",
+    "viewMore": "View more"
   },
   "courses": {
     "title": "Learn from the masters",

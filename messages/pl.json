@@ -588,12 +588,16 @@
   },
   "services": {
     "title": "Nasze usługi",
+    "subtitle": "Co dla Ciebie przygotujemy",
+    "description": "Od klasycznego strzyżenia po pełny grooming — zadbamy o Twój wygląd od głowy po brodę.",
     "haircut": "Strzyżenie",
     "beard": "Pielęgnacja brody",
     "hairBeard": "Strzyżenie + broda",
     "styling": "Stylizacja",
     "bookNow": "Zarezerwuj",
+    "bookCta": "Zarezerwuj",
     "duration": "{min} min",
+    "minutes": "min",
     "from": "od"
   },
   "booking": {
@@ -628,7 +632,9 @@
     "subtitle": "Każdy z nas wnosi unikalny styl i lata doświadczenia."
   },
   "gallery": {
-    "title": "Nasze prace"
+    "title": "Nasze prace",
+    "subtitle": "Galeria",
+    "viewMore": "Zobacz więcej"
   },
   "courses": {
     "title": "Ucz się od mistrzów",

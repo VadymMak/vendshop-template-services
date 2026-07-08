@@ -44,6 +44,7 @@ export interface StoreConfig {
   ogImageUrl?: string;
   aboutImage?: string | null;
   description?: string | null;
+  galleryLayout?: string | null;
   theme: ThemeConfig;
   vertical: VerticalConfig;
   presence: StorePresence;
@@ -89,6 +90,7 @@ export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
       ogImageUrl: true,
       aboutImage: true,
       description: true,
+      galleryLayout: true,
       phone: true,
       whatsappPhone: true,
       email: true,
@@ -140,6 +142,7 @@ export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
     ogImageUrl: store.ogImageUrl ?? undefined,
     aboutImage: store.aboutImage ?? null,
     description: store.description ?? null,
+    galleryLayout: store.galleryLayout ?? null,
     theme,
     vertical: getVerticalConfig(store.vertical),
     presence,

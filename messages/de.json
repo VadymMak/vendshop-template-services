@@ -588,12 +588,16 @@
   },
   "services": {
     "title": "Unsere Leistungen",
+    "subtitle": "Was wir anbieten",
+    "description": "Von klassischen Haarschnitten bis zur Bartpflege — wir sorgen für Ihren Look.",
     "haircut": "Haarschnitt",
     "beard": "Bartpflege",
     "hairBeard": "Haare + Bart",
     "styling": "Styling",
     "bookNow": "Jetzt buchen",
+    "bookCta": "Buchen",
     "duration": "{min} Min",
+    "minutes": "Min.",
     "from": "ab"
   },
   "booking": {
@@ -628,7 +632,9 @@
     "subtitle": "Jeder von uns bringt einen einzigartigen Stil und jahrelange Erfahrung mit."
   },
   "gallery": {
-    "title": "Unsere Arbeit"
+    "title": "Unsere Arbeit",
+    "subtitle": "Galerie",
+    "viewMore": "Mehr anzeigen"
   },
   "courses": {
     "title": "Von Meistern lernen",

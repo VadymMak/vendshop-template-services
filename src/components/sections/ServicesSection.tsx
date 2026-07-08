@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import GoldDivider from '@/components/ui/GoldDivider';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 
@@ -14,6 +15,7 @@ interface Service {
 }
 
 export default function ServicesSection() {
+  const t = useTranslations('services');
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,12 +32,10 @@ export default function ServicesSection() {
   return (
     <section id="sluzby" className="services">
       <ScrollReveal direction="up" className="section-header">
-        <p className="section-label">Naše služby</p>
-        <h2 className="section-title">Čo pre vás pripravíme</h2>
+        <p className="section-label">{t('title')}</p>
+        <h2 className="section-title">{t('subtitle')}</h2>
         <GoldDivider />
-        <p className="section-subtitle">
-          Od klasického strihu po kompletný grooming — postaráme sa o vás od hlavy po bradu.
-        </p>
+        <p className="section-subtitle">{t('description')}</p>
       </ScrollReveal>
 
       <div className="services__grid">
@@ -52,7 +52,7 @@ export default function ServicesSection() {
                       <p className="service-card__desc">{s.description}</p>
                     )}
                     {s.duration && (
-                      <p className="service-card__duration">⏱ {s.duration} min</p>
+                      <p className="service-card__duration">⏱ {s.duration} {t('minutes')}</p>
                     )}
                   </div>
                   <div className="service-card__price">€{s.price}</div>

@@ -63,7 +63,7 @@ export default async function HomePage({
       <StatsBar googleRating={presence.googleRating} />
       <ServicesSection />
       <WhyUsSection city={presence.city} googleRating={presence.googleRating} address={presence.address} />
-      <GallerySection images={galleryImages} />
+      <GallerySection images={galleryImages} layout={config.galleryLayout ?? undefined} />
       <TeamSection masters={dbMasters} />
       <TestimonialsSection testimonials={dbTestimonials.map((t) => ({
         id: t.id,
