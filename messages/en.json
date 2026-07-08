@@ -604,6 +604,7 @@
     "servicePlaceholder": "Select a service...",
     "barberLabel": "Barber",
     "barberAny": "No preference",
+    "loading": "Loading...",
     "dateTimeLabel": "Select day and time",
     "nameLabel": "Name",
     "namePlaceholder": "Your name",

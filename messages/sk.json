@@ -604,6 +604,7 @@
     "servicePlaceholder": "Vyberte službu...",
     "barberLabel": "Barber",
     "barberAny": "Bez preferencie",
+    "loading": "Načítava sa...",
     "dateTimeLabel": "Vyberte deň a čas",
     "nameLabel": "Meno",
     "namePlaceholder": "Vaše meno",

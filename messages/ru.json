@@ -604,6 +604,7 @@
     "servicePlaceholder": "Выберите услугу...",
     "barberLabel": "Барбер",
     "barberAny": "Без предпочтений",
+    "loading": "Загрузка...",
     "dateTimeLabel": "Выберите день и время",
     "nameLabel": "Имя",
     "namePlaceholder": "Ваше имя",
