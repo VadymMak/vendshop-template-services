@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import AdminLoading from '@/components/admin/AdminLoading/AdminLoading';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 
 interface HeroConfig {
   title: string;
@@ -18,6 +20,10 @@ const DEFAULTS: HeroConfig = {
 };
 
 export default function HeroAdminPage() {
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+  const h = t.hero;
+
   const [form, setForm] = useState<HeroConfig>(DEFAULTS);
   const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -68,7 +74,7 @@ export default function HeroAdminPage() {
       setUploading(false);
       if (!up.ok) {
         const d = (await up.json()) as { error?: string };
-        setError(d.error ?? 'Chyba pri nahrávaní fotky');
+        setError(d.error ?? h.uploadError);
         setSaving(false);
         return;
       }
@@ -91,7 +97,7 @@ export default function HeroAdminPage() {
       if (fileRef.current) fileRef.current.value = '';
     } else {
       const d = (await res.json()) as { error?: string };
-      setError(d.error ?? 'Chyba pri ukladaní');
+      setError(d.error ?? h.saveError);
     }
     setSaving(false);
   }
@@ -104,12 +110,12 @@ export default function HeroAdminPage() {
       const res = await fetch('/api/admin/og', { method: 'POST' });
       const data = (await res.json()) as { url?: string; error?: string };
       if (!res.ok || !data.url) {
-        setOgError(data.error ?? 'Chyba pri generovaní OG obrázka');
+        setOgError(data.error ?? h.ogError);
       } else {
         setOgUrl(data.url);
       }
     } catch {
-      setOgError('Sieťová chyba');
+      setOgError(h.ogError);
     } finally {
       setOgGenerating(false);
     }
@@ -120,14 +126,14 @@ export default function HeroAdminPage() {
   return (
     <div className="admin-page">
       <div className="admin-page__header">
-        <h1>Hero sekcia</h1>
-        {saved && <span style={{ color: '#4ade80', fontSize: '0.875rem' }}>✓ Uložené</span>}
+        <h1>{h.title}</h1>
+        {saved && <span style={{ color: '#4ade80', fontSize: '0.875rem' }}>{h.saved}</span>}
       </div>
 
       <form onSubmit={save} className="admin-masters__form">
         <div className="admin-services__form-grid">
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
-            <label>Nadpis (title)</label>
+            <label>{h.titleLabel}</label>
             <input
               value={form.title}
               onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
@@ -135,7 +141,7 @@ export default function HeroAdminPage() {
             />
           </div>
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
-            <label>Podnadpis (subtitle)</label>
+            <label>{h.subtitleLabel}</label>
             <input
               value={form.subtitle}
               onChange={(e) => setForm((p) => ({ ...p, subtitle: e.target.value }))}
@@ -143,7 +149,7 @@ export default function HeroAdminPage() {
             />
           </div>
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
-            <label>Text tlačidla CTA</label>
+            <label>{h.ctaLabel}</label>
             <input
               value={form.ctaText}
               onChange={(e) => setForm((p) => ({ ...p, ctaText: e.target.value }))}
@@ -152,7 +158,7 @@ export default function HeroAdminPage() {
           </div>
 
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
-            <label>Hero foto</label>
+            <label>{h.imageLabel}</label>
 
             {!previewUrl && currentImageUrl && (
               <div style={{ marginBottom: '1rem' }}>
@@ -165,7 +171,7 @@ export default function HeroAdminPage() {
                     letterSpacing: '0.05em',
                   }}
                 >
-                  Aktuálna hero fotka:
+                  {h.currentPhoto}
                 </p>
                 <img
                   src={currentImageUrl}
@@ -192,7 +198,7 @@ export default function HeroAdminPage() {
                     letterSpacing: '0.05em',
                   }}
                 >
-                  Nová fotka (ešte neuložená):
+                  {h.newPhotoUnsaved}
                 </p>
                 <img
                   src={previewUrl}
@@ -222,7 +228,7 @@ export default function HeroAdminPage() {
                 marginTop: '0.35rem',
               }}
             >
-              Všetky formáty (JPEG, PNG, WebP, GIF, AVIF). Výstup: WebP 1920×1080. Max. 10MB
+              {h.hint}
             </span>
             {currentImageUrl && (
               <button
@@ -235,7 +241,7 @@ export default function HeroAdminPage() {
                 }}
                 style={{ alignSelf: 'flex-start', marginTop: '0.5rem' }}
               >
-                Odstrániť foto
+                {h.removePhoto}
               </button>
             )}
           </div>
@@ -251,7 +257,7 @@ export default function HeroAdminPage() {
             className="btn-primary btn-sm"
             disabled={saving || uploading}
           >
-            {uploading ? 'Nahrávam fotku...' : saving ? 'Ukladá sa...' : 'Uložiť zmeny'}
+            {uploading ? h.uploading : saving ? t.common.saving : t.common.save}
           </button>
         </div>
       </form>
@@ -262,7 +268,7 @@ export default function HeroAdminPage() {
           OG Image (1200 × 630)
         </h2>
         <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginBottom: '1rem' }}>
-          Vygeneruje branded obrázok zo mena obchodu, mesta a služieb. Nahrá na Blob s unikátnou URL (žiadny cache problém na sociálnych sieťach).
+          {h.ogDescription}
         </p>
 
         {ogUrl && (
@@ -286,7 +292,7 @@ export default function HeroAdminPage() {
           onClick={handleGenerateOg}
           disabled={ogGenerating}
         >
-          {ogGenerating ? 'Generujem...' : 'Generovať OG obrázok'}
+          {ogGenerating ? h.generatingOg : h.generateOg}
         </button>
       </div>
     </div>
