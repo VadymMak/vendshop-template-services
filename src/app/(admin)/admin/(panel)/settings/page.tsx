@@ -33,12 +33,12 @@ function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (
   );
 }
 
-function MaskedInput({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
+function MaskedInput({ value, onChange, placeholder, ariaLabel }: { value: string; onChange: (v: string) => void; placeholder?: string; ariaLabel?: string }) {
   const [show, setShow] = useState(false);
   return (
     <div className={styles.masked}>
       <input className={styles.input} type={show ? 'text' : 'password'} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
-      <button type="button" className={styles.eye} onClick={() => setShow((s) => !s)} aria-label="Zobraziť alebo skryť">
+      <button type="button" className={styles.eye} onClick={() => setShow((s) => !s)} aria-label={ariaLabel ?? 'Show or hide'}>
         <EyeIcon off={show} />
       </button>
     </div>
@@ -203,7 +203,7 @@ export default function AdminSettingsPage() {
         ))}
       </div>
 
-      {/* TAB — Obchod */}
+      {/* TAB — Store */}
       {tab === 'store' && (
         <div className={styles.card}>
           {loading ? (
@@ -259,31 +259,31 @@ export default function AdminSettingsPage() {
                   }}>
                     <span style={{ fontSize: '1.5rem', lineHeight: 1 }}>↑</span>
                     <span>{logoUploading ? tr.settings.uploading : tr.settings.uploadLogo}</span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-faint)' }}>WebP / PNG / JPG · výstup 400×120 · max 5 MB</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-faint)' }}>{tr.settings.logoSizeHint}</span>
                     <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: 'none' }} disabled={logoUploading} />
                   </label>
                 )}
               </div>
 
               {/* ── Store fields ─────────────────────────────────────── */}
-              <Field label="Názov salóna">
+              <Field label={tr.settings.storeNameLabel}>
                 <input className={styles.input} value={store.name} onChange={(e) => sStore('name', e.target.value)} />
               </Field>
-              <Field label="Popis">
+              <Field label={tr.settings.descriptionLabel}>
                 <textarea className={styles.textarea} rows={3} value={store.description} onChange={(e) => sStore('description', e.target.value)} />
               </Field>
               <div className={styles.grid2}>
-                <Field label="Telefón">
+                <Field label={tr.settings.phoneLabel}>
                   <input className={styles.input} value={store.phone} onChange={(e) => sStore('phone', e.target.value)} />
                 </Field>
-                <Field label="Email">
+                <Field label={tr.settings.emailLabel}>
                   <input className={styles.input} type="email" value={store.email} onChange={(e) => sStore('email', e.target.value)} />
                 </Field>
               </div>
-              <Field label="Adresa salóna">
-                <input className={styles.input} value={store.address} onChange={(e) => sStore('address', e.target.value)} placeholder="Hlavná ulica 15" />
+              <Field label={tr.settings.addressLabel}>
+                <input className={styles.input} value={store.address} onChange={(e) => sStore('address', e.target.value)} placeholder="Hauptstraße 15" />
               </Field>
-              <Field label="Mesto">
+              <Field label={tr.settings.cityLabel}>
                 <input className={styles.input} value={store.city} onChange={(e) => sStore('city', e.target.value)} placeholder="..." />
               </Field>
 
@@ -296,10 +296,10 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className={styles.grid2} style={{ marginTop: '1rem' }}>
-                <Field label="Zemepisná šírka (lat)">
+                <Field label={tr.settings.latLabel}>
                   <input className={styles.input} type="number" step="any" value={store.mapLat} onChange={(e) => sStore('mapLat', e.target.value)} placeholder="48.8944" />
                 </Field>
-                <Field label="Zemepisná dĺžka (lng)">
+                <Field label={tr.settings.lngLabel}>
                   <input className={styles.input} type="number" step="any" value={store.mapLng} onChange={(e) => sStore('mapLng', e.target.value)} placeholder="18.0440" />
                 </Field>
               </div>
@@ -312,7 +312,7 @@ export default function AdminSettingsPage() {
                   <input className={styles.input} value={store.instagram} placeholder="https://instagram.com/..." onChange={(e) => sStore('instagram', e.target.value)} />
                 </Field>
               </div>
-              <Field label="WhatsApp">
+              <Field label={tr.settings.whatsappLabel}>
                 <input className={styles.input} value={store.whatsapp} placeholder="https://wa.me/421..." onChange={(e) => sStore('whatsapp', e.target.value)} />
               </Field>
 
@@ -324,21 +324,21 @@ export default function AdminSettingsPage() {
         </div>
       )}
 
-      {/* TAB — Galéria */}
+      {/* TAB — Gallery */}
       {tab === 'gallery' && (
         <div className={styles.card}>
           <GalleryTab />
         </div>
       )}
 
-      {/* TAB — Majstri */}
+      {/* TAB — Masters */}
       {tab === 'masters' && (
         <div className={styles.card}>
           <MastersTab />
         </div>
       )}
 
-      {/* TAB — Notifikácie */}
+      {/* TAB — Notifications */}
       {tab === 'notifications' && (
         <div className={styles.card}>
           <div className={styles.block}>
@@ -346,62 +346,65 @@ export default function AdminSettingsPage() {
               <span className={styles.blockTitle}>Email</span>
               <Toggle checked={notif.emailOn} onChange={(v) => sNotif('emailOn', v)} />
             </div>
-            <Field label="Email pre notifikácie">
+            <Field label={tr.settings.notifEmailLabel}>
               <input className={styles.input} type="email" value={notif.email} onChange={(e) => sNotif('email', e.target.value)} />
             </Field>
             <div className={styles.settingRow}>
-              <span>Notifikácie o nových recenziách</span>
+              <span>{tr.settings.notifReviewsLabel}</span>
               <Toggle checked={notif.reviewsOn} onChange={(v) => sNotif('reviewsOn', v)} />
             </div>
           </div>
 
-          <div className={styles.block}>
-            <div className={styles.blockHead}>
-              <span className={styles.blockTitle}>Telegram</span>
-              <Toggle checked={notif.telegramOn} onChange={(v) => sNotif('telegramOn', v)} />
+          {/* Only show Telegram for RU/UK markets */}
+          {(locale === 'ru' || locale === 'uk') && (
+            <div className={styles.block}>
+              <div className={styles.blockHead}>
+                <span className={styles.blockTitle}>Telegram</span>
+                <Toggle checked={notif.telegramOn} onChange={(v) => sNotif('telegramOn', v)} />
+              </div>
+              <Field label="Bot Token">
+                <MaskedInput value={notif.botToken} onChange={(v) => sNotif('botToken', v)} placeholder="••••••••••••" ariaLabel={tr.settings.passwordToggleAriaLabel} />
+              </Field>
+              <Field label="Chat ID">
+                <input className={styles.input} value={notif.chatId} onChange={(e) => sNotif('chatId', e.target.value)} />
+              </Field>
+              <button type="button" className={styles.testBtn} onClick={() => console.log('[test telegram]')}>Test</button>
             </div>
-            <Field label="Bot Token">
-              <MaskedInput value={notif.botToken} onChange={(v) => sNotif('botToken', v)} placeholder="••••••••••••" />
-            </Field>
-            <Field label="Chat ID">
-              <input className={styles.input} value={notif.chatId} onChange={(e) => sNotif('chatId', e.target.value)} />
-            </Field>
-            <button type="button" className={styles.testBtn} onClick={() => console.log('[test telegram]')}>Test</button>
-          </div>
+          )}
 
-          <button type="button" className={styles.saveBtn} onClick={showToast}>Uložiť</button>
+          <button type="button" className={styles.saveBtn} onClick={showToast}>{tr.settings.saveBtn}</button>
         </div>
       )}
 
-      {/* TAB — Bezpečnosť */}
+      {/* TAB — Security */}
       {tab === 'security' && (
         <div className={styles.card}>
           <div className={styles.block}>
-            <span className={styles.blockTitle}>Zmena hesla</span>
-            <Field label="Aktuálne heslo">
-              <MaskedInput value={security.currentPw} onChange={(v) => sSec('currentPw', v)} />
+            <span className={styles.blockTitle}>{tr.settings.changePasswordTitle}</span>
+            <Field label={tr.settings.currentPasswordLabel}>
+              <MaskedInput value={security.currentPw} onChange={(v) => sSec('currentPw', v)} ariaLabel={tr.settings.passwordToggleAriaLabel} />
             </Field>
-            <Field label="Nové heslo">
-              <MaskedInput value={security.newPw} onChange={(v) => sSec('newPw', v)} />
+            <Field label={tr.settings.newPasswordLabel}>
+              <MaskedInput value={security.newPw} onChange={(v) => sSec('newPw', v)} ariaLabel={tr.settings.passwordToggleAriaLabel} />
             </Field>
-            <Field label="Potvrďte heslo">
-              <MaskedInput value={security.confirmPw} onChange={(v) => sSec('confirmPw', v)} />
+            <Field label={tr.settings.confirmPasswordLabel}>
+              <MaskedInput value={security.confirmPw} onChange={(v) => sSec('confirmPw', v)} ariaLabel={tr.settings.passwordToggleAriaLabel} />
             </Field>
-            <button type="button" className={styles.saveBtn} onClick={showToast}>Zmeniť heslo</button>
+            <button type="button" className={styles.saveBtn} onClick={showToast}>{tr.settings.changePasswordBtn}</button>
           </div>
 
           <div className={styles.block}>
             <div className={styles.settingRow}>
-              <span>Aktívnych relácií: <b>2</b></span>
-              <button type="button" className={styles.dangerBtn} onClick={() => console.log('[terminate all sessions]')}>Ukončiť všetky relácie</button>
+              <span>{tr.settings.activeSessionsLabel} <b>2</b></span>
+              <button type="button" className={styles.dangerBtn} onClick={() => console.log('[terminate all sessions]')}>{tr.settings.terminateSessionsBtn}</button>
             </div>
           </div>
 
           <div className={styles.block}>
             <div className={styles.settingRow}>
               <span className={styles.twoFa}>
-                Dvojfaktorová autentifikácia
-                <span className={styles.soon}>Čoskoro</span>
+                {tr.settings.twoFactorLabel}
+                <span className={styles.soon}>{tr.settings.comingSoon}</span>
               </span>
               <Toggle checked={security.twoFactor} onChange={(v) => sSec('twoFactor', v)} disabled />
             </div>
@@ -409,7 +412,7 @@ export default function AdminSettingsPage() {
         </div>
       )}
 
-      {/* TAB — Rozvrh (restaurant only) */}
+      {/* TAB — Schedule (restaurant only) */}
       {tab === 'schedule' && (
         <div className={styles.card}>
           <WorkingHours />
@@ -419,7 +422,7 @@ export default function AdminSettingsPage() {
       {toast && (
         <div className={styles.toast} role="status">
           <svg width="18" height="18" viewBox="0 0 24 24" {...stroke} aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-          Nastavenia uložené
+          {tr.settings.savedToast}
         </div>
       )}
     </div>

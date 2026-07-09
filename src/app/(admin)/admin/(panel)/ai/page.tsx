@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import styles from './ai.module.css';
-import { useAdminLocale } from '@/hooks/useAdminLocale';
-import { getAdminT } from '@/lib/admin-i18n';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 interface ChatMessage {
@@ -27,10 +25,26 @@ interface KnowledgeStatus {
 }
 
 interface PriorityItem { id: string; label: string; enabled: boolean }
+const DEFAULT_PRIORITIES: PriorityItem[] = [
+  { id: 'service', label: 'Služby a ceny',      enabled: true },
+  { id: 'master',  label: 'Majstri a tím',       enabled: true },
+  { id: 'review',  label: 'Recenzie zákazníkov', enabled: true },
+  { id: 'hours',   label: 'Pracovné hodiny',      enabled: true },
+  { id: 'about',   label: 'Kontakt a adresa',     enabled: true },
+];
 
 const PRIORITIES_KEY = 'ai_priorities';
 const CHAT_BG_KEY    = 'ai_chat_bg';
 const CHAT_BG_PRESETS = ['#0d0d0d', '#0a0a0a', '#111827', '#1a0a00', '#0a0a1a'];
+
+const SUGGESTIONS = [
+  'Dnešné rezervácie',
+  'Najlepší majster',
+  'Priemerný rating',
+  'Aké máme služby?',
+  'Pracovné hodiny',
+  'Kontakt a adresa',
+];
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
 const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
@@ -65,28 +79,6 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 
 // ─── Main page ─────────────────────────────────────────────────────────────
 export default function AdminAiPage() {
-  const { locale } = useAdminLocale();
-  const t = getAdminT(locale);
-  const ai = t.ai;
-
-  // Computed from i18n so they update on locale change
-  const SUGGESTIONS = [
-    ai.suggestBookings,
-    ai.suggestTopMaster,
-    ai.suggestRating,
-    ai.suggestServices,
-    ai.suggestHours,
-    ai.suggestContact,
-  ];
-
-  const DEFAULT_PRIORITIES: PriorityItem[] = [
-    { id: 'service', label: ai.kbServices, enabled: true },
-    { id: 'master',  label: ai.kbMasters,  enabled: true },
-    { id: 'review',  label: ai.kbReviews,  enabled: true },
-    { id: 'hours',   label: ai.kbHours,    enabled: true },
-    { id: 'about',   label: ai.kbContact,  enabled: true },
-  ];
-
   // Chat state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput]       = useState('');
@@ -226,7 +218,7 @@ export default function AdminAiPage() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.h1}>{ai.title}</h1>
+      <h1 className={styles.h1}>AI Management</h1>
 
       {/* ── Status bar ─────────────────────────────────────────────────────── */}
       <div className={styles.statusBar}>
@@ -239,12 +231,12 @@ export default function AdminAiPage() {
           style={{ cursor: indexing ? 'wait' : 'pointer', border: 'none', background: 'none', padding: 0 }}
         >
           <RefreshIcon spin={indexing} />
-          {indexing ? ai.indexing : ai.updateKnowledge}
+          {indexing ? 'Indexujem...' : 'Aktualizovať znalosti'}
         </button>
         {status && status.total > 0 && (
           <span className={styles.statusChipIndexed}>✓ {status.total} chunks</span>
         )}
-        {lastUsed && <span className={styles.statusChipGray}>{ai.lastReply} {lastUsed}</span>}
+        {lastUsed && <span className={styles.statusChipGray}>Posledná odpoveď: {lastUsed}</span>}
         <span className={`${styles.statusChipGray} ${styles.statusChipRight}`}>
           OpenAI gpt-4o-mini · function calling
         </span>
@@ -255,12 +247,12 @@ export default function AdminAiPage() {
         {/* Header */}
         <div className={styles.chatHeader}>
           <BotIcon />
-          <h2 className={styles.chatTitle}>{ai.chatTitle}</h2>
+          <h2 className={styles.chatTitle}>Store AI Assistant</h2>
           <button
             type="button"
             className={styles.gearBtn}
             onClick={() => setShowSettings(true)}
-            aria-label={ai.settingsTitle}
+            aria-label="Settings"
           >
             <GearIcon />
           </button>
@@ -270,7 +262,7 @@ export default function AdminAiPage() {
               className={styles.clearBtn}
               onClick={() => setMessages([])}
             >
-              {ai.clearHistory}
+              Clear
             </button>
           )}
         </div>
@@ -280,9 +272,8 @@ export default function AdminAiPage() {
           {messages.length === 0 && !loading && (
             <div className={styles.chatEmpty}>
               <BotIcon />
-              <p>{ai.emptyText}<br />
-                <span dangerouslySetInnerHTML={{ __html: ai.emptyHint }} />
-              </p>
+              <p>Opýtajte sa čokoľvek alebo dajte pokyn.<br />
+                Môžem zobraziť rezervácie, <strong>zmeniť hodiny</strong>, <strong>odpovedať na recenzie</strong> a oveľa viac.</p>
             </div>
           )}
 
@@ -333,7 +324,7 @@ export default function AdminAiPage() {
             ref={textareaRef}
             className={styles.chatTextarea}
             rows={1}
-            placeholder={ai.placeholder}
+            placeholder="Opýtajte sa alebo dajte pokyn... (Enter — odoslať)"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -344,7 +335,7 @@ export default function AdminAiPage() {
             className={styles.chatSendBtn}
             onClick={() => sendMessage(input)}
             disabled={loading || !input.trim()}
-            aria-label={ai.send}
+            aria-label="Send"
           >
             <SendIcon />
           </button>
@@ -367,7 +358,7 @@ export default function AdminAiPage() {
       </section>
 
       {/* ── Save toast ───────────────────────────────────────────────────── */}
-      {savedToast && <div className={styles.toast}>✓ {t.settings.savedToast}</div>}
+      {savedToast && <div className={styles.toast}>✓ Nastavenia uložené</div>}
 
       {/* ── Settings Modal ────────────────────────────────────────────────── */}
       {showSettings && (
@@ -378,7 +369,7 @@ export default function AdminAiPage() {
           <div className={styles.modal}>
             {/* Modal header */}
             <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>{ai.settingsTitle}</h3>
+              <h3 className={styles.modalTitle}>AI Settings</h3>
               <button type="button" className={styles.modalClose} onClick={() => setShowSettings(false)}>×</button>
             </div>
 
@@ -391,7 +382,7 @@ export default function AdminAiPage() {
                   className={`${styles.modalTab} ${settingsTab === tab ? styles.modalTabActive : ''}`}
                   onClick={() => setSettingsTab(tab)}
                 >
-                  {tab === 'status' ? 'Status' : ai.settingsTitle}
+                  {tab === 'status' ? 'Status' : 'Settings'}
                 </button>
               ))}
             </div>
@@ -408,17 +399,17 @@ export default function AdminAiPage() {
                     </span>
                     <span className={styles.statusText}>
                       {indexing
-                        ? ai.indexing
+                        ? 'Indexujem...'
                         : status && status.total > 0
                           ? '✅ AI up to date'
-                          : ai.notIndexed}
+                          : 'Nie je indexované'}
                     </span>
                   </div>
 
                   {status && status.total > 0 ? (
                     <>
                       <div className={styles.stats}>
-                        <span>{ai.indexedCount} <b>{status.total} chunks</b></span>
+                        <span>Indexovaných: <b>{status.total} chunks</b></span>
                       </div>
                       <div className={styles.breakdownTags}>
                         {Object.entries(status.breakdown).map(([type, count]) => (
@@ -429,13 +420,13 @@ export default function AdminAiPage() {
                       </div>
                       {status.lastUpdated && (
                         <p className={styles.hint}>
-                          {ai.lastUpdated} {new Date(status.lastUpdated).toLocaleString('sk-SK')}
+                          Posledná aktualizácia: {new Date(status.lastUpdated).toLocaleString('sk-SK')}
                         </p>
                       )}
                     </>
                   ) : (
                     <div className={styles.stats}>
-                      <span>{ai.clickToLoad}</span>
+                      <span>Kliknite &ldquo;Aktualizovať znalosti&rdquo; pre načítanie dát</span>
                     </div>
                   )}
 
@@ -453,9 +444,9 @@ export default function AdminAiPage() {
                     disabled={indexing}
                   >
                     <RefreshIcon spin={indexing} />
-                    {indexing ? ai.indexing : ai.updateKnowledge}
+                    {indexing ? 'Indexujem...' : 'Aktualizovať znalosti'}
                   </button>
-                  <p className={styles.hint}>{ai.updatesKnowledge}</p>
+                  <p className={styles.hint}>Aktualizuje znalosti z databázy a webu barbershopu</p>
                 </>
               )}
 
@@ -464,23 +455,23 @@ export default function AdminAiPage() {
                 <div className={styles.twoCol}>
                   {/* Left column */}
                   <div>
-                    <h4 className={styles.subTitle}>{ai.behavior}</h4>
+                    <h4 className={styles.subTitle}>AI Správanie</h4>
                     <div className={styles.settingRow}>
-                      <span>{ai.assistantActive}</span>
+                      <span>AI asistent aktívny</span>
                       <Toggle checked={aiActive} onChange={setAiActive} />
                     </div>
                     <label className={styles.field}>
-                      <span className={styles.label}>{ai.tone}</span>
+                      <span className={styles.label}>Tón</span>
                       <select
                         className={styles.input}
                         value={tone}
                         onChange={(e) => setTone(e.target.value as Tone)}
                       >
-                        {TONES.map((tn) => <option key={tn.value} value={tn.value}>{tn.label}</option>)}
+                        {TONES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
                       </select>
                     </label>
                     <label className={styles.field}>
-                      <span className={styles.label}>{ai.assistantName}</span>
+                      <span className={styles.label}>Meno asistenta</span>
                       <input
                         className={styles.input}
                         type="text"
@@ -489,7 +480,7 @@ export default function AdminAiPage() {
                       />
                     </label>
                     <label className={styles.field}>
-                      <span className={styles.label}>{ai.greetingLabel}</span>
+                      <span className={styles.label}>Uvítacia správa</span>
                       <textarea
                         className={styles.textarea}
                         rows={3}
@@ -500,7 +491,7 @@ export default function AdminAiPage() {
 
                     {/* Chat background color picker */}
                     <div className={styles.field}>
-                      <span className={styles.label}>{ai.chatBgColor}</span>
+                      <span className={styles.label}>FARBA POZADIA CHATU</span>
                       <div className={styles.colorPicker}>
                         {CHAT_BG_PRESETS.map((color) => (
                           <button
@@ -520,20 +511,20 @@ export default function AdminAiPage() {
                           value={chatBg}
                           onChange={(e) => saveChatBg(e.target.value)}
                           className={styles.colorInput}
-                          title={ai.custom}
+                          title="Vlastná farba"
                         />
-                        <span className={styles.label} style={{ marginBottom: 0 }}>{ai.custom}</span>
+                        <span className={styles.label} style={{ marginBottom: 0 }}>vlastná</span>
                       </div>
                     </div>
 
                     <button type="button" className={styles.saveBtn} onClick={saveSettings}>
-                      {ai.saveSettings}
+                      Uložiť nastavenia
                     </button>
                   </div>
 
                   {/* Right column */}
                   <div>
-                    <h4 className={styles.subTitle}>{ai.prioritize}</h4>
+                    <h4 className={styles.subTitle}>Prioritizovať informácie o:</h4>
                     <ul className={styles.priorityList}>
                       {priorities.map((p) => (
                         <li key={p.id} className={styles.priorityItem}>
