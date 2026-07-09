@@ -338,6 +338,8 @@ export interface AdminTranslations {
     generatingOg: string;
     ogPreview: string;
     ogDescription: string;
+    ogTitle: string;
+    ctaPlaceholder: string;
     saved: string;
     newPhotoUnsaved: string;
     uploadError: string;
@@ -842,8 +844,8 @@ const SK: AdminTranslations = {
   },
   hero: {
     title:           'Hero sekcia',
-    titleLabel:      'Nadpis (title)',
-    subtitleLabel:   'Podnadpis (subtitle)',
+    titleLabel:      'Nadpis',
+    subtitleLabel:   'Podnadpis',
     ctaLabel:        'Text tlačidla CTA',
     imageLabel:      'Hero foto',
     removePhoto:     'Odstrániť foto',
@@ -855,6 +857,8 @@ const SK: AdminTranslations = {
     generatingOg:    'Generujem...',
     ogPreview:       'OG náhľad (social media)',
     ogDescription:   'Vygeneruje branded obrázok zo mena obchodu, mesta a služieb. Nahrá na Blob s unikátnou URL (žiadny cache problém na sociálnych sieťach).',
+    ogTitle:         'OG obrázok (1200×630)',
+    ctaPlaceholder:  'Rezervovať termín',
     saved:           '✓ Uložené',
     newPhotoUnsaved: 'Nová fotka (ešte neuložená):',
     uploadError:     'Chyba pri nahrávaní fotky',
@@ -1372,6 +1376,8 @@ const EN: AdminTranslations = {
     generatingOg:    'Generating...',
     ogPreview:       'OG preview (social media)',
     ogDescription:   'Generates a branded image from the store name, city and services. Uploads to Blob with a unique URL (no social media cache issues).',
+    ogTitle:         'OG Image (1200×630)',
+    ctaPlaceholder:  'Book an appointment',
     saved:           '✓ Saved',
     newPhotoUnsaved: 'New photo (not saved yet):',
     uploadError:     'Photo upload error',
@@ -1876,8 +1882,8 @@ const CS: AdminTranslations = {
   },
   hero: {
     title:           'Hero sekce',
-    titleLabel:      'Nadpis (title)',
-    subtitleLabel:   'Podnadpis (subtitle)',
+    titleLabel:      'Nadpis',
+    subtitleLabel:   'Podnadpis',
     ctaLabel:        'Text tlačítka CTA',
     imageLabel:      'Hero foto',
     removePhoto:     'Odebrat foto',
@@ -1889,6 +1895,8 @@ const CS: AdminTranslations = {
     generatingOg:    'Generuji...',
     ogPreview:       'OG náhled (sociální sítě)',
     ogDescription:   'Vygeneruje brandový obrázek z názvu obchodu, města a služeb. Nahraje na Blob s unikátní URL (žádný problém s cache na sociálních sítích).',
+    ogTitle:         'OG obrázek (1200×630)',
+    ctaPlaceholder:  'Rezervovat termín',
     saved:           '✓ Uloženo',
     newPhotoUnsaved: 'Nová fotka (ještě neuložena):',
     uploadError:     'Chyba při nahrávání fotky',
@@ -2406,6 +2414,8 @@ const DE: AdminTranslations = {
     generatingOg:    'Generiere...',
     ogPreview:       'OG-Vorschau (Social Media)',
     ogDescription:   'Generiert ein Markenbild aus Geschäftsname, Stadt und Leistungen. Lädt auf Blob mit eindeutiger URL hoch (kein Cache-Problem in sozialen Netzwerken).',
+    ogTitle:         'OG-Bild (1200×630)',
+    ctaPlaceholder:  'Termin buchen',
     saved:           '✓ Gespeichert',
     newPhotoUnsaved: 'Neues Foto (noch nicht gespeichert):',
     uploadError:     'Fehler beim Hochladen des Fotos',
@@ -2923,6 +2933,8 @@ const UK: AdminTranslations = {
     generatingOg:    'Генерую...',
     ogPreview:       'OG превʼю (соцмережі)',
     ogDescription:   'Генерує брендоване зображення з назви магазину, міста та послуг. Завантажує на Blob з унікальним URL (немає проблем з кешем у соцмережах).',
+    ogTitle:         'OG зображення (1200×630)',
+    ctaPlaceholder:  'Записатися на прийом',
     saved:           '✓ Збережено',
     newPhotoUnsaved: 'Нове фото (ще не збережено):',
     uploadError:     'Помилка завантаження фото',
@@ -3440,6 +3452,8 @@ const RU: AdminTranslations = {
     generatingOg:    'Генерирую...',
     ogPreview:       'OG превью (соцсети)',
     ogDescription:   'Генерирует брендированное изображение из названия магазина, города и услуг. Загружает в Blob с уникальным URL (нет проблем с кешем в соцсетях).',
+    ogTitle:         'OG изображение (1200×630)',
+    ctaPlaceholder:  'Записаться на прием',
     saved:           '✓ Сохранено',
     newPhotoUnsaved: 'Новое фото (ещё не сохранено):',
     uploadError:     'Ошибка загрузки фото',
@@ -3957,6 +3971,8 @@ const PL: AdminTranslations = {
     generatingOg:    'Generuję...',
     ogPreview:       'Podgląd OG (media społecznościowe)',
     ogDescription:   'Generuje markowy obraz z nazwy sklepu, miasta i usług. Przesyła do Blob z unikalnym URL (brak problemów z pamięcią podręczną w mediach społecznościowych).',
+    ogTitle:         'Obraz OG (1200×630)',
+    ctaPlaceholder:  'Umów wizytę',
     saved:           '✓ Zapisano',
     newPhotoUnsaved: 'Nowe zdjęcie (jeszcze niezapisane):',
     uploadError:     'Błąd przesyłania zdjęcia',
