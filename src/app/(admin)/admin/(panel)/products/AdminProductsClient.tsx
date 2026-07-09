@@ -2,6 +2,8 @@
 
 import { useState, useRef } from 'react';
 import { SUPPORTED_LOCALES, LOCALE_LABELS, type SupportedLocale } from '@/lib/constants';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 
 interface Translation {
   locale: string;
@@ -48,6 +50,9 @@ interface Props {
 }
 
 export default function AdminDigitalProductsClient({ initialProducts }: Props) {
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+
   const [products, setProducts] = useState<DigitalProduct[]>(initialProducts);
   const [editing, setEditing] = useState<DigitalProduct | null>(null);
   const [creating, setCreating] = useState(false);
@@ -117,7 +122,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
       const url = await uploadAsset(file, 'preview');
       setPreviewUrl(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Chyba pri nahrávaní');
+      setError(err instanceof Error ? err.message : t.products.uploadError);
     }
     setUploadingPreview(false);
   }
@@ -130,7 +135,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
       const url = await uploadAsset(file, 'file');
       setFileUrl(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Chyba pri nahrávaní');
+      setError(err instanceof Error ? err.message : t.products.uploadError);
     }
     setUploadingFile(false);
   }
@@ -148,7 +153,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
       }));
 
     if (!slug.trim() || !price || !translationsArray.length) {
-      setError('Vyplňte slug, cenu a aspoň jeden preklad (SK)');
+      setError(t.products.validationError);
       setSaving(false);
       return;
     }
@@ -171,7 +176,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
         body: JSON.stringify(body),
       });
       const data = await res.json() as DigitalProduct & { error?: string };
-      if (!res.ok) throw new Error(data.error ?? 'Uloženie zlyhalo');
+      if (!res.ok) throw new Error(data.error ?? t.products.saveError);
 
       if (editing) {
         setProducts((prev) => prev.map((p) => (p.id === data.id ? data : p)));
@@ -180,7 +185,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
       }
       closeForm();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Chyba');
+      setError(err instanceof Error ? err.message : t.products.saveError);
     }
     setSaving(false);
   }
@@ -198,7 +203,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Naozaj vymazať produkt?')) return;
+    if (!confirm(t.products.deleteConfirm)) return;
     const res = await fetch(`/api/admin/products/${id}`, { method: 'DELETE' });
     if (res.ok) setProducts((prev) => prev.filter((p) => p.id !== id));
   }
@@ -208,10 +213,10 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
   return (
     <div className="admin-page">
       <div className="admin-page__header">
-        <h1>Digitálne produkty</h1>
+        <h1>{t.products.title}</h1>
         {!formOpen && (
           <button className="btn-primary btn-sm" onClick={openCreate}>
-            + Pridať produkt
+            {t.products.add}
           </button>
         )}
       </div>
@@ -219,12 +224,12 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
       {formOpen && (
         <div className="admin-masters__form" style={{ marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--color-text)' }}>
-            {editing ? 'Upraviť produkt' : 'Nový produkt'}
+            {editing ? t.products.edit : t.products.newProduct}
           </h2>
 
           <div className="admin-services__form-grid">
             <div className="booking__field">
-              <label>Slug (URL identifikátor)</label>
+              <label>{t.products.slug}</label>
               <input
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
@@ -232,7 +237,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
               />
             </div>
             <div className="booking__field">
-              <label>Cena</label>
+              <label>{t.products.price}</label>
               <input
                 type="number"
                 min="0"
@@ -243,7 +248,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
               />
             </div>
             <div className="booking__field">
-              <label>Mena</label>
+              <label>{t.products.currency}</label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
@@ -262,7 +267,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
 
           <div className="admin-services__form-grid" style={{ marginTop: '1rem' }}>
             <div className="booking__field">
-              <label>Obrázok náhľadu</label>
+              <label>{t.products.previewLabel}</label>
               {previewUrl && (
                 <img
                   src={previewUrl}
@@ -285,11 +290,11 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                 style={{ color: 'var(--color-text-secondary)' }}
               />
               {uploadingPreview && (
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-copper, #B87333)' }}>Nahrávam...</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-copper, #B87333)' }}>{t.common.uploading}</span>
               )}
             </div>
             <div className="booking__field">
-              <label>Súbor produktu (PDF / zip)</label>
+              <label>{t.products.fileLabel}</label>
               {fileUrl && (
                 <a
                   href={fileUrl}
@@ -297,7 +302,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                   rel="noopener noreferrer"
                   style={{ fontSize: '0.75rem', color: 'var(--color-copper, #B87333)', display: 'block', marginBottom: '0.4rem' }}
                 >
-                  Aktuálny súbor ↗
+                  {t.products.currentFile}
                 </a>
               )}
               <input
@@ -308,14 +313,14 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                 style={{ color: 'var(--color-text-secondary)' }}
               />
               {uploadingFile && (
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-copper, #B87333)' }}>Nahrávam...</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-copper, #B87333)' }}>{t.common.uploading}</span>
               )}
             </div>
           </div>
 
           <div style={{ marginTop: '1.5rem' }}>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>
-              Preklady
+              {t.products.translationsLbl}
             </p>
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               {SUPPORTED_LOCALES.map((loc) => (
@@ -344,9 +349,9 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
             </div>
 
             <div className="booking__field">
-              <label>Názov ({activeLocale.toUpperCase()})</label>
+              <label>{t.products.nameField} ({activeLocale.toUpperCase()})</label>
               <input
-                placeholder={`Názov produktu (${activeLocale})`}
+                placeholder={`${t.products.nameField} (${activeLocale})`}
                 value={translations[activeLocale].name}
                 onChange={(e) =>
                   setTranslations((prev) => ({
@@ -357,10 +362,10 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
               />
             </div>
             <div className="booking__field" style={{ marginTop: '0.75rem' }}>
-              <label>Popis ({activeLocale.toUpperCase()})</label>
+              <label>{t.products.descField} ({activeLocale.toUpperCase()})</label>
               <textarea
                 rows={3}
-                placeholder={`Popis produktu (${activeLocale})`}
+                placeholder={`${t.products.descField} (${activeLocale})`}
                 value={translations[activeLocale].description}
                 onChange={(e) =>
                   setTranslations((prev) => ({
@@ -391,7 +396,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
               onClick={() => void handleSave()}
               disabled={saving || uploadingPreview || uploadingFile}
             >
-              {saving ? 'Ukladám...' : 'Uložiť'}
+              {saving ? t.common.saving : t.masters.saveBtn}
             </button>
             <button
               type="button"
@@ -405,7 +410,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                 cursor: 'pointer',
               }}
             >
-              Zrušiť
+              {t.common.cancel}
             </button>
           </div>
         </div>
@@ -413,13 +418,13 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
 
       {products.length === 0 && !formOpen && (
         <p style={{ color: 'var(--color-text-muted)', padding: '2rem 0' }}>
-          Zatiaľ žiadne digitálne produkty. Kliknite „+ Pridať produkt".
+          {t.products.noProducts}
         </p>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {products.map((p) => {
-          const skName = p.translations.find((t) => t.locale === 'sk')?.name ?? p.slug;
+          const skName = p.translations.find((tr) => tr.locale === 'sk')?.name ?? p.slug;
           return (
             <div
               key={p.id}
@@ -447,7 +452,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                 </p>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: '0.2rem 0 0' }}>
                   {p.price} {p.currency} · /{p.slug}
-                  {!p.active && ' · skrytý'}
+                  {!p.active && ` · ${t.products.hidden}`}
                 </p>
               </div>
               <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
@@ -464,7 +469,7 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                     fontSize: '0.8rem',
                   }}
                 >
-                  Upraviť
+                  {t.common.edit}
                 </button>
                 <button
                   className="btn-sm"
@@ -479,14 +484,14 @@ export default function AdminDigitalProductsClient({ initialProducts }: Props) {
                     fontSize: '0.8rem',
                   }}
                 >
-                  {p.active ? 'Skryť' : 'Zobraziť'}
+                  {p.active ? t.common.hide : t.common.show}
                 </button>
                 <button
                   className="btn-sm btn-danger"
                   onClick={() => void handleDelete(p.id)}
                   style={{ fontSize: '0.8rem', padding: '0.3rem 0.7rem' }}
                 >
-                  Vymazať
+                  {t.common.delete}
                 </button>
               </div>
             </div>

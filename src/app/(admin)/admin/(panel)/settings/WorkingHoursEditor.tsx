@@ -1,18 +1,11 @@
 'use client';
 
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 import type { HoursMap } from '@/lib/formatHours';
 
-const DAYS = [
-  { key: 'mon', label: 'Pondelok' },
-  { key: 'tue', label: 'Utorok' },
-  { key: 'wed', label: 'Streda' },
-  { key: 'thu', label: 'Štvrtok' },
-  { key: 'fri', label: 'Piatok' },
-  { key: 'sat', label: 'Sobota' },
-  { key: 'sun', label: 'Nedeľa' },
-] as const;
-
-type DayKey = (typeof DAYS)[number]['key'];
+const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
+type DayKey = typeof DAY_KEYS[number];
 
 export type { HoursMap };
 
@@ -43,6 +36,9 @@ const inputStyle: React.CSSProperties = {
 };
 
 export default function WorkingHoursEditor({ value, onChange }: Props) {
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+
   function toggleDay(key: DayKey, enabled: boolean) {
     onChange({
       ...value,
@@ -58,9 +54,10 @@ export default function WorkingHoursEditor({ value, onChange }: Props) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-      {DAYS.map(({ key, label }) => {
+      {DAY_KEYS.map((key) => {
         const hours = value[key];
         const isOpen = hours !== null;
+        const label = t.settings.days[key];
         return (
           <div
             key={key}
@@ -141,7 +138,7 @@ export default function WorkingHoursEditor({ value, onChange }: Props) {
                 />
               </div>
             ) : (
-              <span style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>Zatvorené</span>
+              <span style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>{t.settings.closedLabel}</span>
             )}
           </div>
         );

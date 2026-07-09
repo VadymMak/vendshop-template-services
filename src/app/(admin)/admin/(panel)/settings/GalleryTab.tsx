@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import styles from './settings.module.css';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 
 interface GalleryImage {
   id: string;
@@ -25,6 +27,10 @@ async function uploadFile(file: File): Promise<string> {
 }
 
 export default function GalleryTab() {
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+  const g = t.gallery;
+
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState<string | null>(null);
@@ -61,7 +67,7 @@ export default function GalleryTab() {
       }
       await fetchImages();
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Chyba pri nahrávaní');
+      alert(err instanceof Error ? err.message : g.uploadError);
     } finally {
       setUploading(null);
       if (fileRef.current) fileRef.current.value = '';
@@ -81,7 +87,7 @@ export default function GalleryTab() {
       });
       setImages((prev) => prev.map((img) => (img.id === imageId ? { ...img, url } : img)));
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Chyba pri nahrávaní');
+      alert(err instanceof Error ? err.message : g.uploadError);
     } finally {
       setUploading(null);
       const input = cardFileRefs.current.get(imageId);
@@ -99,25 +105,25 @@ export default function GalleryTab() {
   };
 
   const deleteImage = async (img: GalleryImage) => {
-    if (!confirm('Vymazať toto foto?')) return;
+    if (!confirm(g.deleteConfirm)) return;
     await fetch(`/api/admin/gallery?id=${img.id}`, { method: 'DELETE' });
     setImages((prev) => prev.filter((i) => i.id !== img.id));
   };
 
-  if (loading) return <p style={{ color: '#888', fontSize: 14 }}>Načítavam...</p>;
+  if (loading) return <p style={{ color: '#888', fontSize: 14 }}>{t.common.loading}</p>;
 
   return (
     <>
       <div className={styles.galleryToolbar}>
         <label className={styles.uploadLabel}>
           <input ref={fileRef} type="file" accept="image/*" multiple onChange={handleUpload} />
-          {uploading === 'new' ? 'Nahrávam...' : '↑ Nahrať súbor'}
+          {uploading === 'new' ? g.uploading : g.addPhoto}
         </label>
-        <span style={{ fontSize: 13, color: '#888' }}>{images.length} fotografií</span>
+        <span style={{ fontSize: 13, color: '#888' }}>{g.photoCount.replace('{count}', String(images.length))}</span>
       </div>
 
       {images.length === 0 ? (
-        <p style={{ color: '#888', fontSize: 14 }}>Galéria je prázdna.</p>
+        <p style={{ color: '#888', fontSize: 14 }}>{g.empty}</p>
       ) : (
         <div className={styles.galleryGrid}>
           {images.map((img) => (
@@ -128,7 +134,7 @@ export default function GalleryTab() {
                 <label
                   className={`${styles.cardBtn} ${styles.cardBtnOutline}`}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                  title="Nahradiť foto"
+                  title={g.replace}
                 >
                   <input
                     type="file"
@@ -145,7 +151,7 @@ export default function GalleryTab() {
                   className={`${styles.cardBtn} ${styles.cardBtnOutline}`}
                   onClick={() => toggleActive(img)}
                 >
-                  {img.active ? 'Skryť' : 'Zobraziť'}
+                  {img.active ? g.hidePhoto : g.showPhoto}
                 </button>
                 <button
                   type="button"

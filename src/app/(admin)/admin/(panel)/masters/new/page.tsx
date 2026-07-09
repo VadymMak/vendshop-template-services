@@ -3,11 +3,16 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 
 const EMPTY = { name: '', role: '', bio: '' };
 
 export default function NewMasterPage() {
   const router = useRouter();
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -38,7 +43,7 @@ export default function NewMasterPage() {
       setUploading(false);
       if (!up.ok) {
         const d = await up.json() as { error?: string };
-        setError(d.error ?? 'Chyba pri nahrávaní fotky');
+        setError(d.error ?? t.masters.photoUploadError);
         setSaving(false);
         return;
       }
@@ -61,7 +66,7 @@ export default function NewMasterPage() {
       router.push('/admin/masters');
     } else {
       const data = await res.json() as { error?: string };
-      setError(data.error ?? 'Chyba pri ukladaní');
+      setError(data.error ?? t.hero.saveError);
       setSaving(false);
     }
   }
@@ -69,14 +74,14 @@ export default function NewMasterPage() {
   return (
     <div className="admin-page">
       <div className="admin-page__header">
-        <h1>Nový majster</h1>
-        <Link href="/admin/masters" className="btn-outline btn-sm">← Späť</Link>
+        <h1>{t.masters.newTitle}</h1>
+        <Link href="/admin/masters" className="btn-outline btn-sm">{t.masters.backLink}</Link>
       </div>
 
       <form onSubmit={submit} className="admin-masters__form">
         <div className="admin-services__form-grid">
           <div className="booking__field">
-            <label>Meno *</label>
+            <label>{t.masters.nameLabel} *</label>
             <input
               value={form.name}
               onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
@@ -85,7 +90,7 @@ export default function NewMasterPage() {
             />
           </div>
           <div className="booking__field">
-            <label>Pozícia *</label>
+            <label>{t.masters.roleLabel} *</label>
             <input
               value={form.role}
               onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))}
@@ -94,12 +99,12 @@ export default function NewMasterPage() {
             />
           </div>
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
-            <label>Foto</label>
+            <label>{t.masters.photoLabel}</label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               {preview && (
                 <img
                   src={preview}
-                  alt="náhľad"
+                  alt="preview"
                   style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
                 />
               )}
@@ -113,12 +118,12 @@ export default function NewMasterPage() {
             </div>
           </div>
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
-            <label>Bio</label>
+            <label>{t.masters.bioLabel}</label>
             <textarea
               rows={3}
               value={form.bio}
               onChange={(e) => setForm((p) => ({ ...p, bio: e.target.value }))}
-              placeholder="Krátky popis majstra..."
+              placeholder={t.masters.bioPlaceholder}
             />
           </div>
         </div>
@@ -133,9 +138,9 @@ export default function NewMasterPage() {
             className="btn-primary btn-sm"
             disabled={saving || uploading || !form.name.trim() || !form.role.trim()}
           >
-            {uploading ? 'Nahrávam fotku...' : saving ? 'Ukladá sa...' : 'Vytvoriť majstra'}
+            {uploading ? t.common.uploading : saving ? t.common.saving : t.masters.saveBtn}
           </button>
-          <Link href="/admin/masters" className="btn-outline btn-sm">Zrušiť</Link>
+          <Link href="/admin/masters" className="btn-outline btn-sm">{t.common.cancel}</Link>
         </div>
       </form>
     </div>

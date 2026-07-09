@@ -155,7 +155,7 @@ export default function RezervaciaPage() {
           onChange={(e) => setMasterId(e.target.value)}
           className={styles.filterSelect}
         >
-          <option value="">Všetci majstri</option>
+          <option value="">{r.allMasters}</option>
           {masters.map((m) => (
             <option key={m.id} value={m.id}>{m.name}</option>
           ))}
@@ -166,7 +166,7 @@ export default function RezervaciaPage() {
           onChange={(e) => setServiceId(e.target.value)}
           className={styles.filterSelect}
         >
-          <option value="">Všetky služby</option>
+          <option value="">{r.allServices}</option>
           {services.map((s) => (
             <option key={s.id} value={s.id}>{s.nameKey}</option>
           ))}

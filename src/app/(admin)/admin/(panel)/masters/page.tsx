@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import AdminLoading from '@/components/admin/AdminLoading/AdminLoading';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 
 interface Master {
   id: string;
@@ -15,6 +17,9 @@ interface Master {
 }
 
 export default function MastersPage() {
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+
   const [masters, setMasters] = useState<Master[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +32,7 @@ export default function MastersPage() {
   useEffect(() => { void load(); }, [load]);
 
   async function remove(id: string, name: string) {
-    if (!window.confirm(`Vymazať majstra "${name}"?`)) return;
+    if (!window.confirm(t.masters.deleteConfirm.replace('{name}', name))) return;
     await fetch(`/api/admin/masters/${id}`, { method: 'DELETE' });
     await load();
   }
@@ -46,14 +51,14 @@ export default function MastersPage() {
   return (
     <div className="admin-page">
       <div className="admin-page__header">
-        <h1>Majstri</h1>
-        <Link href="/admin/masters/new" className="btn-primary btn-sm">+ Pridať majstra</Link>
+        <h1>{t.masters.title}</h1>
+        <Link href="/admin/masters/new" className="btn-primary btn-sm">{t.masters.add}</Link>
       </div>
 
       <div className="admin-services__list">
           {masters.length === 0 ? (
             <p style={{ color: 'var(--color-text-muted)', padding: '2rem' }}>
-              Žiadni majstri. Pridajte prvého.
+              {t.masters.noMasters}
             </p>
           ) : masters.map((m) => (
             <div
@@ -78,19 +83,18 @@ export default function MastersPage() {
                   type="button"
                   className={`btn-sm ${m.active ? 'btn-outline' : 'btn-primary'}`}
                   onClick={() => toggleActive(m)}
-                  title={m.active ? 'Skryť zo stránky' : 'Zobraziť na stránke'}
                 >
-                  {m.active ? 'Skryť' : 'Zobraziť'}
+                  {m.active ? t.common.hide : t.common.show}
                 </button>
                 <Link href={`/admin/masters/${m.id}/edit`} className="btn-sm btn-outline">
-                  Upraviť
+                  {t.common.edit}
                 </Link>
                 <button
                   type="button"
                   className="btn-sm btn-danger"
                   onClick={() => remove(m.id, m.name)}
                 >
-                  Zmazať
+                  {t.common.delete}
                 </button>
               </div>
             </div>

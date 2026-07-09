@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 
 interface Master {
   id: string;
@@ -16,6 +18,8 @@ interface Master {
 export default function EditMasterPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
 
   const [form, setForm] = useState({ name: '', role: '', bio: '' });
   const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
@@ -65,7 +69,7 @@ export default function EditMasterPage() {
       setUploading(false);
       if (!up.ok) {
         const d = await up.json() as { error?: string };
-        setError(d.error ?? 'Chyba pri nahrávaní fotky');
+        setError(d.error ?? t.masters.photoUploadError);
         setSaving(false);
         return;
       }
@@ -91,7 +95,7 @@ export default function EditMasterPage() {
       router.push('/admin/masters');
     } else {
       const data = await res.json() as { error?: string };
-      setError(data.error ?? 'Chyba pri ukladaní');
+      setError(data.error ?? t.hero.saveError);
       setSaving(false);
     }
   }
@@ -99,7 +103,7 @@ export default function EditMasterPage() {
   if (loading) {
     return (
       <div className="admin-page">
-        <p style={{ color: 'var(--color-text-muted)', padding: '2rem' }}>Načítavam...</p>
+        <p style={{ color: 'var(--color-text-muted)', padding: '2rem' }}>{t.common.loading}</p>
       </div>
     );
   }
@@ -109,14 +113,14 @@ export default function EditMasterPage() {
   return (
     <div className="admin-page">
       <div className="admin-page__header">
-        <h1>Upraviť majstra</h1>
-        <Link href="/admin/masters" className="btn-outline btn-sm">← Späť</Link>
+        <h1>{t.masters.editTitle}</h1>
+        <Link href="/admin/masters" className="btn-outline btn-sm">{t.masters.backLink}</Link>
       </div>
 
       <form onSubmit={submit} className="admin-masters__form">
         <div className="admin-services__form-grid">
           <div className="booking__field">
-            <label>Meno *</label>
+            <label>{t.masters.nameLabel} *</label>
             <input
               value={form.name}
               onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
@@ -124,7 +128,7 @@ export default function EditMasterPage() {
             />
           </div>
           <div className="booking__field">
-            <label>Pozícia *</label>
+            <label>{t.masters.roleLabel} *</label>
             <input
               value={form.role}
               onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))}
@@ -132,7 +136,7 @@ export default function EditMasterPage() {
             />
           </div>
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
-            <label>Foto</label>
+            <label>{t.masters.photoLabel}</label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               {displayPhoto && (
                 <img
@@ -151,7 +155,7 @@ export default function EditMasterPage() {
             </div>
           </div>
           <div className="booking__field" style={{ gridColumn: '1 / -1' }}>
-            <label>Bio</label>
+            <label>{t.masters.bioLabel}</label>
             <textarea
               rows={3}
               value={form.bio}
@@ -166,7 +170,7 @@ export default function EditMasterPage() {
             checked={active}
             onChange={(e) => setActive(e.target.checked)}
           />
-          <span style={{ color: 'var(--color-text-secondary)' }}>Aktívny (viditeľný na webe)</span>
+          <span style={{ color: 'var(--color-text-secondary)' }}>{t.masters.active}</span>
         </label>
 
         {error && (
@@ -179,9 +183,9 @@ export default function EditMasterPage() {
             className="btn-primary btn-sm"
             disabled={saving || uploading || !form.name.trim() || !form.role.trim()}
           >
-            {uploading ? 'Nahrávam fotku...' : saving ? 'Ukladá sa...' : 'Uložiť zmeny'}
+            {uploading ? t.common.uploading : saving ? t.common.saving : t.common.save}
           </button>
-          <Link href="/admin/masters" className="btn-outline btn-sm">Zrušiť</Link>
+          <Link href="/admin/masters" className="btn-outline btn-sm">{t.common.cancel}</Link>
         </div>
       </form>
     </div>

@@ -1,6 +1,8 @@
 'use client';
 
 import type { Vertical } from '@prisma/client';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 import styles from './dashboard.module.css';
 
 interface DashboardProps {
@@ -52,17 +54,6 @@ interface DashboardProps {
   }>;
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: 'Čakajúce',
-  CONFIRMED: 'Potvrdené',
-  COMPLETED: 'Dokončené',
-  CANCELLED: 'Zrušené',
-  NO_SHOW: 'Neprítomný',
-  PROCESSING: 'Spracováva sa',
-  SHIPPED: 'Odoslané',
-  DELIVERED: 'Doručené',
-};
-
 export default function DashboardClient({
   vertical,
   stats,
@@ -72,33 +63,48 @@ export default function DashboardClient({
   upcomingAppointments = [],
   topMasters = [],
 }: DashboardProps) {
+  const { locale } = useAdminLocale();
+  const td = getAdminT(locale);
   const isRestaurant = vertical === 'RESTAURANT';
   const isServices = vertical === 'SERVICES';
 
+  const STATUS_LABELS: Record<string, string> = {
+    PENDING:    td.reservations.pending,
+    CONFIRMED:  td.reservations.confirmed,
+    COMPLETED:  td.reservations.completed,
+    CANCELLED:  td.reservations.cancelled,
+    NO_SHOW:    td.reservations.noShow,
+    PROCESSING: td.dashboard.processing,
+    SHIPPED:    td.dashboard.shipped,
+    DELIVERED:  td.dashboard.delivered,
+  };
+
+  void topMasters;
+
   return (
     <div className={styles.page}>
-      <h1 className={styles.h1}>Prehľad</h1>
+      <h1 className={styles.h1}>{td.dashboard.title}</h1>
 
       <div className={styles.stats}>
         {isServices ? (
           <>
-            <StatCard label="Dnešné rezervácie" value={stats.todayAppointments} />
-            <StatCard label="Klienti" value={stats.clientCount} />
-            <StatCard label="Recenzie" value={stats.reviewCount} />
+            <StatCard label={td.dashboard.todayAppointments} value={stats.todayAppointments} />
+            <StatCard label={td.dashboard.totalClients} value={stats.clientCount} />
+            <StatCard label={td.nav.reviews} value={stats.reviewCount} />
           </>
         ) : isRestaurant ? (
           <>
-            <StatCard label="Jedál v menu" value={stats.products} />
-            <StatCard label="Rezervácie dnes" value={stats.todayReservations} />
-            <StatCard label="Čakajúce" value={stats.pendingReservations} />
-            <StatCard label="Za týždeň" value={stats.weekReservations} />
+            <StatCard label={td.dashboard.menuItems} value={stats.products} />
+            <StatCard label={td.dashboard.todayReservations} value={stats.todayReservations} />
+            <StatCard label={td.reservations.pending} value={stats.pendingReservations} />
+            <StatCard label={td.dashboard.thisWeek} value={stats.weekReservations} />
           </>
         ) : (
           <>
-            <StatCard label="Produkty" value={stats.products} />
-            <StatCard label="Objednávky" value={stats.orders} />
-            <StatCard label="Recenzie" value={stats.reviews} />
-            <StatCard label="Tržby" value={0} />
+            <StatCard label={td.nav.products} value={stats.products} />
+            <StatCard label={td.nav.orders} value={stats.orders} />
+            <StatCard label={td.nav.reviews} value={stats.reviews} />
+            <StatCard label={td.dashboard.revenue} value={0} />
           </>
         )}
       </div>
@@ -106,11 +112,7 @@ export default function DashboardClient({
       <div className={isServices ? styles.rowFull : styles.row}>
         <section className={styles.panel}>
           <h2 className={styles.panelTitle}>
-            {isServices
-              ? 'Najbližšie rezervácie'
-              : isRestaurant
-                ? 'Najbližšie rezervácie'
-                : 'Posledné objednávky'}
+            {isServices || isRestaurant ? td.dashboard.recentBookings : td.dashboard.recentOrders}
           </h2>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
@@ -118,27 +120,27 @@ export default function DashboardClient({
                 <tr>
                   {isServices ? (
                     <>
-                      <th>Dátum</th>
-                      <th>Čas</th>
-                      <th>Klient</th>
-                      <th>Služba</th>
-                      <th>Stav</th>
+                      <th>{td.dashboard.date}</th>
+                      <th>{td.dashboard.time}</th>
+                      <th>{td.dashboard.client}</th>
+                      <th>{td.dashboard.service}</th>
+                      <th>{td.dashboard.status}</th>
                     </>
                   ) : isRestaurant ? (
                     <>
-                      <th>Dátum</th>
-                      <th>Čas</th>
-                      <th>Hosť</th>
-                      <th>Osôb</th>
-                      <th>Stav</th>
+                      <th>{td.dashboard.date}</th>
+                      <th>{td.dashboard.time}</th>
+                      <th>{td.dashboard.guest}</th>
+                      <th>{td.dashboard.guestCount}</th>
+                      <th>{td.dashboard.status}</th>
                     </>
                   ) : (
                     <>
-                      <th>č.</th>
-                      <th>Zákazník</th>
-                      <th>Suma</th>
-                      <th>Stav</th>
-                      <th>Dátum</th>
+                      <th>{td.dashboard.orderNum}</th>
+                      <th>{td.dashboard.customer}</th>
+                      <th>{td.dashboard.amount}</th>
+                      <th>{td.dashboard.status}</th>
+                      <th>{td.dashboard.date}</th>
                     </>
                   )}
                 </tr>
@@ -193,7 +195,7 @@ export default function DashboardClient({
                 ).length === 0 && (
                   <tr>
                     <td colSpan={5} className={styles.emptyCell}>
-                      {isServices ? 'Žiadne rezervácie' : isRestaurant ? 'Žiadne rezervácie' : 'Žiadne objednávky'}
+                      {isServices || isRestaurant ? td.reservations.noReservations : td.dashboard.noOrders}
                     </td>
                   </tr>
                 )}
@@ -205,7 +207,7 @@ export default function DashboardClient({
         {!isServices && (
           <section className={styles.panel}>
             <h2 className={styles.panelTitle}>
-              {isRestaurant ? 'Najlepšie jedlá' : 'Najlepšie produkty'}
+              {isRestaurant ? td.dashboard.topDishes : td.dashboard.topProducts}
             </h2>
             <ul className={styles.top}>
               {topProducts.map((p, i) => (
@@ -217,11 +219,11 @@ export default function DashboardClient({
                   </span>
                   <span className={styles.topName}>{p.name}</span>
                   <span className={styles.topSales}>
-                    {p.sales} {isRestaurant ? 'recenzií' : 'predaní'}
+                    {p.sales} {isRestaurant ? td.dashboard.reviewsUnit : td.dashboard.salesUnit}
                   </span>
                 </li>
               ))}
-              {topProducts.length === 0 && <li className={styles.emptyCell}>Žiadne dáta</li>}
+              {topProducts.length === 0 && <li className={styles.emptyCell}>{td.common.noData}</li>}
             </ul>
           </section>
         )}

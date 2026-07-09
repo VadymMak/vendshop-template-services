@@ -1,6 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 import styles from './reviews.module.css';
 
 type TestimonialStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
@@ -37,12 +39,6 @@ interface Props {
 }
 
 type Filter = 'all' | TestimonialStatus;
-
-const STATUS_LABELS: Record<TestimonialStatus, string> = {
-  PENDING: 'Pending',
-  APPROVED: 'Published',
-  REJECTED: 'Rejected',
-};
 
 const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 
@@ -83,21 +79,30 @@ function formatDate(iso: string): string {
 }
 
 export default function AdminReviewsClient({ initialTestimonials, counts, aggregate }: Props) {
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+
   const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
   const [filter, setFilter] = useState<Filter>('all');
   const [replyOpen, setReplyOpen] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [updating, setUpdating] = useState<string | null>(null);
 
+  const STATUS_LABELS: Record<TestimonialStatus, string> = {
+    PENDING:  t.reviews.pending,
+    APPROVED: t.reviews.approved,
+    REJECTED: t.reviews.rejected,
+  };
+
   const filters: { key: Filter; label: string; count: number }[] = [
-    { key: 'all', label: 'All', count: counts.all },
-    { key: 'PENDING', label: 'Pending', count: counts.pending },
-    { key: 'APPROVED', label: 'Published', count: counts.approved },
-    { key: 'REJECTED', label: 'Rejected', count: counts.rejected },
+    { key: 'all',      label: t.reviews.all,      count: counts.all },
+    { key: 'PENDING',  label: t.reviews.pending,  count: counts.pending },
+    { key: 'APPROVED', label: t.reviews.approved, count: counts.approved },
+    { key: 'REJECTED', label: t.reviews.rejected, count: counts.rejected },
   ];
 
   const filtered = useMemo(
-    () => (filter === 'all' ? testimonials : testimonials.filter((t) => t.status === filter)),
+    () => (filter === 'all' ? testimonials : testimonials.filter((r) => r.status === filter)),
     [testimonials, filter],
   );
 
@@ -114,7 +119,7 @@ export default function AdminReviewsClient({ initialTestimonials, counts, aggreg
       if (res.ok) {
         const updated = await res.json();
         setTestimonials((prev) =>
-          prev.map((t) => (t.id === id ? { ...t, ...updated } : t)),
+          prev.map((r) => (r.id === id ? { ...r, ...updated } : r)),
         );
       }
     } catch (err) {
@@ -125,20 +130,20 @@ export default function AdminReviewsClient({ initialTestimonials, counts, aggreg
   };
 
   const deleteTestimonial = async (id: string) => {
-    if (!window.confirm('Delete this review permanently?')) return;
+    if (!window.confirm(t.reviews.deleteConfirm)) return;
     try {
       const res = await fetch(`/api/admin/testimonials/${id}`, { method: 'DELETE' });
       if (res.ok) {
-        setTestimonials((prev) => prev.filter((t) => t.id !== id));
+        setTestimonials((prev) => prev.filter((r) => r.id !== id));
       }
     } catch (err) {
       console.error('[admin reviews delete]', err);
     }
   };
 
-  const openReply = (t: Testimonial) => {
-    setReplyOpen(t.id);
-    setReplyText(t.adminReply ?? '');
+  const openReply = (r: Testimonial) => {
+    setReplyOpen(r.id);
+    setReplyText(r.adminReply ?? '');
   };
 
   const sendReply = (id: string) => {
@@ -151,7 +156,7 @@ export default function AdminReviewsClient({ initialTestimonials, counts, aggreg
     <div className={styles.page}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.h1}>Reviews</h1>
+          <h1 className={styles.h1}>{t.reviews.title}</h1>
           <div className={styles.filters}>
             {filters.map((f) => (
               <button
@@ -193,85 +198,85 @@ export default function AdminReviewsClient({ initialTestimonials, counts, aggreg
       </div>
 
       <div className={styles.list}>
-        {filtered.map((t) => (
-          <article key={t.id} className={styles.card}>
+        {filtered.map((r) => (
+          <article key={r.id} className={styles.card}>
             <div className={styles.cardTop}>
               <div className={styles.customerInfo}>
                 <UserIcon />
                 <div className={styles.customerMeta}>
-                  <span className={styles.customerName}>{t.customerName}</span>
-                  <span className={styles.customerEmail}>{t.customerEmail}</span>
+                  <span className={styles.customerName}>{r.customerName}</span>
+                  <span className={styles.customerEmail}>{r.customerEmail}</span>
                 </div>
               </div>
               <div className={styles.topRight}>
-                {t.locale && <span className={styles.locale}>{t.locale.toUpperCase()}</span>}
-                <span className={styles.date}>{formatDate(t.createdAt)}</span>
+                {r.locale && <span className={styles.locale}>{r.locale.toUpperCase()}</span>}
+                <span className={styles.date}>{formatDate(r.createdAt)}</span>
               </div>
             </div>
 
             <div className={styles.cardMid}>
-              <Stars value={t.rating} />
-              <p className={styles.text}>&ldquo;{t.text}&rdquo;</p>
-              {t.adminReply && (
+              <Stars value={r.rating} />
+              <p className={styles.text}>&ldquo;{r.text}&rdquo;</p>
+              {r.adminReply && (
                 <div className={styles.existingReply}>
-                  <span className={styles.replyLabel}>Your reply:</span>
-                  {t.adminReply}
+                  <span className={styles.replyLabel}>{t.reviews.yourReply}</span>
+                  {r.adminReply}
                 </div>
               )}
             </div>
 
             <div className={styles.cardBottom}>
-              <span className={`${styles.statusBadge} ${styles[t.status.toLowerCase()]}`}>
-                {STATUS_LABELS[t.status]}
+              <span className={`${styles.statusBadge} ${styles[r.status.toLowerCase()]}`}>
+                {STATUS_LABELS[r.status]}
               </span>
               <div className={styles.actions}>
                 <button
                   type="button"
                   className={styles.publish}
-                  onClick={() => updateTestimonial(t.id, { status: 'APPROVED' })}
-                  disabled={t.status === 'APPROVED' || updating === t.id}
+                  onClick={() => updateTestimonial(r.id, { status: 'APPROVED' })}
+                  disabled={r.status === 'APPROVED' || updating === r.id}
                 >
-                  <CheckIcon /> Publish
+                  <CheckIcon /> {t.reviews.approve}
                 </button>
                 <button
                   type="button"
                   className={styles.reject}
-                  onClick={() => updateTestimonial(t.id, { status: 'REJECTED' })}
-                  disabled={t.status === 'REJECTED' || updating === t.id}
+                  onClick={() => updateTestimonial(r.id, { status: 'REJECTED' })}
+                  disabled={r.status === 'REJECTED' || updating === r.id}
                 >
-                  <XIcon /> Reject
+                  <XIcon /> {t.reviews.reject}
                 </button>
-                <button type="button" className={styles.reply} onClick={() => openReply(t)}>
-                  <ReplyIcon /> Reply
+                <button type="button" className={styles.reply} onClick={() => openReply(r)}>
+                  <ReplyIcon /> {t.reviews.reply}
                 </button>
-                <button type="button" className={styles.delete} onClick={() => deleteTestimonial(t.id)}>
-                  <TrashIcon /> Delete
+                <button type="button" className={styles.delete} onClick={() => deleteTestimonial(r.id)}>
+                  <TrashIcon /> {t.common.delete}
                 </button>
               </div>
             </div>
 
-            {replyOpen === t.id && (
+            {replyOpen === r.id && (
               <div className={styles.replyBox}>
                 <textarea
                   className={styles.textarea}
                   rows={3}
-                  placeholder="Your reply to the customer..."
+                  placeholder={t.reviews.yourReply}
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
                 />
                 <div className={styles.replyActions}>
                   <button type="button" className={styles.replyCancel} onClick={() => setReplyOpen(null)}>
-                    Cancel
+                    {t.common.cancel}
                   </button>
-                  <button type="button" className={styles.replySend} onClick={() => sendReply(t.id)}>
-                    Send Reply
+                  <button type="button" className={styles.replySend} onClick={() => sendReply(r.id)}>
+                    {t.reviews.saveReply}
                   </button>
                 </div>
               </div>
             )}
           </article>
         ))}
-        {filtered.length === 0 && <div className={styles.empty}>No reviews found</div>}
+        {filtered.length === 0 && <div className={styles.empty}>{t.common.noData}</div>}
       </div>
     </div>
   );
