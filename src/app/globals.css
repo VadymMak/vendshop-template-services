@@ -244,7 +244,7 @@ body::after {
   font-family: var(--font-body);
   cursor: pointer;
 }
-.header__btn-whatsapp:hover { background: var(--color-whatsapp); color: #fff; }
+.header__btn-whatsapp:hover { background: var(--color-whatsapp); color: var(--color-contrast); }
 
 .header__mobile-btn {
   display: none;
@@ -310,7 +310,7 @@ body::after {
   text-decoration: none;
   transition: background 0.3s ease, color 0.3s ease;
 }
-.header__mobile-btn-wa:hover { background: var(--color-whatsapp); color: #fff; }
+.header__mobile-btn-wa:hover { background: var(--color-whatsapp); color: var(--color-contrast); }
 
 .header__mobile-lang {
   border-top: 1px solid var(--color-border);
@@ -498,7 +498,7 @@ body::after {
   align-items: center;
   gap: 0.5rem;
   background: var(--color-whatsapp);
-  color: #fff;
+  color: var(--color-contrast);
   border: 1px solid var(--color-whatsapp);
   padding: 0.9rem 2rem;
   font-size: 0.8rem;
@@ -643,6 +643,7 @@ body::after {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
+  align-items: stretch;
 }
 
 .service-card {
@@ -652,6 +653,7 @@ body::after {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 100%;
   transition: border-color 0.3s ease, transform 0.3s ease;
 }
 .service-card:hover { border-color: var(--color-primary); transform: translateY(-2px); }
@@ -689,6 +691,7 @@ body::after {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
+  align-items: stretch;
 }
 
 .why-us__card {
@@ -696,6 +699,9 @@ body::after {
   border: 1px solid var(--color-border);
   padding: 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   transition: border-color 0.3s ease, transform 0.3s ease;
 }
 .why-us__card:hover { border-color: var(--color-primary); transform: translateY(-4px); }
@@ -721,6 +727,7 @@ body::after {
   color: var(--color-text-muted);
   font-size: 0.9rem;
   line-height: 1.6;
+  flex: 1;
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
@@ -845,12 +852,16 @@ body::after {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
+  align-items: stretch;
 }
 
 .testimonial-card {
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .testimonial-stars {
@@ -866,6 +877,7 @@ body::after {
   font-size: 0.95rem;
   line-height: 1.7;
   margin-bottom: 1.5rem;
+  flex: 1;
 }
 
 .testimonial-author {
@@ -1046,7 +1058,7 @@ body::after {
   transition: background 0.3s ease, color 0.3s ease;
   font-family: var(--font-body);
 }
-.booking__btn-wa:hover { background: var(--color-whatsapp); color: #fff; }
+.booking__btn-wa:hover { background: var(--color-whatsapp); color: var(--color-contrast); }
 .booking__btn-full { flex: unset; width: 100%; cursor: pointer; }
 
 .booking__note {
@@ -1170,8 +1182,9 @@ body::after {
 
 .date-picker__time--booked {
   background: transparent !important;
-  border-color: rgba(255, 255, 255, 0.06) !important;
-  color: rgba(255, 255, 255, 0.2) !important;
+  border-color: color-mix(in srgb, var(--color-border) 50%, transparent) !important;
+  color: var(--color-text-muted) !important;
+  opacity: 0.35;
   cursor: not-allowed !important;
   text-decoration: line-through;
   pointer-events: none;
@@ -1314,7 +1327,7 @@ body::after {
   align-items: center;
   gap: 0.5rem;
   background: var(--color-whatsapp);
-  color: #fff;
+  color: var(--color-contrast);
   padding: 0.8rem 1.5rem;
   font-size: 0.85rem;
   font-weight: 700;
@@ -1400,7 +1413,7 @@ body::after {
 .footer__contact a { color: var(--color-text-secondary); transition: color 0.2s; text-decoration: none; }
 .footer__contact a:hover { color: var(--color-primary); }
 .footer__bottom {
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--color-border);
   max-width: 1280px;
   margin: 0 auto;
   padding: 1.25rem 2rem;
@@ -1439,7 +1452,7 @@ body::after {
   box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-decoration: none;
-  color: #fff;
+  color: var(--color-contrast);
 }
 .whatsapp-float:hover {
   transform: scale(1.1);
@@ -1491,7 +1504,7 @@ body::after {
   margin: 0;
 }
 .testimonial-card__reply {
-  background: rgba(201, 96, 48, 0.06);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
   border-left: 2px solid var(--color-primary);
   border-radius: 0 8px 8px 0;
   padding: 0.875rem 1rem;

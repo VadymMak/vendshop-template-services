@@ -118,7 +118,7 @@
   align-items: flex-start;
   gap: 10px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary);
   text-decoration: none;
   line-height: 1.4;
 }
@@ -144,7 +144,7 @@
 
 /* ── Bottom bar ───────────────────────────────────── */
 .bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--color-border);
 }
 
 .bottomInner {
@@ -233,7 +233,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px 24px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--color-border);
 }
 .hoursTitle {
   font-size: 14px;
@@ -251,7 +251,7 @@
 .footerDark {
   background: var(--color-bg);
   color: var(--color-text-secondary);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--color-border);
 }
 
 .footerDark .colTitle {
@@ -288,7 +288,7 @@
 
 .footerDark .bottom {
   background: var(--color-bg);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--color-border);
 }
 
 .footerDark .rights {
