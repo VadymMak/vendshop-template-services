@@ -87,6 +87,10 @@ export default function AdminSettingsPage() {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [logoUploading, setLogoUploading] = useState(false);
 
+  // About image
+  const [aboutImageUrl, setAboutImageUrl] = useState<string | null>(null);
+  const [aboutImageUploading, setAboutImageUploading] = useState(false);
+
   useEffect(() => {
     fetch('/api/admin/store-info')
       .then((r) => r.json() as Promise<{ store?: Record<string, unknown> }>)
@@ -107,6 +111,7 @@ export default function AdminSettingsPage() {
           }));
           setHours(parseHours(s.openingHours));
           setLogoUrl((s.logoUrl as string | null) ?? null);
+          setAboutImageUrl((s.aboutImage as string | null) ?? null);
         }
         setLoading(false);
       })
@@ -176,6 +181,30 @@ export default function AdminSettingsPage() {
       showToast();
     }
     setLogoUploading(false);
+  };
+
+  const handleAboutImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAboutImageUploading(true);
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch('/api/admin/settings/about-image', { method: 'POST', body: fd });
+    const data = (await res.json()) as { url?: string; error?: string };
+    if (data.url) setAboutImageUrl(data.url);
+    setAboutImageUploading(false);
+    e.target.value = '';
+  };
+
+  const handleAboutImageRemove = async () => {
+    if (!window.confirm(tr.settings.removeLogoConfirm)) return;
+    setAboutImageUploading(true);
+    const res = await fetch('/api/admin/settings/about-image', { method: 'DELETE' });
+    if (res.ok) {
+      setAboutImageUrl(null);
+      showToast();
+    }
+    setAboutImageUploading(false);
   };
 
   const sStore = <K extends keyof typeof store>(k: K, v: (typeof store)[K]) =>
@@ -261,6 +290,61 @@ export default function AdminSettingsPage() {
                     <span>{logoUploading ? tr.settings.uploading : tr.settings.uploadLogo}</span>
                     <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-faint)' }}>{tr.settings.logoSizeHint}</span>
                     <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: 'none' }} disabled={logoUploading} />
+                  </label>
+                )}
+              </div>
+
+              {/* ── About image upload ─────────────────────────────── */}
+              <div style={{
+                border: '1px solid var(--admin-border)',
+                borderRadius: '12px',
+                padding: '1.25rem 1.5rem',
+                background: 'var(--admin-bg-card)',
+                marginBottom: '1.5rem',
+              }}>
+                <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.78rem', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+                  {tr.settings.aboutPhotoLabel}
+                </p>
+                {aboutImageUrl ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={aboutImageUrl}
+                      alt="About"
+                      style={{ height: '80px', width: '120px', objectFit: 'cover', borderRadius: '8px' }}
+                    />
+                    <label style={{ cursor: aboutImageUploading ? 'wait' : 'pointer', color: 'var(--admin-kate-bronze)', fontSize: '0.875rem', textDecoration: 'underline' }}>
+                      {aboutImageUploading ? tr.settings.uploading : tr.settings.aboutPhotoChange}
+                      <input type="file" accept="image/*" onChange={handleAboutImageUpload} style={{ display: 'none' }} disabled={aboutImageUploading} />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleAboutImageRemove}
+                      disabled={aboutImageUploading}
+                      style={{
+                        background: 'none',
+                        border: '1px solid rgba(239,68,68,0.4)',
+                        borderRadius: '6px',
+                        color: 'var(--admin-error-text)',
+                        fontSize: '0.8rem',
+                        padding: '0.25rem 0.625rem',
+                        cursor: aboutImageUploading ? 'wait' : 'pointer',
+                        opacity: aboutImageUploading ? 0.5 : 1,
+                      }}
+                    >
+                      {tr.settings.removeLogo}
+                    </button>
+                  </div>
+                ) : (
+                  <label style={{
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem',
+                    padding: '1.5rem', cursor: aboutImageUploading ? 'wait' : 'pointer',
+                    border: '1px dashed var(--admin-border-light)', borderRadius: '8px', color: 'var(--admin-text-muted)',
+                  }}>
+                    <span style={{ fontSize: '1.5rem', lineHeight: 1 }}>↑</span>
+                    <span>{aboutImageUploading ? tr.settings.uploading : tr.settings.aboutPhotoUpload}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-faint)' }}>{tr.settings.aboutPhotoSizeHint}</span>
+                    <input type="file" accept="image/*" onChange={handleAboutImageUpload} style={{ display: 'none' }} disabled={aboutImageUploading} />
                   </label>
                 )}
               </div>

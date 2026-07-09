@@ -11,13 +11,13 @@
 .title {
   font-size: 1.375rem;
   font-weight: 700;
-  color: var(--admin-border-light);
+  color: var(--admin-text);
   margin: 0;
 }
 
 .note {
   font-size: 0.8125rem;
-  color: var(--admin-text-faint);
+  color: var(--admin-text-muted);
   margin: 0;
   line-height: 1.5;
   background: rgba(201, 96, 48, 0.08);
@@ -27,8 +27,8 @@
 }
 
 .card {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--admin-bg-card);
+  border: 1px solid var(--admin-border);
   border-radius: 10px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -39,7 +39,7 @@
 .sectionTitle {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #cbd5e1;
+  color: var(--admin-text-muted);
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -56,7 +56,7 @@
   display: block;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: var(--admin-border-light);
+  color: var(--admin-text);
 }
 
 .toggleSub {
@@ -86,7 +86,7 @@
   position: absolute;
   inset: 0;
   border-radius: 12px;
-  background: #334155;
+  background: var(--admin-bg-hover);
   transition: background 0.2s ease;
 }
 
@@ -96,13 +96,13 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #94a3b8;
+  background: var(--admin-text-muted);
   top: 3px;
   left: 3px;
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.toggle input:checked + .track { background: #C96030; }
+.toggle input:checked + .track { background: var(--admin-primary); }
 .toggle input:checked + .track::before { transform: translateX(20px); background: var(--admin-bg); }
 
 .grid {
@@ -124,16 +124,16 @@
 .label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--admin-text-faint);
+  color: var(--admin-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .input {
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
   border-radius: 6px;
-  color: var(--admin-border-light);
+  color: var(--admin-text);
   font-size: 0.875rem;
   padding: 0.5rem 0.75rem;
   font-family: inherit;
@@ -144,10 +144,10 @@
 
 .input:focus {
   outline: none;
-  border-color: #C96030;
+  border-color: var(--admin-primary);
 }
 
-.input::placeholder { color: var(--admin-text-muted); }
+.input::placeholder { color: var(--admin-text-faint); }
 
 .actions {
   display: flex;
@@ -156,7 +156,7 @@
 }
 
 .saveBtn {
-  background: #C96030;
+  background: var(--admin-primary);
   color: #fff;
   border: none;
   border-radius: 7px;
@@ -168,11 +168,11 @@
   transition: background 0.15s ease;
 }
 
-.saveBtn:hover:not(:disabled) { background: #A84E25; }
+.saveBtn:hover:not(:disabled) { background: var(--admin-accent-dark); }
 .saveBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .savedMsg {
   font-size: 0.875rem;
-  color: #22c55e;
+  color: var(--admin-success);
   font-weight: 600;
 }
