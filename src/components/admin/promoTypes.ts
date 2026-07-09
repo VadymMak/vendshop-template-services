@@ -1,27 +1,27 @@
+export type DbPromoType = 'DISCOUNT' | 'PRODUCT_OF_DAY' | 'BANNER' | 'FREE_DELIVERY';
 export type PromoStatus = 'active' | 'scheduled' | 'finished';
-export type PromoType = 'brand' | 'category' | 'promocode' | 'freeDelivery';
 
-export const PROMO_TYPES: PromoType[] = ['brand', 'category', 'promocode', 'freeDelivery'];
-
-export const PROMO_TYPE_LABEL: Record<PromoType, string> = {
-  brand: 'Знижка на бренд',
-  category: 'Знижка на категорію',
-  promocode: 'Промокод',
-  freeDelivery: 'Безкоштовна доставка',
-};
-
-export const PROMO_STATUS_LABEL: Record<PromoStatus, string> = {
-  active: 'Активна',
-  scheduled: 'Запланована',
-  finished: 'Завершена',
-};
+export const PROMO_DB_TYPES: DbPromoType[] = ['DISCOUNT', 'PRODUCT_OF_DAY', 'BANNER', 'FREE_DELIVERY'];
 
 export interface PromoFormData {
   title: string;
-  type: PromoType;
-  discount: string;
-  target: string;
+  type: DbPromoType;
+  discountPct: string;
+  promoCode: string;
+  description: string;
   startDate: string;
   endDate: string;
-  announcement: string;
+  showBanner: boolean;
+}
+
+export interface PromoItem {
+  id: string;
+  title: string;
+  type: DbPromoType;
+  discountPercent: number | null;
+  description: string | null;
+  startsAt: string;
+  endsAt: string | null;
+  active: boolean;
+  status: PromoStatus;
 }

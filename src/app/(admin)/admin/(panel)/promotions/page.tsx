@@ -1,241 +1,293 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PromoModal from '@/components/admin/PromoModal/PromoModal';
 import ConfirmDialog from '@/components/admin/ConfirmDialog/ConfirmDialog';
+import { useAdminLocale } from '@/hooks/useAdminLocale';
+import { getAdminT } from '@/lib/admin-i18n';
 import {
+  type DbPromoType,
   type PromoFormData,
-  type PromoType,
-  type PromoStatus,
-  PROMO_TYPE_LABEL,
-  PROMO_STATUS_LABEL,
+  type PromoItem,
+  PROMO_DB_TYPES,
 } from '@/components/admin/promoTypes';
 import styles from './promotions.module.css';
 
-interface Promo {
-  id: string;
-  title: string;
-  type: PromoType;
-  discount: string; // percentage value, '' for free delivery
-  target: string;
-  startDate: string; // ISO yyyy-mm-dd
-  endDate: string;
-  applied: number;
-  status: PromoStatus;
-  announcement: string;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _PROMO_DB_TYPES = PROMO_DB_TYPES;
+
+type TypeI18nKey = 'typeDiscount' | 'typeServiceOfDay' | 'typeBanner' | 'typeFreeDelivery';
+
+const TYPE_I18N: Record<DbPromoType, TypeI18nKey> = {
+  DISCOUNT:       'typeDiscount',
+  PRODUCT_OF_DAY: 'typeServiceOfDay',
+  BANNER:         'typeBanner',
+  FREE_DELIVERY:  'typeFreeDelivery',
+};
+
+function computeStatus(promo: {
+  active: boolean;
+  startsAt: string;
+  endsAt: string | null;
+}): 'active' | 'scheduled' | 'finished' {
+  const now = Date.now();
+  const start = new Date(promo.startsAt).getTime();
+  const end = promo.endsAt ? new Date(promo.endsAt).getTime() : Infinity;
+  if (!promo.active || now > end) return 'finished';
+  if (now < start) return 'scheduled';
+  return 'active';
 }
 
-const BRANDS = ['MAKITA', 'BOSCH', 'DEWALT', 'MILWAUKEE', 'METABO'];
-const CATEGORIES = [
-  { slug: 'drills', label: 'Дрелі' },
-  { slug: 'grinders', label: 'Болгарки' },
-  { slug: 'perforators', label: 'Перфоратори' },
-  { slug: 'jigsaws', label: 'Лобзики' },
-  { slug: 'sanders', label: 'Шліфмашини' },
-];
+function fmtDate(iso: string) {
+  return new Date(iso).toLocaleDateString(undefined, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+}
 
-const INITIAL_PROMOS: Promo[] = [
-  { id: 'p1', title: 'Літній розпродаж Makita', type: 'brand', discount: '15', target: 'MAKITA', startDate: '2026-06-01', endDate: '2026-06-30', applied: 234, status: 'active', announcement: 'Знижка -15% на весь асортимент Makita до кінця червня!' },
-  { id: 'p2', title: 'Знижки на болгарки', type: 'category', discount: '20', target: 'Болгарки', startDate: '2026-06-15', endDate: '2026-07-15', applied: 0, status: 'scheduled', announcement: '' },
-  { id: 'p3', title: 'Промокод SUMMER10', type: 'promocode', discount: '10', target: 'SUMMER10', startDate: '2026-05-01', endDate: '2026-05-31', applied: 512, status: 'finished', announcement: '' },
-  { id: 'p4', title: 'Безкоштовна доставка', type: 'freeDelivery', discount: '', target: '', startDate: '2026-06-01', endDate: '2026-08-31', applied: 1203, status: 'active', announcement: 'Безкоштовна доставка від 2000 грн!' },
-];
-
-const fmtDate = (iso: string) => {
-  const [y, m, d] = iso.split('-');
-  return y && m && d ? `${d}.${m}.${y}` : iso;
+const EMPTY_FORM: PromoFormData = {
+  title: '',
+  type: 'DISCOUNT',
+  discountPct: '10',
+  promoCode: '',
+  description: '',
+  startDate: '',
+  endDate: '',
+  showBanner: false,
 };
 
-const pluralRaz = (n: number) => {
-  const m10 = n % 10;
-  const m100 = n % 100;
-  if (m10 === 1 && m100 !== 11) return 'раз';
-  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'рази';
-  return 'разів';
+type ModalState = { mode: 'add' } | { mode: 'edit'; id: string } | null;
+
+const stroke = {
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 1.75,
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
 };
-
-const discountLabel = (p: Promo) => (p.type === 'freeDelivery' ? 'Безкоштовно' : `-${p.discount}%`);
-
-const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 
 function PlusIcon() {
   return <svg width="18" height="18" viewBox="0 0 24 24" {...stroke} aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>;
 }
-function EditIcon() {
-  return <svg width="15" height="15" viewBox="0 0 24 24" {...stroke} aria-hidden="true"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" /></svg>;
-}
-function PauseIcon() {
-  return <svg width="15" height="15" viewBox="0 0 24 24" {...stroke} aria-hidden="true"><path d="M9 5v14M15 5v14" /></svg>;
-}
-function PlayIcon() {
-  return <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5l12 7-12 7V5Z" /></svg>;
-}
-function TrashIcon() {
-  return <svg width="15" height="15" viewBox="0 0 24 24" {...stroke} aria-hidden="true"><path d="M3 6h18M8 6V4.5A1.5 1.5 0 0 1 9.5 3h5A1.5 1.5 0 0 1 16 4.5V6m2.5 0-.7 13a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5.5 6" /><path d="M10 11v5M14 11v5" /></svg>;
-}
-
-type ModalState = { mode: 'add' } | { mode: 'edit'; id: string } | null;
 
 export default function AdminPromotionsPage() {
-  const [promos, setPromos] = useState<Promo[]>(INITIAL_PROMOS);
+  const { locale } = useAdminLocale();
+  const t = getAdminT(locale);
+  const pt = t.promotions;
+
+  const [promos, setPromos] = useState<PromoItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<ModalState>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [bannerText, setBannerText] = useState('');
+  const [showBanner, setShowBanner] = useState(false);
 
-  const [announcement, setAnnouncement] = useState('Безкоштовна доставка від 1000 грн');
-  const [announcementDraft, setAnnouncementDraft] = useState(announcement);
-  const [announcementVisible, setAnnouncementVisible] = useState(true);
+  const loadPromos = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/promotions');
+      if (res.ok) {
+        const data = await res.json() as Array<{
+          id: string;
+          title: string;
+          type: string;
+          discountPercent: number | null;
+          description: string | null;
+          startsAt: string;
+          endsAt: string | null;
+          active: boolean;
+        }>;
+        setPromos(
+          data.map((p) => ({
+            id: p.id,
+            title: p.title,
+            type: p.type as DbPromoType,
+            discountPercent: p.discountPercent,
+            description: p.description,
+            startsAt: p.startsAt,
+            endsAt: p.endsAt,
+            active: p.active,
+            status: computeStatus({ active: p.active, startsAt: p.startsAt, endsAt: p.endsAt }),
+          })),
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const togglePause = (id: string) =>
-    setPromos((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status: p.status === 'active' ? 'finished' : 'active' } : p)),
-    );
+  useEffect(() => { void loadPromos(); }, [loadPromos]);
 
-  const doDelete = () => {
-    if (!deletingId) return;
-    const id = deletingId;
-    setPromos((prev) => prev.filter((p) => p.id !== id));
-    setDeletingId(null);
-  };
-
-  const handleSave = (data: PromoFormData) => {
-    console.log('[admin promo save]', data);
+  const handleSave = async (data: PromoFormData) => {
+    const payload = {
+      title: data.title,
+      type: data.type,
+      discountPercent: data.discountPct ? Number(data.discountPct) : null,
+      description: data.description || null,
+      startsAt: data.startDate || new Date().toISOString(),
+      endsAt: data.endDate || null,
+    };
     if (modal?.mode === 'edit') {
-      const id = modal.id;
-      setPromos((prev) =>
-        prev.map((p) =>
-          p.id === id
-            ? { ...p, title: data.title, type: data.type, discount: data.discount, target: data.target, startDate: data.startDate, endDate: data.endDate, announcement: data.announcement }
-            : p,
-        ),
-      );
+      await fetch(`/api/admin/promotions/${modal.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
     } else {
-      setPromos((prev) => [
-        {
-          id: `new-${Date.now()}`,
-          title: data.title,
-          type: data.type,
-          discount: data.discount,
-          target: data.target,
-          startDate: data.startDate,
-          endDate: data.endDate,
-          applied: 0,
-          status: 'scheduled',
-          announcement: data.announcement,
-        },
-        ...prev,
-      ]);
+      await fetch('/api/admin/promotions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
     }
     setModal(null);
+    void loadPromos();
   };
 
-  const saveAnnouncement = () => {
-    console.log('[admin announcement save]', { text: announcementDraft, visible: announcementVisible });
-    setAnnouncement(announcementDraft);
+  const toggleActive = async (id: string, current: boolean) => {
+    await fetch(`/api/admin/promotions/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ active: !current }),
+    });
+    void loadPromos();
   };
 
-  const editing = modal?.mode === 'edit' ? promos.find((p) => p.id === modal.id) : undefined;
-  const modalInitial: PromoFormData = editing
-    ? { title: editing.title, type: editing.type, discount: editing.discount, target: editing.target, startDate: editing.startDate, endDate: editing.endDate, announcement: editing.announcement }
-    : { title: '', type: 'brand', discount: '', target: '', startDate: '', endDate: '', announcement: '' };
+  const handleDelete = async (id: string) => {
+    await fetch(`/api/admin/promotions/${id}`, { method: 'DELETE' });
+    setConfirmId(null);
+    void loadPromos();
+  };
+
+  const getInitialForm = (id?: string): PromoFormData => {
+    if (!id) return EMPTY_FORM;
+    const p = promos.find((x) => x.id === id);
+    if (!p) return EMPTY_FORM;
+    return {
+      title: p.title,
+      type: p.type,
+      discountPct: p.discountPercent?.toString() ?? '',
+      promoCode: '',
+      description: p.description ?? '',
+      startDate: p.startsAt.split('T')[0] ?? '',
+      endDate: p.endsAt ? (p.endsAt.split('T')[0] ?? '') : '',
+      showBanner: false,
+    };
+  };
+
+  const STATUS_LABEL: Record<'active' | 'scheduled' | 'finished', string> = {
+    active:    pt.statusActive,
+    scheduled: pt.statusScheduled,
+    finished:  pt.statusFinished,
+  };
 
   return (
     <div className={styles.page}>
       <div className={styles.top}>
-        <h1 className={styles.h1}>Акції та оголошення</h1>
+        <h1 className={styles.h1}>{pt.title}</h1>
         <button type="button" className={styles.createBtn} onClick={() => setModal({ mode: 'add' })}>
           <PlusIcon />
-          Створити акцію
+          {pt.newPromo}
         </button>
       </div>
 
-      {/* Section 1 — active promos */}
-      <h2 className={styles.sectionTitle}>Активні акції</h2>
-      <div className={styles.grid}>
-        {promos.map((p) => (
-          <article key={p.id} className={styles.card}>
-            <div className={styles.banner}>
-              <span className={styles.bannerTitle}>{p.title}</span>
-              <span className={`${styles.status} ${styles[p.status]}`}>{PROMO_STATUS_LABEL[p.status]}</span>
-            </div>
-            <div className={styles.body}>
-              <div className={styles.row}>
-                <span className={styles.rowLabel}>Тип</span>
-                <span className={styles.rowValue}>{PROMO_TYPE_LABEL[p.type]}</span>
+      {loading ? (
+        <p className={styles.emptyState}>{t.common?.loading ?? '…'}</p>
+      ) : promos.length === 0 ? (
+        <p className={styles.emptyState}>{pt.noPromos}</p>
+      ) : (
+        <div className={styles.grid}>
+          {promos.map((p) => (
+            <article key={p.id} className={`${styles.card} ${styles[`card_${p.status}`]}`}>
+              <div className={styles.cardTop}>
+                <span className={`${styles.statusBadge} ${styles[`badge_${p.status}`]}`}>
+                  {STATUS_LABEL[p.status]}
+                </span>
+                <span className={styles.cardType}>
+                  {String(pt[TYPE_I18N[p.type]])}
+                </span>
               </div>
-              <div className={styles.row}>
-                <span className={styles.rowLabel}>Знижка</span>
-                <span className={styles.discount}>{discountLabel(p)}</span>
+              <h3 className={styles.cardTitle}>{p.title}</h3>
+              <div className={styles.cardMeta}>
+                {p.discountPercent != null && (
+                  <span className={styles.discount}>{pt.discount}: <strong>−{p.discountPercent}%</strong></span>
+                )}
+                <span className={styles.period}>
+                  {pt.period}: {fmtDate(p.startsAt)}{p.endsAt ? ` → ${fmtDate(p.endsAt)}` : ''}
+                </span>
               </div>
-              <div className={styles.row}>
-                <span className={styles.rowLabel}>Період</span>
-                <span className={styles.rowValue}>{fmtDate(p.startDate)} — {fmtDate(p.endDate)}</span>
+              <div className={styles.footer}>
+                <button
+                  type="button"
+                  className={styles.action}
+                  onClick={() => setModal({ mode: 'edit', id: p.id })}
+                >
+                  {pt.editBtn}
+                </button>
+                <button
+                  type="button"
+                  className={styles.action}
+                  onClick={() => void toggleActive(p.id, p.active)}
+                >
+                  {p.active ? pt.pause : pt.resume}
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.action} ${styles.delete}`}
+                  onClick={() => setConfirmId(p.id)}
+                >
+                  {pt.deleteBtn}
+                </button>
               </div>
-              <div className={styles.row}>
-                <span className={styles.rowLabel}>Застосовано</span>
-                <span className={styles.rowValue}>{p.applied} {pluralRaz(p.applied)}</span>
-              </div>
-            </div>
-            <div className={styles.footer}>
-              <button type="button" className={styles.action} onClick={() => setModal({ mode: 'edit', id: p.id })}>
-                <EditIcon />
-                Редагувати
-              </button>
-              <button type="button" className={styles.action} onClick={() => togglePause(p.id)}>
-                {p.status === 'active' ? <PauseIcon /> : <PlayIcon />}
-                {p.status === 'active' ? 'Призупинити' : 'Відновити'}
-              </button>
-              <button type="button" className={`${styles.action} ${styles.delete}`} onClick={() => setDeletingId(p.id)}>
-                <TrashIcon />
-                Видалити
-              </button>
-            </div>
-          </article>
-        ))}
-      </div>
-
-      {/* Section 2 — announcement strip */}
-      <h2 className={styles.sectionTitle}>Рядок оголошень</h2>
-      <div className={styles.announceCard}>
-        <div className={styles.preview} data-hidden={!announcementVisible}>
-          <span className={styles.previewLabel}>Прев&apos;ю:</span>
-          <span className={styles.previewText}>{announcement}</span>
+            </article>
+          ))}
         </div>
+      )}
 
+      <h2 className={styles.sectionTitle}>{pt.announcementTitle}</h2>
+      <div className={styles.announceCard}>
+        <div className={styles.preview} data-hidden={!showBanner}>
+          <span className={styles.previewLabel}>{pt.validFrom}:</span>
+          <span className={styles.previewText}>{bannerText}</span>
+        </div>
         <textarea
           className={styles.announceTextarea}
           rows={2}
-          value={announcementDraft}
-          onChange={(e) => setAnnouncementDraft(e.target.value)}
-          placeholder="Текст для announcement strip"
+          value={bannerText}
+          onChange={(e) => setBannerText(e.target.value)}
+          placeholder={pt.descriptionLabel}
         />
-
         <div className={styles.announceControls}>
           <label className={styles.toggleRow}>
             <span className={styles.toggle}>
-              <input type="checkbox" checked={announcementVisible} onChange={(e) => setAnnouncementVisible(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={showBanner}
+                onChange={(e) => setShowBanner(e.target.checked)}
+              />
               <span className={styles.track} />
             </span>
-            {announcementVisible ? 'Показувати на сайті' : 'Приховано'}
+            {showBanner ? pt.showOnSite : pt.hiddenLabel}
           </label>
-          <button type="button" className={styles.announceSave} onClick={saveAnnouncement}>
-            Зберегти
-          </button>
         </div>
       </div>
 
       {modal && (
         <PromoModal
           mode={modal.mode}
-          initial={modalInitial}
-          brands={BRANDS}
-          categories={CATEGORIES}
-          onSave={handleSave}
+          initial={getInitialForm(modal.mode === 'edit' ? modal.id : undefined)}
+          onSave={(data) => void handleSave(data)}
           onClose={() => setModal(null)}
         />
       )}
 
-      {deletingId && (
-        <ConfirmDialog message="Видалити цю акцію?" onConfirm={doDelete} onCancel={() => setDeletingId(null)} />
+      {confirmId && (
+        <ConfirmDialog
+          message={pt.deleteConfirm}
+          onConfirm={() => void handleDelete(confirmId)}
+          onCancel={() => setConfirmId(null)}
+        />
       )}
     </div>
   );
