@@ -14,6 +14,7 @@ import { VerticalProvider } from '@/lib/vertical-context';
 import { PresenceProvider } from '@/lib/presence-context';
 import { CustomerProvider } from '@/lib/useCustomer';
 import { getBaseUrl } from '@/lib/url';
+import { getActiveLocales } from '@/config';
 import '../../globals.css';
 
 const playfair = Playfair_Display({
@@ -205,7 +206,7 @@ export default async function LocaleLayout({
           <CustomerProvider>
             <VerticalProvider config={config.vertical}>
               <PresenceProvider presence={config.presence}>
-                <Header logoUrl={config.logoUrl} whatsappBookingLink={config.whatsappLinks.booking} />
+                <Header logoUrl={config.logoUrl} whatsappBookingLink={config.whatsappLinks.booking} activeLocales={getActiveLocales()} />
                 <main>{children}</main>
                 <Footer config={config} locale={locale} legalEnabled={legalEnabled} />
                 <CookieBanner />

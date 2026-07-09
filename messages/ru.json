@@ -645,6 +645,7 @@
     "accessGranted": "У вас есть доступ к этому курсу",
     "lessonContent": "Содержание урока",
     "buyToUnlock": "Приобретите курс для доступа к видео и материалам",
+    "lessons": "уроков",
     "navLabel": "Курсы"
   },
   "CookieBanner": {

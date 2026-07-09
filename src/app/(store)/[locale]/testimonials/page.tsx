@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { db } from '@/lib/db';
 import TestimonialCard from '@/components/ui/TestimonialCard';
 
@@ -22,11 +24,19 @@ async function getTestimonials() {
   }
 }
 
-export default async function TestimonialsPage() {
+export default async function TestimonialsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const t = await getTranslations('testimonials');
   const testimonials = await getTestimonials();
 
   const avgRating = testimonials.length
-    ? (testimonials.reduce((s, t) => s + t.rating, 0) / testimonials.length).toFixed(1)
+    ? (testimonials.reduce((s, tst) => s + tst.rating, 0) / testimonials.length).toFixed(1)
     : null;
 
   return (
@@ -35,48 +45,48 @@ export default async function TestimonialsPage() {
 
         <div className="testimonials-list__header">
           <div>
-            <span className="section-eyebrow">Recenzie</span>
+            <span className="section-eyebrow">{t('pageTitle')}</span>
             <h1 style={{
               fontSize: 'clamp(2rem, 4vw, 3rem)',
-              color: 'var(--color-text-primary)',
+              color: 'var(--color-text)',
               marginTop: '0.5rem',
             }}>
-              Čo hovoria naši klienti
+              {t('sectionTitle')}
             </h1>
             {avgRating && (
               <p style={{ color: 'var(--color-text-muted)', marginTop: '0.35rem' }}>
-                ⭐ {avgRating} · {testimonials.length} recenzií
+                ⭐ {avgRating} · {testimonials.length} {t('reviews')}
               </p>
             )}
           </div>
-          <Link href="/sk/testimonials/submit" className="btn-primary">
-            Zanechať recenziu
+          <Link href={`/${locale}/testimonials/submit`} className="btn-primary">
+            {t('writeReview')}
           </Link>
         </div>
 
         {testimonials.length > 0 ? (
           <div className="testimonials-page__grid">
-            {testimonials.map((t) => (
+            {testimonials.map((tst) => (
               <TestimonialCard
-                key={t.id}
-                name={t.customer?.name ?? 'Klient'}
-                content={t.text}
-                rating={t.rating}
-                createdAt={t.createdAt.toISOString()}
-                adminReply={t.adminReply}
-                adminReplyAt={t.adminReplyAt?.toISOString() ?? null}
+                key={tst.id}
+                name={tst.authorName ?? tst.customer?.name ?? 'Anonym'}
+                content={tst.text}
+                rating={tst.rating}
+                createdAt={tst.createdAt.toISOString()}
+                adminReply={tst.adminReply}
+                adminReplyAt={tst.adminReplyAt?.toISOString() ?? null}
               />
             ))}
           </div>
         ) : (
           <div className="testimonials-page__empty">
-            <p>Zatiaľ žiadne recenzie.</p>
+            <p>{t('noReviews')}</p>
             <Link
-              href="/sk/testimonials/submit"
+              href={`/${locale}/testimonials/submit`}
               className="btn-outline"
               style={{ marginTop: '1rem', display: 'inline-block' }}
             >
-              Buďte prvý!
+              {t('writeReview')}
             </Link>
           </div>
         )}

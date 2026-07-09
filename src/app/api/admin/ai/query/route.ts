@@ -184,8 +184,8 @@ async function executeTool(name: string, args: Record<string, unknown>, storeId:
     case 'update_working_hours': {
       const hoursStr = typeof args.hours === 'string' ? args.hours : JSON.stringify(args.hours);
       await db.store.update({ where: { id: storeId }, data: { openingHours: hoursStr } });
-      revalidatePath('/sk');
-      return { success: true, message: 'Pracovné hodiny boli aktualizované.' };
+      revalidatePath('/', 'layout');
+      return { success: true, message: 'Working hours updated.' };
     }
 
     case 'update_store_info': {
@@ -196,8 +196,8 @@ async function executeTool(name: string, args: Record<string, unknown>, storeId:
       if (args.description) data.description = args.description;
       if (Object.keys(data).length === 0) return { error: 'No fields to update' };
       await db.store.update({ where: { id: storeId }, data });
-      revalidatePath('/sk');
-      return { success: true, message: 'Informácie o salóne boli aktualizované.' };
+      revalidatePath('/', 'layout');
+      return { success: true, message: 'Store information updated.' };
     }
 
     case 'get_pending_reviews': {
@@ -228,11 +228,10 @@ async function executeTool(name: string, args: Record<string, unknown>, storeId:
           ...(reply ? { adminReply: reply, adminReplyAt: new Date() } : {}),
         },
       });
-      revalidatePath('/sk');
-      revalidatePath('/sk/testimonials');
+      revalidatePath('/', 'layout');
       return {
         success: true,
-        message: `Recenzia bola ${action === 'approve' ? 'schválená' : 'zamietnutá'}.${reply ? ' Odpoveď bola uložená.' : ''}`,
+        message: `Review ${action === 'approve' ? 'approved' : 'rejected'}.${reply ? ' Reply saved.' : ''}`,
       };
     }
 

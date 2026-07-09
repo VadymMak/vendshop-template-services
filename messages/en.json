@@ -645,6 +645,7 @@
     "accessGranted": "You have access to this course",
     "lessonContent": "Lesson content",
     "buyToUnlock": "Purchase the course to unlock video and materials",
+    "lessons": "lessons",
     "navLabel": "Courses"
   },
   "CookieBanner": {

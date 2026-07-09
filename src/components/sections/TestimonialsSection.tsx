@@ -1,3 +1,4 @@
+import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import TestimonialCard from '@/components/ui/TestimonialCard';
 import ScrollReveal from '@/components/ui/ScrollReveal';
@@ -17,14 +18,17 @@ interface TestimonialsSectionProps {
   testimonials: TestimonialItem[];
 }
 
-export default function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
+export default async function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
   if (testimonials.length === 0) return null;
+
+  const locale = await getLocale();
+  const t = await getTranslations('testimonials');
 
   return (
     <section id="recenzie" className="testimonials">
       <ScrollReveal direction="up" className="section-header">
-        <p className="section-label">Recenzie</p>
-        <h2 className="section-title">Čo hovoria naši klienti</h2>
+        <p className="section-label">{t('pageTitle')}</p>
+        <h2 className="section-title">{t('sectionTitle')}</h2>
         <GoldDivider />
       </ScrollReveal>
 
@@ -44,11 +48,11 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
       </div>
 
       <div className="testimonials__footer">
-        <Link href="/sk/testimonials" className="btn-outline">
-          Zobraziť všetky recenzie →
+        <Link href={`/${locale}/testimonials`} className="btn-outline">
+          {t('viewAll')} →
         </Link>
-        <Link href="/sk/testimonials/submit" className="btn-primary">
-          Zanechať recenziu
+        <Link href={`/${locale}/testimonials/submit`} className="btn-primary">
+          {t('writeReview')}
         </Link>
       </div>
     </section>

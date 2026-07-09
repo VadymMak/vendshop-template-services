@@ -20,6 +20,8 @@ const WA_MESSAGES: Record<string, (name: string, price: number, currency: string
   uk: (n, p, c) => `Цікавить продукт: ${n} (${p} ${c})`,
   cs: (n, p, c) => `Zájem o produkt: ${n} (${p} ${c})`,
   de: (n, p, c) => `Interesse an: ${n} (${p} ${c})`,
+  ru: (n, p, c) => `Интересует продукт: ${n} (${p} ${c})`,
+  pl: (n, p, c) => `Interesuję się produktem: ${n} (${p} ${c})`,
 };
 
 const PAGE_LABELS: Record<string, { title: string; subtitle: string; buy: string; empty: string }> = {
@@ -28,6 +30,8 @@ const PAGE_LABELS: Record<string, { title: string; subtitle: string; buy: string
   uk: { title: 'Цифрові продукти', subtitle: 'Гайди, посібники та ексклюзивний контент', buy: 'Купити через WhatsApp', empty: 'Поки що немає продуктів' },
   cs: { title: 'Digitální produkty', subtitle: 'Příručky, návody a exkluzivní obsah', buy: 'Koupit přes WhatsApp', empty: 'Zatím žádné produkty' },
   de: { title: 'Digitale Produkte', subtitle: 'Leitfäden, Tutorials und exklusiver Inhalt', buy: 'Per WhatsApp kaufen', empty: 'Noch keine Produkte' },
+  ru: { title: 'Цифровые продукты', subtitle: 'Руководства, учебники и эксклюзивный контент', buy: 'Купить через WhatsApp', empty: 'Пока нет продуктов' },
+  pl: { title: 'Produkty cyfrowe', subtitle: 'Poradniki, tutoriale i ekskluzywne treści', buy: 'Kup przez WhatsApp', empty: 'Brak produktów' },
 };
 
 export default async function DigitalProductsPage({

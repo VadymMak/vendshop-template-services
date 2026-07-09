@@ -112,10 +112,12 @@ export async function POST(_req: NextRequest) {
   // ── Layer 2: Web pages crawl ──────────────────────────────────────────────
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+  const { getDefaultLocale } = await import('@/config');
+  const defaultLocale = getDefaultLocale();
   const pagesToCrawl = [
-    { path: '/sk', label: 'Hlavná stránka' },
-    { path: '/sk/testimonials', label: 'Recenzie stránka' },
-    { path: '/sk/products', label: 'Produkty stránka' },
+    { path: `/${defaultLocale}`, label: 'Home page' },
+    { path: `/${defaultLocale}/testimonials`, label: 'Reviews page' },
+    { path: `/${defaultLocale}/products`, label: 'Products page' },
   ];
 
   for (const page of pagesToCrawl) {

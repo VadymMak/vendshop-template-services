@@ -77,10 +77,10 @@ export default function TestimonialsPageClient({ testimonials, total }: Props) {
       {/* ── СЕКЦИЯ 1: Список отзывов ── */}
       <section className="testimonials-page__section">
         <div className="section-header">
-          <p className="section-label">Recenzie</p>
-          <h1 className="section-title">Čo hovoria naši klienti</h1>
+          <p className="section-label">{t('pageTitle')}</p>
+          <h1 className="section-title">{t('sectionTitle')}</h1>
           <p style={{ color: 'var(--color-text-muted)', marginTop: '0.5rem' }}>
-            {total} overených recenzií
+            {total} {t('reviews')}
           </p>
         </div>
 

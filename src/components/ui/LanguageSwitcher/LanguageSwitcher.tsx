@@ -18,14 +18,18 @@ const LOCALE_LABELS: Record<string, string> = {
 
 interface LanguageSwitcherProps {
   variant?: 'dropdown' | 'inline';
+  /** Restrict to these locales (e.g. from getActiveLocales() passed by server parent). Falls back to all routing locales. */
+  locales?: string[];
 }
 
-export default function LanguageSwitcher({ variant = 'dropdown' }: LanguageSwitcherProps) {
+export default function LanguageSwitcher({ variant = 'dropdown', locales }: LanguageSwitcherProps) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const activeLocales = locales ?? routing.locales;
 
   useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
@@ -45,7 +49,7 @@ export default function LanguageSwitcher({ variant = 'dropdown' }: LanguageSwitc
   if (variant === 'inline') {
     return (
       <div className={styles.inline}>
-        {routing.locales.map((loc) => (
+        {activeLocales.map((loc) => (
           <button
             key={loc}
             type="button"
@@ -80,7 +84,7 @@ export default function LanguageSwitcher({ variant = 'dropdown' }: LanguageSwitc
 
       {open && (
         <ul className={styles.dropdown} role="listbox">
-          {routing.locales.map((loc) => (
+          {activeLocales.map((loc) => (
             <li key={loc} role="option" aria-selected={loc === locale}>
               <button
                 type="button"

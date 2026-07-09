@@ -104,8 +104,18 @@ export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
   });
 
   const dbTheme = store.themeConfig as Partial<ThemeConfig> | null;
+  const mergedColors = { ...DEFAULT_THEME.colors, ...(dbTheme?.colors ?? {}) };
+  // When a preset defines its own bg (dark/navy themes) but omits surface/bgAlt/bgCard,
+  // derive them from the preset's own palette instead of leaking DEFAULT white.
+  const dbColors = dbTheme?.colors;
+  if (dbColors?.bg) {
+    const fallback = dbColors.bgSubtle ?? mergedColors.bgSubtle;
+    if (dbColors.surface === undefined) mergedColors.surface = fallback;
+    if (dbColors.bgAlt   === undefined) mergedColors.bgAlt   = fallback;
+    if (dbColors.bgCard  === undefined) mergedColors.bgCard  = fallback;
+  }
   const theme: ThemeConfig = {
-    colors: { ...DEFAULT_THEME.colors, ...(dbTheme?.colors ?? {}) },
+    colors: mergedColors,
     layout: { ...DEFAULT_THEME.layout, ...(dbTheme?.layout ?? {}) },
   };
 
