@@ -134,6 +134,22 @@ export const NAVY_THEME: ThemeConfig = {
   },
 };
 
+/** Merge a partial DB theme over DEFAULT_THEME, deriving surface/bgAlt/bgCard from the preset's bg when not specified. */
+export function mergeTheme(dbTheme: Partial<ThemeConfig> | null): ThemeConfig {
+  const mergedColors = { ...DEFAULT_THEME.colors, ...(dbTheme?.colors ?? {}) };
+  const dbColors = dbTheme?.colors;
+  if (dbColors?.bg) {
+    const fallback = dbColors.bgSubtle ?? mergedColors.bgSubtle;
+    if (dbColors.surface === undefined) mergedColors.surface = fallback;
+    if (dbColors.bgAlt   === undefined) mergedColors.bgAlt   = fallback;
+    if (dbColors.bgCard  === undefined) mergedColors.bgCard  = fallback;
+  }
+  return {
+    colors: mergedColors,
+    layout: { ...DEFAULT_THEME.layout, ...(dbTheme?.layout ?? {}) },
+  };
+}
+
 export function themeToCssVars(theme: ThemeConfig): Record<string, string> {
   const radiusMap = {
     sharp:   { xs: '2px',    sm: '3px',    md: '4px',    lg: '6px',    xl: '8px'    },

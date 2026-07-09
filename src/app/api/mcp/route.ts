@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { revalidateCatalog } from '@/lib/revalidate';
 import { db } from '@/lib/db';
 import { OrderStatus, PaymentStatus, PromoType } from '@prisma/client';
-import { DEFAULT_THEME, type ThemeConfig } from '@/lib/theme';
+import { mergeTheme, DEFAULT_THEME, type ThemeConfig } from '@/lib/theme';
 import { getVerticalConfig } from '@/lib/verticals';
 import { THEME_PRESETS } from '@/lib/theme-presets';
 
@@ -405,10 +405,7 @@ async function createServer() {
       });
 
       const dbTheme = storeTheme?.themeConfig as Partial<ThemeConfig> | null;
-      const theme: ThemeConfig = {
-        colors: { ...DEFAULT_THEME.colors, ...(dbTheme?.colors ?? {}) },
-        layout: { ...DEFAULT_THEME.layout, ...(dbTheme?.layout ?? {}) },
-      };
+      const theme = mergeTheme(dbTheme);
 
       return text(theme);
     },

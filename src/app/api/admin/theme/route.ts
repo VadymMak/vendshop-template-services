@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { db } from '@/lib/db';
-import { DEFAULT_THEME, type ThemeConfig } from '@/lib/theme';
+import { mergeTheme, DEFAULT_THEME, type ThemeConfig } from '@/lib/theme';
 
 const STORE_SLUG = process.env.STORE_SLUG ?? 'electromarket';
 
@@ -12,10 +12,7 @@ export async function GET() {
   });
 
   const dbTheme = store?.themeConfig as Partial<ThemeConfig> | null;
-  const theme: ThemeConfig = {
-    colors: { ...DEFAULT_THEME.colors, ...(dbTheme?.colors ?? {}) },
-    layout: { ...DEFAULT_THEME.layout, ...(dbTheme?.layout ?? {}) },
-  };
+  const theme = mergeTheme(dbTheme);
 
   return Response.json(theme);
 }
@@ -29,18 +26,11 @@ export async function PUT(req: NextRequest) {
   });
 
   const currentTheme = store.themeConfig as Partial<ThemeConfig> | null;
+  const base = mergeTheme(currentTheme);
 
   const updatedTheme: ThemeConfig = {
-    colors: {
-      ...DEFAULT_THEME.colors,
-      ...(currentTheme?.colors ?? {}),
-      ...(body.colors ?? {}),
-    },
-    layout: {
-      ...DEFAULT_THEME.layout,
-      ...(currentTheme?.layout ?? {}),
-      ...(body.layout ?? {}),
-    },
+    colors: { ...base.colors, ...(body.colors ?? {}) },
+    layout: { ...base.layout, ...(body.layout ?? {}) },
   };
 
   await db.store.update({

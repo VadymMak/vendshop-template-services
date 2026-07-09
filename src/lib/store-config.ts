@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { db } from '@/lib/db';
-import { DEFAULT_THEME, type ThemeConfig } from '@/lib/theme';
+import { mergeTheme, type ThemeConfig } from '@/lib/theme';
 import { getVerticalConfig, type VerticalConfig } from '@/lib/verticals';
 
 const STORE_SLUG = process.env.STORE_SLUG ?? '';
@@ -104,20 +104,7 @@ export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
   });
 
   const dbTheme = store.themeConfig as Partial<ThemeConfig> | null;
-  const mergedColors = { ...DEFAULT_THEME.colors, ...(dbTheme?.colors ?? {}) };
-  // When a preset defines its own bg (dark/navy themes) but omits surface/bgAlt/bgCard,
-  // derive them from the preset's own palette instead of leaking DEFAULT white.
-  const dbColors = dbTheme?.colors;
-  if (dbColors?.bg) {
-    const fallback = dbColors.bgSubtle ?? mergedColors.bgSubtle;
-    if (dbColors.surface === undefined) mergedColors.surface = fallback;
-    if (dbColors.bgAlt   === undefined) mergedColors.bgAlt   = fallback;
-    if (dbColors.bgCard  === undefined) mergedColors.bgCard  = fallback;
-  }
-  const theme: ThemeConfig = {
-    colors: mergedColors,
-    layout: { ...DEFAULT_THEME.layout, ...(dbTheme?.layout ?? {}) },
-  };
+  const theme = mergeTheme(dbTheme);
 
   const mode = store.primaryMode as StoreMode;
   const whatsappNumber = store.whatsappPhone ?? store.phone;
